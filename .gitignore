@@ -1,5 +1,5 @@
-build/*
-dist/*
-nbproject/private/*
-jsqlparser
-**.DS_Store
+/build
+/dist
+/nbproject/private
+/jsqlparser
+.DS_Store
