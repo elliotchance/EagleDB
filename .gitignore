@@ -1,2 +1,5 @@
-build/classes/*
+build/*
+dist/*
 nbproject/private/*
+jsqlparser
+**.DS_Store
