@@ -14,17 +14,15 @@ public class Properties extends HashMap<String, String> {
 
 	@Override
 	public String toString() {
-		String s = "(";
-
+		String s = "";
 		Iterator iterator = keySet().iterator();
         for(int i = 0; iterator.hasNext(); ++i) {
 			if(i > 0)
-				s += ", ";
+				s += ",";
 			String key = iterator.next().toString();
-			s += key + " => \"" + get(key) + "\"";
+			s += key + "=" + get(key);
         }
 
-		s += ")";
 		return s;
 	}
 

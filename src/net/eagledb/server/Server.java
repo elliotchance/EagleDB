@@ -2,10 +2,13 @@ package net.eagledb.server;
 
 import java.io.*;
 import java.net.*;
+import net.eagledb.utils.Properties;
 
 public class Server {
 
 	public static int PORT = 6612;
+
+	private Authenticator authenticator;
 
 	public Server() {
 		// start the server
@@ -17,6 +20,9 @@ public class Server {
 			e.printStackTrace();
 			return;
 		}
+
+		// setup users
+		authenticator = new Authenticator();
 
 		// wait for connections
 		String data = "Toobie ornaught toobie";
@@ -34,13 +40,23 @@ public class Server {
 						System.out.println("Received: " + sql);
 
 						// process
+						String result = "";
+						if(sql.startsWith("CONNECT ")) {
+							// see if the users credentials are correct
+							Properties p = new Properties(sql.substring(sql.indexOf(" ") + 1));
+							boolean allowed = authenticator.verifyUser(p);
+
+							if(allowed)
+								result = "YES";
+							else
+								result = "NO";
+						}
+
 						if(sql.equals("DISCONNECT"))
 							break;
 
-						String result = sql.toUpperCase() + '\n';
-
 						// send result
-						out.writeBytes(result);
+						out.writeBytes(result + '\n');
 					}
 					
 					socket.close();

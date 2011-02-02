@@ -27,7 +27,7 @@ public class Connection implements Serializable {
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			// send SQL
-			out.writeBytes("CONNECT" + parameters.toString() + '\n');
+			out.writeBytes("CONNECT " + parameters.toString() + '\n');
 
 			// get result
 			String result = in.readLine();
