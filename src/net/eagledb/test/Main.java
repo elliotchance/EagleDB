@@ -12,7 +12,7 @@ public class Main {
         EmbeddedServer server = new EmbeddedServer();
 
 		// start the clients
-		Client[] clients = new Client[3];
+		Client[] clients = new Client[1];
 		for(int i = 0; i < clients.length; ++i) {
 			clients[i] = new Client();
 			clients[i].start();
