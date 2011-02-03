@@ -6,6 +6,18 @@ import java.util.*;
 public class Driver implements java.sql.Driver {
 
 	/**
+	 * Register driver.
+	 */
+	static {
+		try {
+			DriverManager.registerDriver(new Driver());
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+	};
+
+	/**
 	 * Retrieves whether the driver thinks that it can open a connection to the given URL. Typically drivers will return
 	 * true if they understand the subprotocol specified in the URL and false if they do not.
 	 * @param url the URL of the database
@@ -13,6 +25,7 @@ public class Driver implements java.sql.Driver {
 	 * @throws SQLException if a database access error occurs
 	 */
 	public boolean acceptsURL(String url) throws SQLException {
+		System.out.print("TESTING: " + url);
 		return url.startsWith("eagledb://");
 	}
 
@@ -86,7 +99,7 @@ public class Driver implements java.sql.Driver {
 	 * @throws SQLException SQLException - if a database access error occurs
 	 */
 	public java.sql.Connection connect(String url, Properties info) throws SQLException {
-		return null;
+		return new net.eagledb.jdbc.Connection(url, info);
 	}
 
 }

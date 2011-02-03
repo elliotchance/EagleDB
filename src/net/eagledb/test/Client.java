@@ -1,6 +1,6 @@
 package net.eagledb.test;
 
-import net.eagledb.client.*;
+import java.sql.*;
 
 /**
  * @brief Simulate a client accessing the server.
@@ -11,15 +11,14 @@ public class Client extends Thread {
 	@Override
 	public void run() {
 		try {
-			Class.forName("net.eagledb.jdbc.Driver").newInstance();
+			Class.forName("net.eagledb.jdbc.Driver");
+			Connection conn = DriverManager.getConnection("eagledb://localhost", "root", "123");
+			System.out.println(conn);
 		}
 		catch(ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		catch(InstantiationException e) {
-			e.printStackTrace();
-		}
-		catch(IllegalAccessException e) {
+		catch(SQLException e) {
 			e.printStackTrace();
 		}
 

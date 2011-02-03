@@ -2,9 +2,8 @@ package net.eagledb.server;
 
 import java.io.*;
 import java.net.*;
-import net.eagledb.utils.Properties;
 import net.eagledb.server.sql.SQLParser;
-import net.sf.jsqlparser.JSQLParserException;
+import java.util.Properties;
 
 public class ClientConnection extends Thread {
 
@@ -35,13 +34,13 @@ public class ClientConnection extends Thread {
 				String result = "";
 				if(sql.startsWith("CONNECT ")) {
 					// see if the users credentials are correct
-					Properties p = new Properties(sql.substring(sql.indexOf(" ") + 1));
+					/*Properties p = new Properties(sql.substring(sql.indexOf(" ") + 1));
 					boolean allowed = server.authenticator.verifyUser(p);
 
 					if(allowed)
 						result = "YES";
 					else
-						result = "NO";
+						result = "NO";*/
 				}
 				else if(sql.equals("DISCONNECT"))
 					break;
