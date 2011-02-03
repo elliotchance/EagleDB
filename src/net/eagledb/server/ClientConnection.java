@@ -31,6 +31,7 @@ public class ClientConnection extends Thread {
 
 				// process
 				String result = parser.parse(sql);
+				System.out.println("result = " + result);
 
 				// send result
 				out.writeBytes(result + '\n');

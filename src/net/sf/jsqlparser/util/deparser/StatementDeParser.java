@@ -12,6 +12,7 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
+import net.sf.jsqlparser.statement.connect.Connect;
 
 public class StatementDeParser implements StatementVisitor {
 	protected StringBuffer buffer;
@@ -89,6 +90,16 @@ public class StatementDeParser implements StatementVisitor {
 		UpdateDeParser updateDeParser = new UpdateDeParser(expressionDeParser, buffer);
 		selectDeParser.setExpressionVisitor(expressionDeParser);
 		updateDeParser.deParse(update);
+
+	}
+
+	public void visit(Connect connect) {
+		/*SelectDeParser selectDeParser = new SelectDeParser();
+		selectDeParser.setBuffer(buffer);
+		ExpressionDeParser expressionDeParser = new ExpressionDeParser(selectDeParser, buffer);
+		UpdateDeParser updateDeParser = new UpdateDeParser(expressionDeParser, buffer);
+		selectDeParser.setExpressionVisitor(expressionDeParser);
+		updateDeParser.deParse(connect);*/
 
 	}
 

@@ -20,27 +20,27 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package net.sf.jsqlparser.statement;
+package net.sf.jsqlparser.statement.connect;
 
-import net.sf.jsqlparser.statement.create.table.CreateTable;
-import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.drop.Drop;
-import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.replace.Replace;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.truncate.Truncate;
-import net.sf.jsqlparser.statement.update.Update;
-import net.sf.jsqlparser.statement.connect.Connect;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.StatementVisitor;
 
-public interface StatementVisitor {
-	public void visit(Select select);
-	public void visit(Delete delete);
-	public void visit(Update update);
-	public void visit(Insert insert);
-	public void visit(Replace replace);
-	public void visit(Drop drop);
-	public void visit(Truncate truncate);
-	public void visit(CreateTable createTable);
-	public void visit(Connect connect);
+/**
+ * The update statement.
+ */
+public class Connect implements Statement {
+	private java.util.Properties properties;
+
+	public void accept(StatementVisitor statementVisitor) {
+		statementVisitor.visit(this);
+	}
+
+	public void setProperties(java.util.Properties p) {
+		properties = p;
+	}
+
+	public java.util.Properties getProperties() {
+		return properties;
+	}
 
 }

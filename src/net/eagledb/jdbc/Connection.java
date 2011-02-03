@@ -30,7 +30,17 @@ public class Connection<T> implements java.sql.Connection {
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-			String result = send("CONNECT " + parameters.toString());
+			String paras = "";
+			Set<String> pnames = parameters.stringPropertyNames();
+			int i = 0;
+			for(String pname : pnames) {
+				if(i > 0)
+					paras += ",";
+				paras += pname + "=" + parameters.getProperty(pname);
+				++i;
+			}
+			
+			String result = send("CONNECT " + paras);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
