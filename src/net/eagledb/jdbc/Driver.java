@@ -25,7 +25,6 @@ public class Driver implements java.sql.Driver {
 	 * @throws SQLException if a database access error occurs
 	 */
 	public boolean acceptsURL(String url) throws SQLException {
-		System.out.print("TESTING: " + url);
 		return url.startsWith("eagledb://");
 	}
 
