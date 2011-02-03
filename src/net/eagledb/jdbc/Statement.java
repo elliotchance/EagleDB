@@ -5,7 +5,7 @@ import java.sql.*;
 public class Statement implements java.sql.Statement {
 
 	public ResultSet executeQuery(String sql) throws SQLException {
-		throw new SQLException("Not implemented.");
+		return new ResultSet();
 	}
 
 	public int executeUpdate(String sql) throws SQLException {
