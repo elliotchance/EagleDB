@@ -8,6 +8,6 @@ $base = '../src/net/sf/jsqlparser/parser';
 @unlink("$base/SimpleCharStream.java");
 
 // run parser
-system("javacc-5.0/bin/javacc -OUTPUT_DIRECTORY=`pwd`/$base `pwd`/$base/JSqlParserCC.jj");
+system("javacc-5.0/bin/javacc -LOOKAHEAD=2 -OUTPUT_DIRECTORY=`pwd`/$base `pwd`/$base/JSqlParserCC.jj");
 
 ?>
