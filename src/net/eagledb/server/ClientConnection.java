@@ -3,12 +3,15 @@ package net.eagledb.server;
 import java.io.*;
 import java.net.*;
 import net.eagledb.utils.Properties;
+import net.eagledb.server.sql.SQLParser;
 
 public class ClientConnection extends Thread {
 
 	private Server server;
 
 	private Socket socket;
+
+	private SQLParser parser = new SQLParser();
 
 	public ClientConnection(Server s, Socket sock) {
 		server = s;
@@ -42,6 +45,17 @@ public class ClientConnection extends Thread {
 
 				if(sql.equals("DISCONNECT"))
 					break;
+
+				// parse SQL
+				parser.parse("CREATE TABLE mytab (mycol a (10, 20) c nm g, mycol2 mypar1 mypar2 (23,323,3) asf " +
+				"('23','123') dasd, PRIMARY KEY (mycol2, mycol)) type = myisam");
+
+				/*assertEquals(2, createTable.getColumnDefinitions().size());
+				assertEquals("mycol", ((ColumnDefinition) createTable.getColumnDefinitions().get(0)).getColumnName());
+				assertEquals("mycol2", ((ColumnDefinition) createTable.getColumnDefinitions().get(1)).getColumnName());
+				assertEquals("PRIMARY KEY", ((Index) createTable.getIndexes().get(0)).getType());
+				assertEquals("mycol", ((Index) createTable.getIndexes().get(0)).getColumnsNames().get(1));
+				assertEquals(statement, ""+createTable);*/
 
 				// send result
 				out.writeBytes(result + '\n');
