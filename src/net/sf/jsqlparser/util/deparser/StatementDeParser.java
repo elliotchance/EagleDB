@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import net.sf.jsqlparser.statement.StatementVisitor;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
+import net.sf.jsqlparser.statement.create.database.CreateDatabase;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.drop.Drop;
 import net.sf.jsqlparser.statement.insert.Insert;
@@ -90,6 +91,16 @@ public class StatementDeParser implements StatementVisitor {
 		UpdateDeParser updateDeParser = new UpdateDeParser(expressionDeParser, buffer);
 		selectDeParser.setExpressionVisitor(expressionDeParser);
 		updateDeParser.deParse(update);
+
+	}
+
+	public void visit(CreateDatabase createdb) {
+		/*SelectDeParser selectDeParser = new SelectDeParser();
+		selectDeParser.setBuffer(buffer);
+		ExpressionDeParser expressionDeParser = new ExpressionDeParser(selectDeParser, buffer);
+		UpdateDeParser updateDeParser = new UpdateDeParser(expressionDeParser, buffer);
+		selectDeParser.setExpressionVisitor(expressionDeParser);
+		updateDeParser.deParse(connect);*/
 
 	}
 
