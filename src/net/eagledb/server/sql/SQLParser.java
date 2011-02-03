@@ -13,16 +13,19 @@ public class SQLParser {
 	public SQLParser() {
 	}
 
-	public void parse(String sql) {
+	public String parse(String sql) {
+		String result;
 		try {
 			Statement stmt = parserManager.parse(new StringReader(sql));
 			//if(stmt instanceof CreateTable)
 			//	new SQLCreateTable((CreateTable) stmt);
 			//System.out.println(createTable.getColumnDefinitions());
+			result = "Success";
 		}
 		catch(JSQLParserException e) {
-			e.printStackTrace();
+			result = e.getCause().toString();
 		}
+		return result;
 	}
 
 }

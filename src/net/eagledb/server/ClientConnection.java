@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import net.eagledb.utils.Properties;
 import net.eagledb.server.sql.SQLParser;
+import net.sf.jsqlparser.JSQLParserException;
 
 public class ClientConnection extends Thread {
 
@@ -42,13 +43,12 @@ public class ClientConnection extends Thread {
 					else
 						result = "NO";
 				}
-
-				if(sql.equals("DISCONNECT"))
+				else if(sql.equals("DISCONNECT"))
 					break;
-
-				// parse SQL
-				parser.parse("CREATE TABLE mytab (mycol a (10, 20) c nm g, mycol2 mypar1 mypar2 (23,323,3) asf " +
-				"('23','123') dasd, PRIMARY KEY (mycol2, mycol)) type = myisam");
+				else {
+					// parse SQL
+					result = parser.parse(sql);
+				}
 
 				/*assertEquals(2, createTable.getColumnDefinitions().size());
 				assertEquals("mycol", ((ColumnDefinition) createTable.getColumnDefinitions().get(0)).getColumnName());

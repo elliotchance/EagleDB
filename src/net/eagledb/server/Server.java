@@ -9,6 +9,10 @@ public class Server {
 
 	public Authenticator authenticator;
 
+	public static final int MAJOR_VERSION = 1;
+
+	public static final int MINOR_VERSION = 0;
+
 	public Server() {
 		// start the server
 		ServerSocket server = null;
