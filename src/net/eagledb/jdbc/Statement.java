@@ -1,11 +1,25 @@
 package net.eagledb.jdbc;
 
 import java.sql.*;
+import net.eagledb.server.storage.*;
 
 public class Statement implements java.sql.Statement {
 
 	public ResultSet executeQuery(String sql) throws SQLException {
-		return new ResultSet();
+		// setup column definitions
+		Field[] fields = new Field[1];
+		fields[0] = new Field("id", IntPage.class);
+		
+		// add tuples
+		Tuple[] tuples = new Tuple[3];
+		tuples[0] = new Tuple(fields.length);
+		tuples[1] = new Tuple(fields.length);
+		tuples[2] = new Tuple(fields.length);
+		tuples[0].attributes[0] = 15;
+		tuples[1].attributes[0] = 23;
+		tuples[2].attributes[0] = 54;
+
+		return new ResultSet(fields, tuples);
 	}
 
 	public int executeUpdate(String sql) throws SQLException {
@@ -13,7 +27,7 @@ public class Statement implements java.sql.Statement {
 	}
 
 	public void close() throws SQLException {
-		throw new SQLException("Not implemented.");
+		// do nothing
 	}
 
 	public int getMaxFieldSize() throws SQLException {

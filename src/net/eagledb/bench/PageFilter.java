@@ -14,7 +14,7 @@ public class PageFilter {
 	}
 
 	public void fillCache() {
-		Tuple tuple = new Tuple(table.getFields());
+		Tuple tuple = new Tuple(table.getFields().size());
 		for(int j = 0; j < tuples; ++j) {
 			tuple.set(0, (int) Math.sqrt(j));
 			table.addTuple(tuple);

@@ -1,13 +1,11 @@
 package net.eagledb.server.storage;
 
-import java.util.ArrayList;
-
 public class Tuple {
 
 	public Object[] attributes;
 
-	public Tuple(ArrayList<Field> fields) {
-		attributes = new Object[fields.size()];
+	public Tuple(int fields) {
+		attributes = new Object[fields];
 	}
 
 	public void set(int position, int value) {

@@ -5,8 +5,20 @@ import java.io.*;
 import java.math.*;
 import java.util.*;
 import java.net.*;
+import net.eagledb.server.storage.*;
 
 public class ResultSet implements java.sql.ResultSet {
+	
+	private Field[] fields;
+	
+	private Tuple[] tuples;
+
+	private int cursorPosition = -1;
+
+	public ResultSet(Field[] theFields, Tuple[] theTuples) {
+		fields = theFields;
+		tuples = theTuples;
+	}
 
 	public boolean absolute(int row) throws SQLException {
 		throw new SQLException("Not implemented.");
@@ -29,7 +41,7 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public void close() throws SQLException {
-		throw new SQLException("Not implemented.");
+		// do nothing
 	}
 
 	public void deleteRow() throws SQLException {
@@ -37,7 +49,14 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public int findColumn(String columnLabel) throws SQLException {
-		throw new SQLException("Not implemented.");
+		int i = 0;
+		for(Field f : fields) {
+			if(f.name.equals(columnLabel))
+				return i;
+			++i;
+		}
+
+		throw new SQLException("No such field '" + columnLabel + "'");
 	}
 
 	public boolean first() throws SQLException {
@@ -285,11 +304,11 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public String getString(int columnIndex) throws SQLException {
-		throw new SQLException("Not implemented.");
+		return tuples[cursorPosition].attributes[columnIndex].toString();
 	}
 
 	public String getString(String columnLabel) throws SQLException {
-		throw new SQLException("Not implemented.");
+		return tuples[cursorPosition].attributes[findColumn(columnLabel)].toString();
 	}
 
 	public Time getTime(int columnIndex) throws SQLException {
@@ -385,7 +404,11 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public boolean next() throws SQLException {
-		throw new SQLException("Not implemented.");
+		if(cursorPosition > tuples.length - 2)
+			return false;
+
+		++cursorPosition;
+		return true;
 	}
 
 	public boolean previous() throws SQLException {
