@@ -53,7 +53,7 @@ public class Connection<T> implements java.sql.Connection {
 	}
 
 	public Statement createStatement() throws SQLException {
-		throw new SQLException("Not implemented.");
+		return new Statement();
 	}
 
 	public PreparedStatement prepareStatement(String sql) throws SQLException {

@@ -3,7 +3,6 @@ package net.eagledb.server;
 import java.io.*;
 import java.net.*;
 import net.eagledb.server.sql.SQLParser;
-import java.util.Properties;
 
 public class ClientConnection extends Thread {
 
@@ -31,33 +30,11 @@ public class ClientConnection extends Thread {
 				System.out.println("Received: " + sql);
 
 				// process
-				String result = "";
-				if(sql.startsWith("CONNECT ")) {
-					// see if the users credentials are correct
-					/*Properties p = new Properties(sql.substring(sql.indexOf(" ") + 1));
-					boolean allowed = server.authenticator.verifyUser(p);
-
-					if(allowed)
-						result = "YES";
-					else
-						result = "NO";*/
-				}
-				else if(sql.equals("DISCONNECT"))
-					break;
-				else {
-					// parse SQL
-					result = parser.parse(sql);
-				}
-
-				/*assertEquals(2, createTable.getColumnDefinitions().size());
-				assertEquals("mycol", ((ColumnDefinition) createTable.getColumnDefinitions().get(0)).getColumnName());
-				assertEquals("mycol2", ((ColumnDefinition) createTable.getColumnDefinitions().get(1)).getColumnName());
-				assertEquals("PRIMARY KEY", ((Index) createTable.getIndexes().get(0)).getType());
-				assertEquals("mycol", ((Index) createTable.getIndexes().get(0)).getColumnsNames().get(1));
-				assertEquals(statement, ""+createTable);*/
+				String result = parser.parse(sql);
 
 				// send result
 				out.writeBytes(result + '\n');
+				break;
 			}
 
 			socket.close();
