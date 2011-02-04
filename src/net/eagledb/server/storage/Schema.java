@@ -8,4 +8,9 @@ public class Schema {
 
 	public ArrayList<Table> tables;
 
+	public Schema(String name) {
+		this.name = name;
+		tables = new ArrayList<Table>();
+	}
+
 }

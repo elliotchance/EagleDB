@@ -14,7 +14,7 @@ public class Client extends Thread {
 			Class.forName("net.eagledb.jdbc.Driver");
 			Connection conn = DriverManager.getConnection("eagledb://localhost", "root", "123");
 
-			//new CreateDatabase().run(conn);
+			new CreateDatabase().run(conn);
 			new ShowDatabases().run(conn);
 		}
 		catch(ClassNotFoundException e) {

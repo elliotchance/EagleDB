@@ -10,6 +10,7 @@ public class Database {
 
 	public Database(String dbName) {
 		name = dbName;
+		schemas = new ArrayList<Schema>();
 	}
 
 }

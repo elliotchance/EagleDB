@@ -12,7 +12,7 @@ public class EmbeddedServer {
 		serverThread = new Thread() {
 			@Override
 			public void run() {
-				new Server();
+				new Server().start();
 			}
 		};
 		serverThread.start();
