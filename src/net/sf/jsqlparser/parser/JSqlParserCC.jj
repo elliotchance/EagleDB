@@ -152,6 +152,7 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 {
 <K_AS: "AS">
 |   <K_BY:"BY">
+|   <K_IF:"IF">
 |   <K_DO:"DO">
 |   <K_IS:"IS">
 |   <K_IN:"IN">
@@ -188,7 +189,7 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_UNION:"UNION">
 |   <K_GROUP:"GROUP">
 |   <K_BEGIN:"BEGIN">
-|   <K_INDEX: "INDEX">
+|   <K_INDEX:"INDEX">
 |   <K_INNER:"INNER">
 |   <K_LIMIT:"LIMIT">
 |   <K_OUTER:"OUTER">
@@ -296,14 +297,19 @@ CreateDatabase CreateDatabase():
 { 
 	CreateDatabase db = new CreateDatabase();
 	Column dbname = null;
-	
+	boolean ifNotExists = false;
 }
 {
-	<K_CREATE> <K_DATABASE> dbname=Column()
-   {
-   		db.setName(dbname);
+	<K_CREATE> <K_DATABASE>
+	[<K_IF> <K_NOT> <K_EXISTS>]
+	{
+		ifNotExists = true;
+	}
+	dbname=Column()
+	{
+		db.setName(dbname);
 		return db;
-   }
+	}
 }
 
 
