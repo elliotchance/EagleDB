@@ -1,4 +1,4 @@
-package net.eagledb.server.storage;
+package net.eagledb.server.storage.page;
 
 public class IntPage extends Page {
 

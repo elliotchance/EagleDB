@@ -18,7 +18,6 @@ public class Statement implements java.sql.Statement {
 			return new ResultSet(result.fields, result.tuples);
 		}
 		catch(Exception e) {
-			e.printStackTrace();
 			throw new SQLException(e.getCause().getMessage());
 		}
 	}

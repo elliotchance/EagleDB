@@ -1,5 +1,7 @@
 package net.eagledb.bench;
 
+import net.eagledb.server.storage.page.TransactionPage;
+import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.*;
 import java.util.Calendar;
 
@@ -36,7 +38,7 @@ public class PageFilter {
 
 	public PageFilter() {
 		// create a memory based table
-		table.addField(new Field("id", IntPage.class));
+		table.addField(new Field("id", net.eagledb.server.sql.type.Integer.class));
 
 		// create a page
 		for(int i = 0; i < tuples / 1000; ++i)

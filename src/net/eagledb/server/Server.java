@@ -15,7 +15,7 @@ public class Server {
 
 	public static final int MINOR_VERSION = 0;
 
-	private ArrayList<Database> databases;
+	public ArrayList<Database> databases;
 
 	public Server() {
 		// start the server

@@ -1,5 +1,8 @@
 package net.eagledb.server.storage;
 
+import net.eagledb.server.storage.page.TransactionPage;
+import net.eagledb.server.storage.page.Page;
+import net.eagledb.server.storage.page.IntPage;
 import java.util.ArrayList;
 
 public class Table {
@@ -29,7 +32,7 @@ public class Table {
 		transactionPages.add(new TransactionPage());
 
 		// add field pages
-		try {
+		/*try {
 			int i = 0;
 			for(Field f : fields) {
 				pages.get(i).add((Page) fields.get(i).pageType.newInstance());
@@ -41,7 +44,7 @@ public class Table {
 		}
 		catch(IllegalAccessException e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		return true;
 	}

@@ -10,11 +10,12 @@ public class ClientConnection extends Thread {
 
 	private Socket socket;
 
-	private SQLParser parser = new SQLParser();
+	private SQLParser parser;
 
 	public ClientConnection(Server s, Socket sock) {
 		server = s;
 		socket = sock;
+		parser = new SQLParser(server);
 	}
 
 	@Override

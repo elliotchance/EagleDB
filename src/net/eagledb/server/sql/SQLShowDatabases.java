@@ -9,24 +9,26 @@ public class SQLShowDatabases implements SQLAction {
 	
 	private ShowDatabases sql;
 
-	public SQLShowDatabases(ShowDatabases sql) {
+	private Server server;
+
+	public SQLShowDatabases(Server server, ShowDatabases sql) {
 		this.sql = sql;
-		System.out.println(sql);
+		this.server = server;
 	}
 
 	public Result getResult() throws SQLException {
 		// setup column definitions
 		Field[] fields = new Field[1];
-		fields[0] = new Field("database", IntPage.class);
+		fields[0] = new Field("database", net.eagledb.server.sql.type.VarChar.class);
 
 		// add tuples
-		Tuple[] tuples = new Tuple[3];
-		tuples[0] = new Tuple(fields.length);
-		tuples[1] = new Tuple(fields.length);
-		tuples[2] = new Tuple(fields.length);
-		tuples[0].attributes[0] = 15;
-		tuples[1].attributes[0] = 23;
-		tuples[2].attributes[0] = 54;
+		Tuple[] tuples = new Tuple[server.databases.size()];
+		int i = 0;
+		for(Database db : server.databases) {
+			tuples[i] = new Tuple(fields.length);
+			tuples[i].attributes[0] = db.name;
+			++i;
+		}
 
 		return new Result(fields, tuples);
 	}
