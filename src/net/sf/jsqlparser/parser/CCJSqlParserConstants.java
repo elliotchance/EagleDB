@@ -160,25 +160,29 @@ public interface CCJSqlParserConstants {
   /** RegularExpression Id. */
   int K_DATABASE = 67;
   /** RegularExpression Id. */
-  int S_DOUBLE = 68;
+  int K_SHOW = 68;
   /** RegularExpression Id. */
-  int S_INTEGER = 69;
+  int K_DATABASES = 69;
   /** RegularExpression Id. */
-  int DIGIT = 70;
+  int S_DOUBLE = 70;
   /** RegularExpression Id. */
-  int LINE_COMMENT = 71;
+  int S_INTEGER = 71;
   /** RegularExpression Id. */
-  int MULTI_LINE_COMMENT = 72;
+  int DIGIT = 72;
   /** RegularExpression Id. */
-  int S_IDENTIFIER = 73;
+  int LINE_COMMENT = 73;
   /** RegularExpression Id. */
-  int LETTER = 74;
+  int MULTI_LINE_COMMENT = 74;
   /** RegularExpression Id. */
-  int SPECIAL_CHARS = 75;
+  int S_IDENTIFIER = 75;
   /** RegularExpression Id. */
-  int S_CHAR_LITERAL = 76;
+  int LETTER = 76;
   /** RegularExpression Id. */
-  int S_QUOTED_IDENTIFIER = 77;
+  int SPECIAL_CHARS = 77;
+  /** RegularExpression Id. */
+  int S_CHAR_LITERAL = 78;
+  /** RegularExpression Id. */
+  int S_QUOTED_IDENTIFIER = 79;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -253,6 +257,8 @@ public interface CCJSqlParserConstants {
     "\"INTERSECT\"",
     "\"CONNECT\"",
     "\"DATABASE\"",
+    "\"SHOW\"",
+    "\"DATABASES\"",
     "<S_DOUBLE>",
     "<S_INTEGER>",
     "<DIGIT>",

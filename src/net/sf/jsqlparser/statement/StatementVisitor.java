@@ -32,6 +32,7 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.connect.Connect;
+import net.sf.jsqlparser.statement.show.databases.ShowDatabases;
 
 public interface StatementVisitor {
 	public void visit(Select select);
@@ -44,5 +45,6 @@ public interface StatementVisitor {
 	public void visit(CreateTable createTable);
 	public void visit(Connect connect);
 	public void visit(CreateDatabase createdb);
+	public void visit(ShowDatabases showdbs);
 
 }

@@ -4,7 +4,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import java.io.StringReader;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.statement.Statement;
-//import net.sf.jsqlparser.statement.create.table.CreateTable;
+import net.sf.jsqlparser.statement.show.databases.ShowDatabases;
 
 public class SQLParser {
 
@@ -17,8 +17,8 @@ public class SQLParser {
 		String result;
 		try {
 			Statement stmt = parserManager.parse(new StringReader(sql));
-			//if(stmt instanceof CreateTable)
-			//	new SQLCreateTable((CreateTable) stmt);
+			if(stmt instanceof ShowDatabases)
+				new SQLShowDatabases((ShowDatabases) stmt);
 			//System.out.println(createTable.getColumnDefinitions());
 			result = "Success";
 		}

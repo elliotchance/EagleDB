@@ -2,6 +2,8 @@ package net.eagledb.server;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import net.eagledb.server.storage.*;
 
 public class Server {
 
@@ -12,6 +14,8 @@ public class Server {
 	public static final int MAJOR_VERSION = 1;
 
 	public static final int MINOR_VERSION = 0;
+
+	private ArrayList<Database> databases;
 
 	public Server() {
 		// start the server
@@ -26,6 +30,11 @@ public class Server {
 
 		// setup users
 		authenticator = new Authenticator();
+
+		// setup databases
+		databases = new ArrayList<Database>();
+		databases.add(new Database("eagledb"));
+		databases.add(new Database("test"));
 
 		// wait for connections
 		try {
