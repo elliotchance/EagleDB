@@ -7,7 +7,7 @@ import java.util.Calendar;
 
 public class PageFilter {
 
-	int tuples = 1000000;
+	/*int tuples = 1000000;
 
 	Table table = new Table("mytable");
 
@@ -55,6 +55,6 @@ public class PageFilter {
 		System.out.println("Table rows = " + table.getTotalTuples());
 		System.out.println("Count = " + count);
 		System.out.println("Time = " + time + " ms");
-	}
+	}*/
 
 }

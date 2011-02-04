@@ -14,4 +14,8 @@ public class Tuple implements Serializable {
 		attributes[position] = value;
 	}
 
+	public void set(int position, float value) {
+		attributes[position] = value;
+	}
+
 }

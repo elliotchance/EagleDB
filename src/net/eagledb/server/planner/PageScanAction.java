@@ -1,0 +1,12 @@
+package net.eagledb.server.planner;
+
+public enum PageScanAction {
+
+	OPERATOR_EQUAL,
+	OPERATOR_NOT_EQUAL,
+	OPERATOR_GREATER_THAN,
+	OPERATOR_LESS_THAN,
+	OPERATOR_GREATER_THAN_EQUAL,
+	OPERATOR_LESS_THAN_EQUAL
+
+}

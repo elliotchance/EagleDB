@@ -6,6 +6,8 @@ public class TransactionPage {
 
 	private int tuples = 0;
 
+	public TransactionPage next = null;
+
 	public TransactionPage() {
 		transactionID = new int[1000];
 	}

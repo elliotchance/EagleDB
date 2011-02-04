@@ -1,35 +1,39 @@
 package net.eagledb.server.storage;
 
-import net.eagledb.server.storage.page.TransactionPage;
-import net.eagledb.server.storage.page.Page;
-import net.eagledb.server.storage.page.IntPage;
+import net.eagledb.server.storage.page.*;
 import java.util.ArrayList;
 
 public class Table {
 
 	public String name;
 
-	public ArrayList<TransactionPage> transactionPages;
-	public ArrayList<ArrayList<Page>> pages;
+	public TransactionPage transactionPageHead = null;
+
+	public TransactionPage transactionPageTail = null;
+	
+	public ArrayList<Page> pageHeads = null;
+
+	public ArrayList<Page> pageTails = null;
 
 	private ArrayList<Field> fields;
 
 	public Table(String tableName) {
 		name = tableName;
-		transactionPages = new ArrayList<TransactionPage>();
 		fields = new ArrayList<Field>();
-		pages = new ArrayList<ArrayList<Page>>();
+		pageHeads = new ArrayList<Page>();
+		pageTails = new ArrayList<Page>();
 	}
 
 	public boolean addField(Field f) {
-		pages.add(new ArrayList<Page>());
+		pageHeads.add(null);
+		pageTails.add(null);
 		fields.add(f);
 		return true;
 	}
 
 	public boolean addPage() {
 		// add transaction page
-		transactionPages.add(new TransactionPage());
+		//transactionPageHead.add(new TransactionPage());
 
 		// add field pages
 		/*try {
@@ -53,47 +57,54 @@ public class Table {
 		return fields;
 	}
 
-	public TransactionPage getTransactionPage(int position) {
-		return transactionPages.get(position);
-	}
-
-	public Page getPage(int field, int position) {
-		return pages.get(field).get(position);
-	}
-
 	public void addTuple(Tuple t) {
-		// calculate next tuple position
-		int destinationPage = 0;
-		while(transactionPages.get(destinationPage).getTotalTuples() == 1000)
-			++destinationPage;
+		// do we have space in the last page?
+		if(transactionPageTail == null) {
+			// allocate room
+			transactionPageHead = transactionPageTail = new TransactionPage();
 
-		try {
-			int i = 0;
-			for(Field f : fields) {
-				if(f.pageType.equals(IntPage.class))
-					pages.get(i).get(destinationPage).addTuple(Integer.valueOf(t.attributes[i].toString()));
-				else
-					throw new Exception("Unknown attribute type");
-				++i;
+			try {
+				int i = 0;
+				for(Field f : fields) {
+					if(f.pageType.equals(net.eagledb.server.sql.type.Integer.class)) {
+						IntPage page = new IntPage();
+						pageHeads.set(i, page);
+						pageTails.set(i, page);
+					}
+					else if(f.pageType.equals(net.eagledb.server.sql.type.Real.class)) {
+						RealPage page = new RealPage();
+						pageHeads.set(i, page);
+						pageTails.set(i, page);
+					}
+					else
+						throw new Exception("Unknown attribute type");
+					++i;
+				}
+			}
+			catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
-		catch(Exception e) {
-			e.printStackTrace();
+
+		// field data
+		int i = 0;
+		for(Field f : fields) {
+			if(f.pageType.equals(net.eagledb.server.sql.type.Integer.class))
+				pageTails.get(i).addTuple(Integer.valueOf(t.attributes[i].toString()));
+			else if(f.pageType.equals(net.eagledb.server.sql.type.Real.class))
+				pageTails.get(i).addTuple(Float.valueOf(t.attributes[i].toString()));
+			++i;
 		}
 
 		// the transaction page is created after the attributes have been put in
-		transactionPages.get(destinationPage).addTuple(1);
+		transactionPageTail.addTuple(1);
 	}
 
-	public long getTotalTuples() {
+	/*public long getTotalTuples() {
 		long total = 0;
 		for(TransactionPage page : transactionPages)
 			total += page.getTotalTuples();
 		return total;
-	}
-
-	public int getTotalPages() {
-		return transactionPages.size();
-	}
+	}*/
 
 }
