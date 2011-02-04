@@ -1,6 +1,8 @@
 package net.eagledb.server.storage;
 
-public class Field {
+import java.io.*;
+
+public class Field implements Serializable {
 
 	public String name;
 

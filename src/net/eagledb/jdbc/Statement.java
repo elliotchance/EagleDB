@@ -1,25 +1,26 @@
 package net.eagledb.jdbc;
 
 import java.sql.*;
-import net.eagledb.server.storage.*;
+import net.eagledb.server.*;
 
 public class Statement implements java.sql.Statement {
 
-	public ResultSet executeQuery(String sql) throws SQLException {
-		// setup column definitions
-		Field[] fields = new Field[1];
-		fields[0] = new Field("id", IntPage.class);
-		
-		// add tuples
-		Tuple[] tuples = new Tuple[3];
-		tuples[0] = new Tuple(fields.length);
-		tuples[1] = new Tuple(fields.length);
-		tuples[2] = new Tuple(fields.length);
-		tuples[0].attributes[0] = 15;
-		tuples[1].attributes[0] = 23;
-		tuples[2].attributes[0] = 54;
+	private net.eagledb.jdbc.Connection conn = null;
 
-		return new ResultSet(fields, tuples);
+	public Statement(net.eagledb.jdbc.Connection conn) {
+		this.conn = conn;
+	}
+
+	public ResultSet executeQuery(String sql) throws SQLException {
+		// send request to server
+		try {
+			Result result = conn.sendQuery(new Request(sql));
+			return new ResultSet(result.fields, result.tuples);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new SQLException(e.getCause().getMessage());
+		}
 	}
 
 	public int executeUpdate(String sql) throws SQLException {

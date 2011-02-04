@@ -14,7 +14,8 @@ public class Client extends Thread {
 			Class.forName("net.eagledb.jdbc.Driver");
 			Connection conn = DriverManager.getConnection("eagledb://localhost", "root", "123");
 
-			new CreateDatabase().run(conn);
+			//new CreateDatabase().run(conn);
+			new ShowDatabases().run(conn);
 		}
 		catch(ClassNotFoundException e) {
 			e.printStackTrace();
@@ -22,13 +23,6 @@ public class Client extends Thread {
 		catch(SQLException e) {
 			e.printStackTrace();
 		}
-
-		// connect
-		/*Connection conn = new Connection("user=root,pass=123");
-
-		// send query
-		String result = conn.query("create database mydb");
-		System.out.print(result);*/
 	}
 
 }

@@ -21,26 +21,28 @@ public class ClientConnection extends Thread {
 	public void run() {
 		try {
 			// communication
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 
 			while(true) {
 				// get input
-				String sql = in.readLine();
-				System.out.println("Received: " + sql);
+				Request request = (Request) in.readObject();
+				if(request.requestAction == RequestAction.CLOSE_CONNECTION)
+					break;
 
 				// process
-				String result = parser.parse(sql);
-				System.out.println("result = " + result);
+				Result result = parser.parse(request.sql);
 
 				// send result
-				out.writeBytes(result + '\n');
-				break;
+				out.writeObject(result);
 			}
 
 			socket.close();
 		}
 		catch(IOException e) {
+			e.printStackTrace();
+		}
+		catch(ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}

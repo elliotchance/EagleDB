@@ -12,9 +12,9 @@ public class Connection<T> implements java.sql.Connection {
 
 	private Socket socket;
 
-	private DataOutputStream out;
+	private ObjectOutputStream out;
 
-	private BufferedReader in;
+	private ObjectInputStream in;
 
 	public Connection(String url, java.util.Properties parameters) {
 		// default options
@@ -27,8 +27,8 @@ public class Connection<T> implements java.sql.Connection {
 		try {
 			// communication
 			socket = new Socket(parameters.getProperty("host"), Integer.valueOf(parameters.getProperty("port")));
-			out = new DataOutputStream(socket.getOutputStream());
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			out = new ObjectOutputStream(socket.getOutputStream());
+			in = new ObjectInputStream(socket.getInputStream());
 
 			String paras = "";
 			Set<String> pnames = parameters.stringPropertyNames();
@@ -40,30 +40,20 @@ public class Connection<T> implements java.sql.Connection {
 				++i;
 			}
 			
-			String result = send("CONNECT " + paras);
+			Result result = sendQuery(new Request("CONNECT " + paras));
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private String send(String sql) throws Exception {
-		out.writeBytes(sql + '\n');
-		return in.readLine();
-	}
-
-	public String query(String sql) {
-		try {
-			return send(sql);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+	public Result sendQuery(Request request) throws Exception {
+		out.writeObject(request);
+		return (Result) in.readObject();
 	}
 
 	public Statement createStatement() throws SQLException {
-		return new Statement();
+		return new Statement(this);
 	}
 
 	public PreparedStatement prepareStatement(String sql) throws SQLException {

@@ -1,6 +1,8 @@
 package net.eagledb.server.storage;
 
-public class Tuple {
+import java.io.*;
+
+public class Tuple implements Serializable {
 
 	public Object[] attributes;
 
