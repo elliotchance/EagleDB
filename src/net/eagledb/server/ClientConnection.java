@@ -3,6 +3,7 @@ package net.eagledb.server;
 import java.io.*;
 import java.net.*;
 import net.eagledb.server.sql.SQLParser;
+import java.sql.*;
 
 public class ClientConnection extends Thread {
 

@@ -16,40 +16,72 @@ public class Connection<T> implements java.sql.Connection {
 
 	private ObjectInputStream in;
 
-	public Connection(String url, java.util.Properties parameters) {
+	public Connection(String url, java.util.Properties parameters) throws SQLException {
 		// default options
 		if(parameters.get("host") == null)
 			parameters.put("host", "localhost");
 		if(parameters.get("port") == null)
 			parameters.put("port", String.valueOf(Server.PORT));
 
-		// attempt to connect
+		// setup socket and object streams
 		try {
-			// communication
 			socket = new Socket(parameters.getProperty("host"), Integer.valueOf(parameters.getProperty("port")));
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
-
-			String paras = "";
-			Set<String> pnames = parameters.stringPropertyNames();
-			int i = 0;
-			for(String pname : pnames) {
-				if(i > 0)
-					paras += ",";
-				paras += pname + "=" + parameters.getProperty(pname);
-				++i;
-			}
-			
-			Result result = sendQuery(new Request("CONNECT " + paras));
 		}
-		catch(Exception e) {
-			e.printStackTrace();
+		catch(UnknownHostException e) {
+			throw new SQLException("Socket failed for host " + parameters.getProperty("host") + ":" +
+				parameters.getProperty("port"));
+		}
+		catch(IOException e) {
+			throw new SQLException("Unable to initialise ObjectStreams on socket: " + e.getMessage());
+		}
+
+		// translate the properties into a SQL statement
+		String paras = "";
+		Set<String> pnames = parameters.stringPropertyNames();
+		int i = 0;
+		for(String pname : pnames) {
+			if(i > 0)
+				paras += ",";
+			paras += pname + "=" + parameters.getProperty(pname);
+			++i;
+		}
+
+		// attempt to connect
+		try {
+			Result result = sendQuery(new Request("CONNECT " + paras));
+			System.out.println("CONNECT " + paras);
+		}
+		catch(SQLException e) {
+			String msg = "Permission denied for user " + parameters.get("user") + ", using password ";
+			if(parameters.get("password") != null && !parameters.get("password").equals(""))
+				msg += "yes";
+			else
+				msg += "no";
+			throw new SQLException(msg);
 		}
 	}
 	
-	public Result sendQuery(Request request) throws Exception {
-		out.writeObject(request);
-		return (Result) in.readObject();
+	public Result sendQuery(Request request) throws SQLException {
+		try {
+			out.writeObject(request);
+			Result result = (Result) in.readObject();
+			
+			if(result.error != null)
+				throw new SQLException(result.error + "\nSQL " + request.sql);
+
+			if(result.code != ResultCode.SUCCESS)
+				throw new SQLException("Failed with code: " + result.code + "\nSQL " + request.sql);
+			
+			return result;
+		}
+		catch(IOException e) {
+			throw new SQLException(e.getMessage());
+		}
+		catch(ClassNotFoundException e) {
+			throw new SQLException(e.getMessage());
+		}
 	}
 
 	public Statement createStatement() throws SQLException {

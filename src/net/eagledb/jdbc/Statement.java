@@ -17,8 +17,8 @@ public class Statement implements java.sql.Statement {
 			Result result = conn.sendQuery(new Request(sql));
 			return new ResultSet(result.fields, result.tuples);
 		}
-		catch(Exception e) {
-			throw new SQLException(e.getCause().getMessage());
+		catch(SQLException e) {
+			throw e;
 		}
 	}
 

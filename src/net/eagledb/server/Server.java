@@ -9,13 +9,13 @@ public class Server {
 
 	public static int PORT = 6612;
 
-	public Authenticator authenticator;
-
 	public static final int MAJOR_VERSION = 1;
 
 	public static final int MINOR_VERSION = 0;
 
 	public ArrayList<Database> databases;
+
+	public ArrayList<User> users;
 
 	public String databaseLocation = ".";
 
@@ -98,7 +98,8 @@ public class Server {
 	}
 
 	private void initUsers() {
-		authenticator = new Authenticator();
+		users = new ArrayList<User>();
+		users.add(new User("root", "123"));
 	}
 
 }

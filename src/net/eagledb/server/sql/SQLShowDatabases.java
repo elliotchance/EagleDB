@@ -30,7 +30,7 @@ public class SQLShowDatabases implements SQLAction {
 			++i;
 		}
 
-		return new Result(fields, tuples);
+		return new Result(ResultCode.SUCCESS, fields, tuples);
 	}
 
 }
