@@ -6,15 +6,13 @@ import java.sql.*;
 import java.util.*;
 import net.eagledb.server.crypt.*;
 
-public class SQLConnect implements SQLAction {
+public class SQLConnect extends SQLAction {
 	
 	private Connect sql;
 
-	private Server server;
-
-	public SQLConnect(Server server, Connect sql) {
+	public SQLConnect(Server server, ClientConnection conn, Connect sql) {
+		super(server, conn);
 		this.sql = sql;
-		this.server = server;
 	}
 
 	public Result getResult() throws SQLException {
@@ -26,8 +24,13 @@ public class SQLConnect implements SQLAction {
 			String password = (String) p.get("password");
 
 			if(user.getUsername().equals(username) &&
-			   user.getHashedPassword().equals(crypt.crypt(password)))
+			   user.getHashedPassword().equals(crypt.crypt(password))) {
+				// update the currently privilaged user
+				conn.setUser(user);
+
+				// return success
 				return new Result(ResultCode.SUCCESS, null, null);
+			}
 		}
 
 		// failed to authenticate user

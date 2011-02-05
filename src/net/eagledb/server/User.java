@@ -2,8 +2,9 @@ package net.eagledb.server;
 
 import java.util.ArrayList;
 import net.eagledb.server.crypt.*;
+import java.io.Serializable;
 
-public class User {
+public class User implements Serializable {
 
 	/**
 	 * User name, cannot be changed once set.
@@ -24,6 +25,11 @@ public class User {
 	 * User has permission to run CREATE DATABASE.
 	 */
 	public boolean canCreateDatabase = false;
+
+	/**
+	 * User has permission to run SHOW DATABASES.
+	 */
+	public boolean canShowDatabases = false;
 
 	/**
 	 * The user has the permission to CREATE SCHEMA in these databases.

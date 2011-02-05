@@ -13,10 +13,12 @@ public class ClientConnection extends Thread {
 
 	private SQLParser parser;
 
+	private User user;
+
 	public ClientConnection(Server s, Socket sock) {
 		server = s;
 		socket = sock;
-		parser = new SQLParser(server);
+		parser = new SQLParser(this, server);
 	}
 
 	@Override
@@ -33,7 +35,13 @@ public class ClientConnection extends Thread {
 					break;
 
 				// process
-				Result result = parser.parse(request.sql);
+				Result result = new Result();
+				try {
+					result = parser.parse(request.sql);
+				}
+				catch(SQLException e) {
+					result.error = e.getMessage();
+				}
 
 				// send result
 				out.writeObject(result);
@@ -47,6 +55,14 @@ public class ClientConnection extends Thread {
 		catch(ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User u) {
+		user = u;
 	}
 
 }

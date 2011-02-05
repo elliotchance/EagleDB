@@ -3,8 +3,17 @@ package net.eagledb.server.sql;
 import java.sql.*;
 import net.eagledb.server.*;
 
-public interface SQLAction {
+public abstract class SQLAction {
 
-	public Result getResult() throws SQLException;
+	protected Server server;
+
+	protected ClientConnection conn;
+
+	public abstract Result getResult() throws SQLException;
+
+	public SQLAction(Server server, ClientConnection conn) {
+		this.server = server;
+		this.conn = conn;
+	}
 
 }

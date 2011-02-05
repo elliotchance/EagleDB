@@ -26,12 +26,18 @@ public class Connection<T> implements java.sql.Connection {
 		// setup socket and object streams
 		try {
 			socket = new Socket(parameters.getProperty("host"), Integer.valueOf(parameters.getProperty("port")));
-			out = new ObjectOutputStream(socket.getOutputStream());
-			in = new ObjectInputStream(socket.getInputStream());
 		}
 		catch(UnknownHostException e) {
-			throw new SQLException("Socket failed for host " + parameters.getProperty("host") + ":" +
+			throw new SQLException("Could not resolve host " + parameters.getProperty("host") + ":" +
 				parameters.getProperty("port"));
+		}
+		catch(IOException e) {
+			throw new SQLException("Socket failed: " + e.getMessage());
+		}
+		
+		try {
+			out = new ObjectOutputStream(socket.getOutputStream());
+			in = new ObjectInputStream(socket.getInputStream());
 		}
 		catch(IOException e) {
 			throw new SQLException("Unable to initialise ObjectStreams on socket: " + e.getMessage());
@@ -51,7 +57,6 @@ public class Connection<T> implements java.sql.Connection {
 		// attempt to connect
 		try {
 			Result result = sendQuery(new Request("CONNECT " + paras));
-			System.out.println("CONNECT " + paras);
 		}
 		catch(SQLException e) {
 			String msg = "Permission denied for user " + parameters.get("user") + ", using password ";

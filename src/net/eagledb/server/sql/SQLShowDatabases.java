@@ -5,28 +5,30 @@ import net.eagledb.server.*;
 import net.eagledb.server.storage.*;
 import java.sql.*;
 
-public class SQLShowDatabases implements SQLAction {
+public class SQLShowDatabases extends SQLAction {
 	
 	private ShowDatabases sql;
 
-	private Server server;
-
-	public SQLShowDatabases(Server server, ShowDatabases sql) {
+	public SQLShowDatabases(Server server, ClientConnection conn, ShowDatabases sql) {
+		super(server, conn);
 		this.sql = sql;
-		this.server = server;
 	}
 
 	public Result getResult() throws SQLException {
+		// this action requires SHOW DATABASES permission
+		if(!conn.getUser().canShowDatabases)
+			throw new SQLException("Permission denied. You must have SHOW DATABASES privilege.");
+
 		// setup column definitions
 		Field[] fields = new Field[1];
 		fields[0] = new Field("database", net.eagledb.server.sql.type.VarChar.class);
 
 		// add tuples
-		Tuple[] tuples = new Tuple[server.databases.size()];
+		Tuple[] tuples = new Tuple[server.getDatabaseNames().length];
 		int i = 0;
-		for(Database db : server.databases) {
+		for(String db : server.getDatabaseNames()) {
 			tuples[i] = new Tuple(fields.length);
-			tuples[i].attributes[0] = db.name;
+			tuples[i].attributes[0] = db;
 			++i;
 		}
 

@@ -16,32 +16,35 @@ public class SQLParser {
 
 	private Server server;
 
-	public SQLParser(Server server) {
+	private ClientConnection conn;
+
+	public SQLParser(ClientConnection conn, Server server) {
 		this.server = server;
+		this.conn = conn;
 	}
 
-	public Result parse(String sql) {
-		Result result = new Result();
-
+	public Result parse(String sql) throws SQLException {
 		try {
+			Result result = new Result();
+
 			Statement stmt = parserManager.parse(new StringReader(sql));
 			if(stmt instanceof Connect)
-				result = new SQLConnect(server, (Connect) stmt).getResult();
+				result = new SQLConnect(server, conn, (Connect) stmt).getResult();
 			else if(stmt instanceof CreateDatabase)
-				result = new SQLCreateDatabase(server, (CreateDatabase) stmt).getResult();
+				result = new SQLCreateDatabase(server, conn, (CreateDatabase) stmt).getResult();
 			else if(stmt instanceof ShowDatabases)
-				result = new SQLShowDatabases(server, (ShowDatabases) stmt).getResult();
+				result = new SQLShowDatabases(server, conn, (ShowDatabases) stmt).getResult();
 			else
-				result.error = "Unknown SQL: " + sql + "\n" + "Parser object: " + stmt;
+				throw new SQLException("Invalid SQL: " + sql);
+
+			return result;
 		}
 		catch(JSQLParserException e) {
-			result.error = e.getCause().toString();
+			throw new SQLException(e.getCause().toString());
 		}
 		catch(SQLException e) {
-			result.error = e.getCause().toString();
+			throw e;
 		}
-
-		return result;
 	}
 
 }

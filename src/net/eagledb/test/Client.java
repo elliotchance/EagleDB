@@ -12,7 +12,7 @@ public class Client extends Thread {
 	public void run() {
 		try {
 			Class.forName("net.eagledb.jdbc.Driver");
-			Connection conn = DriverManager.getConnection("eagledb://localhost", "root", "1234");
+			Connection conn = DriverManager.getConnection("eagledb://localhost", "root", "123");
 
 			new CreateDatabase().run(conn);
 			new ShowDatabases().run(conn);

@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import net.eagledb.server.storage.*;
+import java.beans.XMLEncoder;
+import java.beans.XMLDecoder;
 
 public class Server {
 
@@ -13,7 +15,7 @@ public class Server {
 
 	public static final int MINOR_VERSION = 0;
 
-	public ArrayList<Database> databases;
+	private ArrayList<Database> databases;
 
 	public ArrayList<User> users;
 
@@ -37,30 +39,25 @@ public class Server {
 		}
 
 		// wait for connections
-		try {
-			while(true) {
-				try {
-					Socket socket = server.accept();
-					new ClientConnection(this, socket).run();
-				}
-				catch(IOException e) {
-					e.printStackTrace();
-					continue;
-				}
+		while(true) {
+			try {
+				Socket socket = server.accept();
+				new ClientConnection(this, socket).start();
 			}
-		}
-		catch(Exception e) {
-			System.out.println("Server stopped");
+			catch(IOException e) {
+				e.printStackTrace();
+				continue;
+			}
 		}
 
 		// clean up
-		try {
+		/*try {
 			server.close();
 		}
 		catch(IOException e) {
 			e.printStackTrace();
 			return;
-		}
+		}*/
 	}
 	
 	private void init() {
@@ -97,9 +94,67 @@ public class Server {
 		}
 	}
 
+	private synchronized void saveUsers() {
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(databaseLocation + "/data/users.xml"));
+			out.writeObject(users);
+			out.close();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private synchronized void loadUsers() {
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(databaseLocation + "/data/users.xml"));
+			users = (ArrayList<User>) in.readObject();
+			in.close();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+		catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void initUsers() {
 		users = new ArrayList<User>();
-		users.add(new User("root", "123"));
+
+		// does the users.xml exist?
+		if(!new File(databaseLocation + "/data/users.xml").exists()) {
+			// we need to create the default root user and create the users.xml file
+			User root = new User("root", "123");
+			root.canShowDatabases = true;
+			root.canCreateDatabase = true;
+			users.add(root);
+
+			saveUsers();
+		}
+
+		loadUsers();
+	}
+
+	public Database getDatabase(String name) {
+		for(Database db : databases) {
+			if(db.name.equals(name))
+				return db;
+		}
+		return null;
+	}
+
+	public String[] getDatabaseNames() {
+		String[] names = new String[databases.size()];
+		int i = 0;
+		for(Database db : databases)
+			names[i++] = db.name;
+		return names;
+	}
+
+	public synchronized void createDatabase(String name) {
+		new File(databaseLocation + "/data/" + name).mkdir();
+		new File(databaseLocation + "/data/" + name + "/public").mkdir();
 	}
 
 }
