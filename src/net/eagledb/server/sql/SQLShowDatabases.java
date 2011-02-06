@@ -20,8 +20,8 @@ public class SQLShowDatabases extends SQLAction {
 			throw new SQLException("Permission denied. You must have SHOW DATABASES privilege.");
 
 		// setup column definitions
-		Field[] fields = new Field[1];
-		fields[0] = new Field("database", net.eagledb.server.sql.type.VarChar.class);
+		Attribute[] fields = new Attribute[1];
+		fields[0] = new Attribute("database", net.eagledb.server.sql.type.VarChar.class);
 
 		// add tuples
 		Tuple[] tuples = new Tuple[server.getDatabaseNames().length];

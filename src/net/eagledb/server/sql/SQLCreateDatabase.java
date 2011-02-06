@@ -19,7 +19,7 @@ public class SQLCreateDatabase extends SQLAction {
 
 		// does the database already exist
 		if(db != null)
-			throw new SQLException("Database " + db.name + " already exists.");
+			throw new SQLException("Database " + db.getName() + " already exists.");
 
 		// check the users permission
 		if(!conn.getUser().canCreateDatabase)

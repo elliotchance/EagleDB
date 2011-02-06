@@ -3,31 +3,31 @@ package net.eagledb.server.storage;
 import net.eagledb.server.storage.page.*;
 import java.util.ArrayList;
 
-public class Table {
+public class Table implements java.io.Serializable {
 
 	public String name;
 
-	public TransactionPage transactionPageHead = null;
+	public transient TransactionPage transactionPageHead = null;
 
-	public TransactionPage transactionPageTail = null;
+	public transient TransactionPage transactionPageTail = null;
 	
-	public ArrayList<Page> pageHeads = null;
+	public transient ArrayList<Page> pageHeads = null;
 
-	public ArrayList<Page> pageTails = null;
+	public transient ArrayList<Page> pageTails = null;
 
-	private ArrayList<Field> fields;
+	private ArrayList<Attribute> attributes;
 
 	public Table(String tableName) {
 		name = tableName;
-		fields = new ArrayList<Field>();
+		attributes = new ArrayList<Attribute>();
 		pageHeads = new ArrayList<Page>();
 		pageTails = new ArrayList<Page>();
 	}
 
-	public boolean addField(Field f) {
+	public boolean addAttribute(Attribute f) {
 		pageHeads.add(null);
 		pageTails.add(null);
-		fields.add(f);
+		attributes.add(f);
 		return true;
 	}
 
@@ -53,8 +53,8 @@ public class Table {
 		return true;
 	}
 
-	public ArrayList<Field> getFields() {
-		return fields;
+	public ArrayList<Attribute> getAttributes() {
+		return attributes;
 	}
 
 	public void addTuple(Tuple t) {
@@ -65,13 +65,15 @@ public class Table {
 
 			try {
 				int i = 0;
-				for(Field f : fields) {
-					if(f.pageType.equals(net.eagledb.server.sql.type.Integer.class)) {
+				for(Attribute f : attributes) {
+					Class<? extends net.eagledb.server.sql.type.SQLType> pageType = f.getPageType();
+
+					if(pageType.equals(net.eagledb.server.sql.type.Integer.class)) {
 						IntPage page = new IntPage();
 						pageHeads.set(i, page);
 						pageTails.set(i, page);
 					}
-					else if(f.pageType.equals(net.eagledb.server.sql.type.Real.class)) {
+					else if(pageType.equals(net.eagledb.server.sql.type.Real.class)) {
 						RealPage page = new RealPage();
 						pageHeads.set(i, page);
 						pageTails.set(i, page);
@@ -88,10 +90,12 @@ public class Table {
 
 		// field data
 		int i = 0;
-		for(Field f : fields) {
-			if(f.pageType.equals(net.eagledb.server.sql.type.Integer.class))
+		for(Attribute f : attributes) {
+			Class<? extends net.eagledb.server.sql.type.SQLType> pageType = f.getPageType();
+
+			if(pageType.equals(net.eagledb.server.sql.type.Integer.class))
 				pageTails.get(i).addTuple(Integer.valueOf(t.attributes[i].toString()));
-			else if(f.pageType.equals(net.eagledb.server.sql.type.Real.class))
+			else if(pageType.equals(net.eagledb.server.sql.type.Real.class))
 				pageTails.get(i).addTuple(Float.valueOf(t.attributes[i].toString()));
 			++i;
 		}
@@ -100,11 +104,22 @@ public class Table {
 		transactionPageTail.addTuple(1);
 	}
 
-	/*public long getTotalTuples() {
-		long total = 0;
-		for(TransactionPage page : transactionPages)
-			total += page.getTotalTuples();
-		return total;
-	}*/
+	/**
+	 * Return the tables definition as a complete CREATE TABLE statement.
+	 * @return SQL statement.
+	 */
+	@Override
+	public String toString() {
+		String sql = "CREATE TABLE \"" + name + "\" (";
+		int i = 0;
+		for(Attribute field : attributes) {
+			if(i > 0)
+				sql += ", ";
+			sql += field.toString();
+			++i;
+		}
+		sql += ")";
+		return sql;
+	}
 
 }

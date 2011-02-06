@@ -5,10 +5,6 @@ package net.eagledb.server.sql.type;
  */
 public class BigInt extends SQLType {
 
-	static {
-		SQLType.registerClass(new BigInt());
-	}
-
 	public boolean isFixedWidth() {
 		return true;
 	}

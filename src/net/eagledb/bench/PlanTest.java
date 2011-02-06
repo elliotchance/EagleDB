@@ -16,7 +16,7 @@ public class PlanTest {
 	}
 
 	public void insertRecords() {
-		Tuple tuple = new Tuple(table.getFields().size());
+		Tuple tuple = new Tuple(table.getAttributes().size());
 		for(int j = 0; j < tuples; ++j) {
 			tuple.set(0, j);
 			tuple.set(1, (float) Math.sqrt(j));
@@ -26,8 +26,8 @@ public class PlanTest {
 
 	public PlanTest() {
 		// create a memory based table
-		table.addField(new Field("id", net.eagledb.server.sql.type.Integer.class));
-		table.addField(new Field("value", net.eagledb.server.sql.type.Real.class));
+		table.addAttribute(new Attribute("id", net.eagledb.server.sql.type.Integer.class));
+		table.addAttribute(new Attribute("value", net.eagledb.server.sql.type.Real.class));
 
 		// insert some rows
 		insertRecords();

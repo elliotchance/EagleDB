@@ -12,7 +12,7 @@ public class ResultSet implements java.sql.ResultSet {
 	/**
 	 * Field definitions.
 	 */
-	private Field[] fields;
+	private Attribute[] fields;
 	
 	/**
 	 * Tuple data.
@@ -30,7 +30,7 @@ public class ResultSet implements java.sql.ResultSet {
 	 * @param theFields Field definitions.
 	 * @param theTuples Tuples for the result set.
 	 */
-	public ResultSet(Field[] theFields, Tuple[] theTuples) {
+	public ResultSet(Attribute[] theFields, Tuple[] theTuples) {
 		fields = theFields;
 		tuples = theTuples;
 	}
@@ -97,8 +97,8 @@ public class ResultSet implements java.sql.ResultSet {
 
 	public int findColumn(String columnLabel) throws SQLException {
 		int i = 0;
-		for(Field f : fields) {
-			if(f.name.equals(columnLabel))
+		for(Attribute f : fields) {
+			if(f.getName().equals(columnLabel))
 				return i;
 			++i;
 		}

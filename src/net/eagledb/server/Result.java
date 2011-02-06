@@ -9,14 +9,14 @@ public class Result implements Serializable {
 
 	public int code = ResultCode.UNKNOWN;
 
-	public Field[] fields;
+	public Attribute[] fields;
 
 	public Tuple[] tuples;
 
 	public Result() {
 	}
 
-	public Result(int code, Field[] fields, Tuple[] tuples) {
+	public Result(int code, Attribute[] fields, Tuple[] tuples) {
 		this.code = code;
 		this.fields = fields;
 		this.tuples = tuples;

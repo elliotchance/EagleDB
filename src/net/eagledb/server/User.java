@@ -36,6 +36,8 @@ public class User implements Serializable {
 	 */
 	public ArrayList<String> canCreatSchemaInDatabase = new ArrayList<String>();
 
+	public boolean canCreateTable = false;
+
 	public User(String username, String password) {
 		this.username = username;
 		this.hashedPassword = new SHA1().crypt(password);

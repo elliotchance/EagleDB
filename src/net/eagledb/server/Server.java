@@ -64,6 +64,9 @@ public class Server {
 	private void init() {
 		// make sure data/ exists
 		new File(databaseLocation + "/data").mkdir();
+
+		// types
+		net.eagledb.server.sql.type.SQLType.registerAll();
 	}
 
 	private void initDatabases() {
@@ -88,7 +91,7 @@ public class Server {
 				if(!new File(databaseLocation + "/data/" + dbname + "/" + schema).isDirectory())
 					continue;
 				
-				db.schemas.add(new Schema(schema));
+				db.addSchema(new Schema(schema));
 			}
 				
 			databases.add(db);
@@ -129,6 +132,7 @@ public class Server {
 			User root = new User("root", "123");
 			root.canShowDatabases = true;
 			root.canCreateDatabase = true;
+			root.canCreateTable = true;
 			users.add(root);
 
 			saveUsers();
@@ -139,7 +143,7 @@ public class Server {
 
 	public Database getDatabase(String name) {
 		for(Database db : databases) {
-			if(db.name.equals(name))
+			if(db.getName().equals(name))
 				return db;
 		}
 		return null;
@@ -149,13 +153,25 @@ public class Server {
 		String[] names = new String[databases.size()];
 		int i = 0;
 		for(Database db : databases)
-			names[i++] = db.name;
+			names[i++] = db.getName();
 		return names;
 	}
 
 	public synchronized void createDatabase(String name) {
 		new File(databaseLocation + "/data/" + name).mkdir();
 		new File(databaseLocation + "/data/" + name + "/public").mkdir();
+	}
+
+	public synchronized void saveTable(String databaseName, String schemaName, Table table) {
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(databaseLocation + "/data/" +
+				databaseName + "/" + schemaName + "/" + table.name));
+			out.writeObject(table);
+			out.close();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
