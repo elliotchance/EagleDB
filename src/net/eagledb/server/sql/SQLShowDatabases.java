@@ -28,7 +28,7 @@ public class SQLShowDatabases extends SQLAction {
 		int i = 0;
 		for(String db : server.getDatabaseNames()) {
 			tuples[i] = new Tuple(fields.length);
-			tuples[i].attributes[0] = db;
+			tuples[i].set(0, db);
 			++i;
 		}
 

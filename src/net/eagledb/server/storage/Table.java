@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Table implements java.io.Serializable {
 
-	public String name;
+	private String name;
 
 	public transient TransactionPage transactionPageHead = null;
 
@@ -17,11 +17,14 @@ public class Table implements java.io.Serializable {
 
 	private ArrayList<Attribute> attributes;
 
-	public Table(String tableName) {
+	public Table(String tableName, Attribute[] attrs) {
 		name = tableName;
 		attributes = new ArrayList<Attribute>();
 		pageHeads = new ArrayList<Page>();
 		pageTails = new ArrayList<Page>();
+
+		for(Attribute attr : attrs)
+			addAttribute(attr);
 	}
 
 	public boolean addAttribute(Attribute f) {
@@ -79,7 +82,7 @@ public class Table implements java.io.Serializable {
 						pageTails.set(i, page);
 					}
 					else
-						throw new Exception("Unknown attribute type");
+						throw new Exception("Unknown attribute type " + pageType);
 					++i;
 				}
 			}
@@ -94,9 +97,9 @@ public class Table implements java.io.Serializable {
 			Class<? extends net.eagledb.server.sql.type.SQLType> pageType = f.getPageType();
 
 			if(pageType.equals(net.eagledb.server.sql.type.Integer.class))
-				pageTails.get(i).addTuple(Integer.valueOf(t.attributes[i].toString()));
+				pageTails.get(i).addTuple(Integer.valueOf(t.get(i).toString()));
 			else if(pageType.equals(net.eagledb.server.sql.type.Real.class))
-				pageTails.get(i).addTuple(Float.valueOf(t.attributes[i].toString()));
+				pageTails.get(i).addTuple(Float.valueOf(t.get(i).toString()));
 			++i;
 		}
 
@@ -120,6 +123,29 @@ public class Table implements java.io.Serializable {
 		}
 		sql += ")";
 		return sql;
+	}
+
+	public boolean attributeExists(String column) {
+		for(Attribute f : attributes) {
+			if(f.getName().equals(column))
+				return true;
+		}
+
+		return false;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getAttributeLocation(String attr) {
+		int i = 0;
+		for(Attribute f : attributes) {
+			if(f.getName().equals(attr))
+				return i;
+			++i;
+		}
+		return -1;
 	}
 
 }

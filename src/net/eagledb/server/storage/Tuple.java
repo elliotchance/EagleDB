@@ -4,7 +4,7 @@ import java.io.*;
 
 public class Tuple implements Serializable {
 
-	public Object[] attributes;
+	private Object[] attributes;
 
 	public Tuple(int fields) {
 		attributes = new Object[fields];
@@ -16,6 +16,14 @@ public class Tuple implements Serializable {
 
 	public void set(int position, float value) {
 		attributes[position] = value;
+	}
+
+	public void set(int position, Object value) {
+		attributes[position] = value;
+	}
+
+	public Object get(int position) {
+		return attributes[position];
 	}
 
 }

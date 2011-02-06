@@ -22,7 +22,7 @@ public class Schema {
 
 	public Table getTable(String tableName) {
 		for(Table table : tables) {
-			if(table.name.equals(tableName))
+			if(table.getName().equals(tableName))
 				return table;
 		}
 		return null;

@@ -37,7 +37,7 @@ public class SQLCreateTable extends SQLAction {
 			throw new SQLException("Table " + schema.getName() + "." + sql.getTable().getName() + " already exists");
 
 		// create the table object
-		table = new Table(sql.getTable().getName());
+		table = new Table(sql.getTable().getName(), new Attribute[] {});
 
 		// add fields
 		List<net.sf.jsqlparser.statement.create.table.ColumnDefinition> columns = sql.getColumnDefinitions();

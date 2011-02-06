@@ -223,11 +223,11 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public double getDouble(int columnIndex) throws SQLException {
-		return Double.valueOf(tuples[cursorPosition - 1].attributes[columnIndex].toString());
+		return Double.valueOf(tuples[cursorPosition - 1].get(columnIndex).toString());
 	}
 
 	public double getDouble(String columnLabel) throws SQLException {
-		return Double.valueOf(tuples[cursorPosition - 1].attributes[findColumn(columnLabel)].toString());
+		return Double.valueOf(tuples[cursorPosition - 1].get(findColumn(columnLabel)).toString());
 	}
 
 	public int getFetchDirection() throws SQLException {
@@ -239,11 +239,11 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public float getFloat(int columnIndex) throws SQLException {
-		return Float.valueOf(tuples[cursorPosition - 1].attributes[columnIndex].toString());
+		return Float.valueOf(tuples[cursorPosition - 1].get(columnIndex).toString());
 	}
 
 	public float getFloat(String columnLabel) throws SQLException {
-		return Float.valueOf(tuples[cursorPosition - 1].attributes[findColumn(columnLabel)].toString());
+		return Float.valueOf(tuples[cursorPosition - 1].get(findColumn(columnLabel)).toString());
 	}
 
 	public int getHoldability() throws SQLException {
@@ -351,11 +351,11 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public String getString(int columnIndex) throws SQLException {
-		return tuples[cursorPosition - 1].attributes[columnIndex].toString();
+		return tuples[cursorPosition - 1].get(columnIndex).toString();
 	}
 
 	public String getString(String columnLabel) throws SQLException {
-		return tuples[cursorPosition - 1].attributes[findColumn(columnLabel)].toString();
+		return tuples[cursorPosition - 1].get(findColumn(columnLabel)).toString();
 	}
 
 	public Time getTime(int columnIndex) throws SQLException {

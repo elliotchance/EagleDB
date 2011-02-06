@@ -9,7 +9,7 @@ public class PlanTest {
 
 	int tuples = 100;
 
-	Table table = new Table("mytable");
+	Table table = new Table("mytable", new Attribute[] {});
 
 	public static void main(String[] args) {
 		new PlanTest();

@@ -96,6 +96,9 @@ public class Server {
 				// load tables
 				String[] tables = new File(databaseLocation + "/data/" + dbname + "/" + schemaName).list();
 				for(String tableName : tables) {
+					if(!tableName.endsWith(".table"))
+						continue;
+
 					try {
 						ObjectInputStream in = new ObjectInputStream(new FileInputStream(databaseLocation + "/data/" +
 							dbname + "/" + schemaName + "/" + tableName));
@@ -184,7 +187,7 @@ public class Server {
 	public synchronized void saveTable(String databaseName, String schemaName, Table table) {
 		try {
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(databaseLocation + "/data/" +
-				databaseName + "/" + schemaName + "/" + table.name));
+				databaseName + "/" + schemaName + "/" + table.getName() + ".table"));
 			out.writeObject(table);
 			out.close();
 		}
