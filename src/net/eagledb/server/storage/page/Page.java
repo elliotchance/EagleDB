@@ -14,6 +14,6 @@ public abstract class Page {
 
 	public abstract boolean addTuple(float value);
 
-	public abstract void scan(TransactionPage tp, ArrayList<Tuple> tuples, PageScanAction action, Object value);
+	public abstract void scan(TransactionPage tp, ArrayList<Tuple> tuples, PageAction action, Object value);
 
 }

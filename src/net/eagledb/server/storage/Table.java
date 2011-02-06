@@ -34,28 +34,6 @@ public class Table implements java.io.Serializable {
 		return true;
 	}
 
-	public boolean addPage() {
-		// add transaction page
-		//transactionPageHead.add(new TransactionPage());
-
-		// add field pages
-		/*try {
-			int i = 0;
-			for(Field f : fields) {
-				pages.get(i).add((Page) fields.get(i).pageType.newInstance());
-				++i;
-			}
-		}
-		catch(InstantiationException e) {
-			e.printStackTrace();
-		}
-		catch(IllegalAccessException e) {
-			e.printStackTrace();
-		}*/
-
-		return true;
-	}
-
 	public ArrayList<Attribute> getAttributes() {
 		return attributes;
 	}

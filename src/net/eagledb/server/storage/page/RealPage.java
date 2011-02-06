@@ -24,7 +24,7 @@ public class RealPage extends Page {
 		return true;
 	}
 
-	public void scan(TransactionPage tp, ArrayList<Tuple> tuples, PageScanAction action, Object value) {
+	public void scan(TransactionPage tp, ArrayList<Tuple> tuples, PageAction action, Object value) {
 	}
 
 }

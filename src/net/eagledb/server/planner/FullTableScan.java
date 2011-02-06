@@ -6,28 +6,22 @@ import java.util.*;
 
 public class FullTableScan implements PlanItem {
 
-	public Table table;
+	private Table table;
 
-	public PageScanAction action;
-
-	public Object value;
-
-	public int fieldID;
+	private PageOperation[] operations;
 
 	private ArrayList<Tuple> tuples;
 
-	public FullTableScan(Table table, int fieldID, PageScanAction action, Object value) {
+	public FullTableScan(Table table, PageOperation[] operations) {
 		this.table = table;
-		this.fieldID = fieldID;
-		this.action = action;
-		this.value = value;
+		this.operations = operations;
 	}
 
 	@Override
 	public String toString() {
-		String line = "FullTableScan ( " + table.getName() + "." + table.getAttributes().get(fieldID).getName();
+		String line = "FullTableScan ( " + table.getName(); // + "." + table.getAttributes().get(fieldID).getName();
 		
-		if(action == PageScanAction.OPERATOR_ALL)
+		/*if(action == PageScanAction.OPERATOR_ALL)
 			line += " : all rows";
 		else {
 			if(action == PageScanAction.OPERATOR_EQUAL)
@@ -35,15 +29,36 @@ public class FullTableScan implements PlanItem {
 			else
 				line += "?";
 			line += value;
-		}
+		}*/
 		line += " )";
 		
 		return line;
 	}
 
 	public void execute(ArrayList<Tuple> tuples) {
+		// calculate the number of buffers we need
+		int totalBuffers = 0;
+		for(int i = 0; i < operations.length; ++i) {
+			if(operations[i].getMaxBuffer() > totalBuffers)
+				totalBuffers = operations[i].getMaxBuffer();
+		}
+
+		// create buffers
+		boolean[][] buffer = new boolean[totalBuffers + 1][Page.TUPLES_PER_PAGE];
+
+		// run operations
 		TransactionPage tp = table.transactionPageHead;
-		table.pageHeads.get(fieldID).scan(tp, tuples, action, value);
+		for(PageOperation operation : operations) {
+			System.out.println(operation);
+			operation.run(tp, table.pageHeads.get(operation.fieldID), buffer);
+		}
+
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
+			if(buffer[2][i])
+				tuples.add(new Tuple(i, 2));
+		}
+		//System.out.println(Arrays.toString(buffer[0]));
+		//table.pageHeads.get(fieldID).scan(tp, tuples, action, value);
 	}
 
 }

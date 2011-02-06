@@ -24,7 +24,7 @@ public class IntPage extends Page {
 		return true;
 	}
 
-	public void scan(TransactionPage tp, ArrayList<Tuple> tuples, PageScanAction action, Object value) {
+	public void scan(TransactionPage tp, ArrayList<Tuple> tuples, PageAction action, Object value) {
 		int v = Integer.valueOf(value.toString()), i = 0;
 		for(int j = 0; j < Page.TUPLES_PER_PAGE; ++j) {
 			if(tp.transactionID[j] > 0 && page[j] > v)

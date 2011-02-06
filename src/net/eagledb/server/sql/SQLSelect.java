@@ -38,9 +38,16 @@ public class SQLSelect extends SQLAction {
 		if(table == null)
 			throw new SQLException("Table " + schema.getName() + "." + select.getFromItem().toString() + " does not exist");
 
+		// expression operations: WHERE id>700 AND id<800
+		PageOperation[] op = new PageOperation[] {
+			new PageScan(0, table.getAttributeLocation("id"), PageAction.GREATER_THAN, 700),
+			new PageScan(1, table.getAttributeLocation("id"), PageAction.LESS_THAN, 800),
+			new PageCompare(0, 1, 2, PageAction.AND)
+		};
+
 		// create the executation plan
 		Plan p = new Plan();
-		p.plan.add(new FullTableScan(table, table.getAttributeLocation("id"), PageScanAction.OPERATOR_ALL, 0));
+		p.plan.add(new FullTableScan(table, op));
 		p.plan.add(new FetchAttributes(table,
 			new int[] { 0, 1 },
 			new Class[] { net.eagledb.server.sql.type.Integer.class, net.eagledb.server.sql.type.Real.class },
