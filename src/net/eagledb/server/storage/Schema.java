@@ -28,7 +28,7 @@ public class Schema {
 		return null;
 	}
 
-	public synchronized void createTable(Table table) {
+	public synchronized void addTable(Table table) {
 		tables.add(table);
 	}
 

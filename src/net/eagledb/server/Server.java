@@ -87,11 +87,30 @@ public class Server {
 			Database db = new Database(dbname);
 			
 			String[] schemas = fileDB.list();
-			for(String schema : schemas) {
-				if(!new File(databaseLocation + "/data/" + dbname + "/" + schema).isDirectory())
+			for(String schemaName : schemas) {
+				if(!new File(databaseLocation + "/data/" + dbname + "/" + schemaName).isDirectory())
 					continue;
 				
-				db.addSchema(new Schema(schema));
+				Schema schema = new Schema(schemaName);
+
+				// load tables
+				String[] tables = new File(databaseLocation + "/data/" + dbname + "/" + schemaName).list();
+				for(String tableName : tables) {
+					try {
+						ObjectInputStream in = new ObjectInputStream(new FileInputStream(databaseLocation + "/data/" +
+							dbname + "/" + schemaName + "/" + tableName));
+						schema.addTable((Table) in.readObject());
+						in.close();
+					}
+					catch(IOException e) {
+						e.printStackTrace();
+					}
+					catch(ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+
+				db.addSchema(schema);
 			}
 				
 			databases.add(db);

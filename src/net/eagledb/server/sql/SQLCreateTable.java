@@ -29,13 +29,12 @@ public class SQLCreateTable extends SQLAction {
 		// get schema
 		Schema schema = selectedDatabase.getSchema("public");
 		if(schema == null)
-			throw new SQLException("No such schema " + selectedDatabase.getName() + "." + schema.getName());
+			throw new SQLException("No such schema " + schema.getName());
 
 		// see if the table already exists
 		Table table = schema.getTable(sql.getTable().getName());
 		if(table != null)
-			throw new SQLException("Table " + selectedDatabase.getName() + "." + schema.getName() + "." +
-				sql.getTable().getName() + " already exists");
+			throw new SQLException("Table " + schema.getName() + "." + sql.getTable().getName() + " already exists");
 
 		// create the table object
 		table = new Table(sql.getTable().getName());
@@ -54,7 +53,7 @@ public class SQLCreateTable extends SQLAction {
 		}
 
 		// create the table
-		schema.createTable(table);
+		schema.addTable(table);
 
 		// write to disk
 		server.saveTable(selectedDatabase.getName(), schema.getName(), table);
