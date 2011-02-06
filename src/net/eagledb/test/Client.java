@@ -18,6 +18,7 @@ public class Client extends Thread {
 			//new ShowDatabases().run(conn);
 			new CreateTable().run(conn);
 			new Insert().run(conn);
+			new Select().run(conn);
 		}
 		catch(ClassNotFoundException e) {
 			e.printStackTrace();

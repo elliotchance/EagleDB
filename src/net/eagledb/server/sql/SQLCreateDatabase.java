@@ -28,7 +28,7 @@ public class SQLCreateDatabase extends SQLAction {
 		// create the database
 		server.createDatabase(sql.getName().toString());
 
-		return new Result(ResultCode.SUCCESS, null, null);
+		return new Result(ResultCode.SUCCESS);
 	}
 
 }

@@ -31,12 +31,12 @@ public class SQLConnect extends SQLAction {
 					conn.setSelectedDatabase(p.getProperty("database"));
 
 				// return success
-				return new Result(ResultCode.SUCCESS, null, null);
+				return new Result(ResultCode.SUCCESS);
 			}
 		}
 
 		// failed to authenticate user
-		return new Result(ResultCode.FAILED, null, null);
+		return new Result(ResultCode.FAILED);
 	}
 
 }

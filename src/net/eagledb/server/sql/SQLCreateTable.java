@@ -58,7 +58,7 @@ public class SQLCreateTable extends SQLAction {
 		// write to disk
 		server.saveTable(selectedDatabase.getName(), schema.getName(), table);
 
-		return new Result(ResultCode.SUCCESS, null, null);
+		return new Result(ResultCode.SUCCESS);
 	}
 
 }

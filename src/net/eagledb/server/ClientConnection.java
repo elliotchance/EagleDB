@@ -39,7 +39,7 @@ public class ClientConnection extends Thread {
 					break;
 
 				// process
-				Result result = new Result();
+				Result result = new Result(ResultCode.UNKNOWN);
 				try {
 					result = parser.parse(request.sql);
 				}

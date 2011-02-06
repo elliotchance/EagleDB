@@ -9,6 +9,7 @@ import net.sf.jsqlparser.statement.create.database.CreateDatabase;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.connect.Connect;
 import net.sf.jsqlparser.statement.insert.Insert;
+import net.sf.jsqlparser.statement.select.Select;
 import java.sql.*;
 import net.eagledb.server.*;
 
@@ -27,7 +28,7 @@ public class SQLParser {
 
 	public Result parse(String sql) throws SQLException {
 		try {
-			Result result = new Result();
+			Result result = new Result(ResultCode.UNKNOWN);
 
 			Statement stmt = parserManager.parse(new StringReader(sql));
 			if(stmt instanceof Connect)
@@ -38,6 +39,8 @@ public class SQLParser {
 				result = new SQLCreateTable(server, conn, (CreateTable) stmt).getResult();
 			else if(stmt instanceof Insert)
 				result = new SQLInsert(server, conn, (Insert) stmt).getResult();
+			else if(stmt instanceof Select)
+				result = new SQLSelect(server, conn, (Select) stmt).getResult();
 			else if(stmt instanceof ShowDatabases)
 				result = new SQLShowDatabases(server, conn, (ShowDatabases) stmt).getResult();
 			else

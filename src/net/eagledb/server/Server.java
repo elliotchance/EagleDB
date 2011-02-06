@@ -185,7 +185,7 @@ public class Server {
 	}
 
 	public synchronized void saveTable(String databaseName, String schemaName, Table table) {
-		try {
+		/*try {
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(databaseLocation + "/data/" +
 				databaseName + "/" + schemaName + "/" + table.getName() + ".table"));
 			out.writeObject(table);
@@ -193,7 +193,7 @@ public class Server {
 		}
 		catch(IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 }

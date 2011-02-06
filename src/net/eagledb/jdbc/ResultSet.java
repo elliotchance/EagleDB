@@ -243,7 +243,7 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public float getFloat(String columnLabel) throws SQLException {
-		return Float.valueOf(tuples[cursorPosition - 1].get(findColumn(columnLabel)).toString());
+		return getFloat(findColumn(columnLabel));
 	}
 
 	public int getHoldability() throws SQLException {
@@ -251,11 +251,11 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public int getInt(int columnIndex) throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		return Integer.valueOf(tuples[cursorPosition - 1].get(columnIndex).toString());
 	}
 
 	public int getInt(String columnLabel) throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		return getInt(findColumn(columnLabel));
 	}
 
 	public long getLong(int columnIndex) throws SQLException {

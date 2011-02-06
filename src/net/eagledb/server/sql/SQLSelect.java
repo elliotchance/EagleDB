@@ -1,17 +1,18 @@
 package net.eagledb.server.sql;
 
-import net.sf.jsqlparser.statement.insert.Insert;
+import net.sf.jsqlparser.statement.select.Select;
 import net.eagledb.server.*;
 import java.sql.*;
 import net.eagledb.server.storage.*;
 import java.util.*;
 import net.eagledb.server.planner.*;
+import net.sf.jsqlparser.statement.select.*;
 
-public class SQLInsert extends SQLAction {
+public class SQLSelect extends SQLAction {
 	
-	private Insert sql;
+	private Select sql;
 
-	public SQLInsert(Server server, ClientConnection conn, Insert sql) {
+	public SQLSelect(Server server, ClientConnection conn, Select sql) {
 		super(server, conn);
 		this.sql = sql;
 	}
@@ -32,12 +33,13 @@ public class SQLInsert extends SQLAction {
 			throw new SQLException("No such schema " + schema.getName());
 
 		// see if the table exists
-		Table table = schema.getTable(sql.getTable().getName());
+		PlainSelect select = (PlainSelect) sql.getSelectBody();
+		Table table = schema.getTable(select.getFromItem().toString());
 		if(table == null)
-			throw new SQLException("Table " + schema.getName() + "." + sql.getTable().getName() + " does not exist");
+			throw new SQLException("Table " + schema.getName() + "." + select.getFromItem().toString() + " does not exist");
 
 		// create the tuple
-		Tuple tuple = new Tuple(table.getAttributes().size());
+		/*
 
 		// convert the data into a tuple
 		List<net.sf.jsqlparser.schema.Column> columns = sql.getColumns();
@@ -48,12 +50,14 @@ public class SQLInsert extends SQLAction {
 			
 			// put the data into the tuple
 			tuple.set(table.getAttributeLocation(column.getColumnName()), 10);
-		}
+		}*/
 
-		// add tuple
-		table.addTuple(tuple);
+		Tuple[] tuples = new Tuple[1];
+		tuples[0] = new Tuple(table.getAttributes().size());
+		tuples[0].set(0, 16);
+		tuples[0].set(1, 5467.45);
 
-		return new Result(ResultCode.SUCCESS);
+		return new Result(ResultCode.SUCCESS, table.getAttributes(), tuples);
 	}
 
 }

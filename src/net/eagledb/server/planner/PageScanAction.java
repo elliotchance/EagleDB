@@ -2,6 +2,7 @@ package net.eagledb.server.planner;
 
 public enum PageScanAction {
 
+	OPERATOR_ALL,
 	OPERATOR_EQUAL,
 	OPERATOR_NOT_EQUAL,
 	OPERATOR_GREATER_THAN,
