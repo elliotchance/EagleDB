@@ -1,6 +1,8 @@
 package net.eagledb.server.storage.page;
 
+import java.util.ArrayList;
 import net.eagledb.server.planner.*;
+import net.eagledb.server.storage.Tuple;
 
 public class IntPage extends Page {
 
@@ -22,21 +24,12 @@ public class IntPage extends Page {
 		return true;
 	}
 
-	public int[] scan(TransactionPage tp, PageScanAction action, Object value) {
-		int v = Integer.valueOf(value.toString()), count = 0, i = 0;
-
+	public void scan(TransactionPage tp, ArrayList<Tuple> tuples, PageScanAction action, Object value) {
+		int v = Integer.valueOf(value.toString()), i = 0;
 		for(int j = 0; j < Page.TUPLES_PER_PAGE; ++j) {
 			if(tp.transactionID[j] > 0 && page[j] > v)
-				++count;
+				tuples.add(new Tuple(j, 2));
 		}
-
-		int[] r = new int[count];
-		for(int j = 0; j < Page.TUPLES_PER_PAGE; ++j) {
-			if(tp.transactionID[j] > 0 && page[j] > v)
-				r[i++] = j;
-		}
-
-		return r;
 	}
 
 }

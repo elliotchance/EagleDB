@@ -1,6 +1,8 @@
 package net.eagledb.server.storage.page;
 
 import net.eagledb.server.planner.*;
+import java.util.*;
+import net.eagledb.server.storage.*;
 
 public abstract class Page {
 
@@ -12,6 +14,6 @@ public abstract class Page {
 
 	public abstract boolean addTuple(float value);
 
-	public abstract int[] scan(TransactionPage tp, PageScanAction action, Object value);
+	public abstract void scan(TransactionPage tp, ArrayList<Tuple> tuples, PageScanAction action, Object value);
 
 }

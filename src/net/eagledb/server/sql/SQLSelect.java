@@ -1,12 +1,12 @@
 package net.eagledb.server.sql;
 
-import net.sf.jsqlparser.statement.select.Select;
 import net.eagledb.server.*;
 import java.sql.*;
 import net.eagledb.server.storage.*;
-import java.util.*;
+import net.eagledb.server.storage.page.*;
 import net.eagledb.server.planner.*;
 import net.sf.jsqlparser.statement.select.*;
+import net.eagledb.server.sql.type.*;
 
 public class SQLSelect extends SQLAction {
 	
@@ -38,7 +38,17 @@ public class SQLSelect extends SQLAction {
 		if(table == null)
 			throw new SQLException("Table " + schema.getName() + "." + select.getFromItem().toString() + " does not exist");
 
-		// create the tuple
+		// create the executation plan
+		Plan p = new Plan();
+		p.plan.add(new FullTableScan(table, table.getAttributeLocation("id"), PageScanAction.OPERATOR_ALL, 0));
+		p.plan.add(new FetchAttributes(table,
+			new int[] { 0, 1 },
+			new Class[] { net.eagledb.server.sql.type.Integer.class, net.eagledb.server.sql.type.Real.class },
+			new Page[] { table.pageHeads.get(0), table.pageHeads.get(1) }
+		));
+		System.out.println(p);
+		p.execute();
+
 		/*
 
 		// convert the data into a tuple
@@ -57,7 +67,7 @@ public class SQLSelect extends SQLAction {
 		tuples[0].set(0, 16);
 		tuples[0].set(1, 5467.45);
 
-		return new Result(ResultCode.SUCCESS, table.getAttributes(), tuples);
+		return new Result(ResultCode.SUCCESS, table.getAttributes(), p.getTuples());
 	}
 
 }

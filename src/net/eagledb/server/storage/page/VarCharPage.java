@@ -1,6 +1,8 @@
 package net.eagledb.server.storage.page;
 
+import java.util.ArrayList;
 import net.eagledb.server.planner.*;
+import net.eagledb.server.storage.Tuple;
 
 public class VarCharPage extends Page {
 
@@ -25,8 +27,7 @@ public class VarCharPage extends Page {
 		return true;
 	}
 
-	public int[] scan(TransactionPage tp, PageScanAction action, Object value) {
-		return new int[0];
+	public void scan(TransactionPage tp, ArrayList<Tuple> tuples, PageScanAction action, Object value) {
 	}
 
 }

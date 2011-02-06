@@ -4,7 +4,14 @@ import java.io.*;
 
 public class Tuple implements Serializable {
 
+	public int tupleID;
+
 	private Object[] attributes;
+
+	public Tuple(int tupleID, int fields) {
+		this(fields);
+		this.tupleID = tupleID;
+	}
 
 	public Tuple(int fields) {
 		attributes = new Object[fields];

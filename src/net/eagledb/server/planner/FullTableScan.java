@@ -14,6 +14,8 @@ public class FullTableScan implements PlanItem {
 
 	public int fieldID;
 
+	private ArrayList<Tuple> tuples;
+
 	public FullTableScan(Table table, int fieldID, PageScanAction action, Object value) {
 		this.table = table;
 		this.fieldID = fieldID;
@@ -23,13 +25,25 @@ public class FullTableScan implements PlanItem {
 
 	@Override
 	public String toString() {
-		return "FullTableScan (" + table + ", " + action + ", " + value + ")";
+		String line = "FullTableScan ( " + table.getName() + "." + table.getAttributes().get(fieldID).getName();
+		
+		if(action == PageScanAction.OPERATOR_ALL)
+			line += " : all rows";
+		else {
+			if(action == PageScanAction.OPERATOR_EQUAL)
+				line += " = ";
+			else
+				line += "?";
+			line += value;
+		}
+		line += " )";
+		
+		return line;
 	}
 
-	public void execute() {
+	public void execute(ArrayList<Tuple> tuples) {
 		TransactionPage tp = table.transactionPageHead;
-		int[] transactionIDs = table.pageHeads.get(fieldID).scan(tp, action, value);
-		System.out.println(Arrays.toString(transactionIDs));
+		table.pageHeads.get(fieldID).scan(tp, tuples, action, value);
 	}
 
 }

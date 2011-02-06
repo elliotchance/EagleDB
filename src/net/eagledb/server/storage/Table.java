@@ -97,9 +97,9 @@ public class Table implements java.io.Serializable {
 			Class<? extends net.eagledb.server.sql.type.SQLType> pageType = f.getPageType();
 
 			if(pageType.equals(net.eagledb.server.sql.type.Integer.class))
-				pageTails.get(i).addTuple(Integer.valueOf(t.get(i).toString()));
+				pageTails.get(i).addTuple((int) ((double) Double.valueOf(t.get(i).toString())));
 			else if(pageType.equals(net.eagledb.server.sql.type.Real.class))
-				pageTails.get(i).addTuple(Float.valueOf(t.get(i).toString()));
+				pageTails.get(i).addTuple((float) ((double) Double.valueOf(t.get(i).toString())));
 			++i;
 		}
 
