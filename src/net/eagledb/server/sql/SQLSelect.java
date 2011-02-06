@@ -40,8 +40,8 @@ public class SQLSelect extends SQLAction {
 
 		// expression operations: WHERE id>700 AND id<800
 		PageOperation[] op = new PageOperation[] {
-			new PageScan(0, table.getAttributeLocation("id"), PageAction.GREATER_THAN, 700),
-			new PageScan(1, table.getAttributeLocation("id"), PageAction.LESS_THAN, 800),
+			new PageScan(0, table.getAttributeLocation("id"), PageAction.GREATER_THAN, 1800),
+			new PageScan(1, table.getAttributeLocation("id"), PageAction.LESS_THAN, 1810),
 			new PageCompare(0, 1, 2, PageAction.AND)
 		};
 
@@ -50,8 +50,7 @@ public class SQLSelect extends SQLAction {
 		p.plan.add(new FullTableScan(table, op));
 		p.plan.add(new FetchAttributes(table,
 			new int[] { 0, 1 },
-			new Class[] { net.eagledb.server.sql.type.Integer.class, net.eagledb.server.sql.type.Real.class },
-			new Page[] { table.pageHeads.get(0), table.pageHeads.get(1) }
+			new Class[] { net.eagledb.server.sql.type.Integer.class, net.eagledb.server.sql.type.Real.class }
 		));
 		System.out.println(p);
 		p.execute();

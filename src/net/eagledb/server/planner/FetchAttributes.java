@@ -10,15 +10,12 @@ public class FetchAttributes implements PlanItem {
 	private Table table;
 	
 	private int[] destinations;
-	
-	private Page[] pageHeads;
 
 	private Class<? extends SQLType>[] types;
 	
-	public FetchAttributes(Table table, int[] destinations, Class<? extends SQLType>[] types, Page[] pageHeads) {
+	public FetchAttributes(Table table, int[] destinations, Class<? extends SQLType>[] types) {
 		this.table = table;
 		this.destinations = destinations;
-		this.pageHeads = pageHeads;
 		this.types = types;
 	}
 
@@ -34,11 +31,11 @@ public class FetchAttributes implements PlanItem {
 		for(int i = 0; i < destinations.length; ++i) {
 			if(types[i] == net.eagledb.server.sql.type.Integer.class) {
 				for(Tuple tuple : tuples)
-					tuple.set(destinations[i], ((IntPage) pageHeads[i]).page[tuple.tupleID]);
+					tuple.set(destinations[i], ((IntPage) table.getPage(i, tuple.tupleID / Page.TUPLES_PER_PAGE)).page[tuple.tupleID % Page.TUPLES_PER_PAGE]);
 			}
 			else if(types[i] == net.eagledb.server.sql.type.Real.class) {
 				for(Tuple tuple : tuples)
-					tuple.set(destinations[i], ((RealPage) pageHeads[i]).page[tuple.tupleID]);
+					tuple.set(destinations[i], ((RealPage) table.getPage(i, tuple.tupleID / Page.TUPLES_PER_PAGE)).page[tuple.tupleID % Page.TUPLES_PER_PAGE]);
 			}
 		}
 	}
