@@ -20,13 +20,15 @@ public class SQLConnect extends SQLAction {
 		SHA1 crypt = new SHA1();
 
 		for(User user : server.users) {
-			String username = (String) p.get("user");
-			String password = (String) p.get("password");
+			String username = p.getProperty("user");
+			String password = p.getProperty("password");
 
 			if(user.getUsername().equals(username) &&
 			   user.getHashedPassword().equals(crypt.crypt(password))) {
 				// update the currently privilaged user
 				conn.setUser(user);
+				if(!p.getProperty("database").equals(""))
+					conn.setSelectedDatabase(p.getProperty("database"));
 
 				// return success
 				return new Result(ResultCode.SUCCESS, null, null);

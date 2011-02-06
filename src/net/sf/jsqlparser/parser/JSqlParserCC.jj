@@ -245,6 +245,7 @@ TOKEN:
 | 	< #LETTER: ["a"-"z", "A"-"Z", "_"] >
 |   < #SPECIAL_CHARS: "$" | "_">
 |   < S_CHAR_LITERAL: "'" (~["'"])* "'" ("'" (~["'"])* "'")*>
+|   < S_BARE_LITERAL: ( <DIGIT> | <LETTER> )+ >
 |   < S_QUOTED_IDENTIFIER: "\"" (~["\n","\r","\""])* "\"" | ("`" (~["\n","\r","`"])* "`") >
 }
 
@@ -317,19 +318,30 @@ Connect Connect():
 { 
 	Connect connect = new Connect(); 
 	java.util.Properties properties = new java.util.Properties(); 
-	Expression key = null;
-	Expression value = null;
-	
+	Token key = null, value = null;
+	String newKey = null, newValue = null;
 }
 {
-    <K_CONNECT>
-    key=SimpleExpression() "=" value=SimpleExpression() { properties.setProperty(key.toString(), value.toString()); }
-		  ("," key=SimpleExpression() "=" value=SimpleExpression()  { properties.setProperty(key.toString(), value.toString()); } )*
-		  
-   { 
-   		connect.setProperties(properties);
+	<K_CONNECT>
+    key=<S_CHAR_LITERAL> "=" value=<S_CHAR_LITERAL>
+    {
+    	newKey = key.toString();
+    	newValue = value.toString();
+    	properties.setProperty(newKey.substring(1, newKey.length() - 1),
+    	                       newValue.substring(1, newValue.length() - 1));
+    }
+	("," key=<S_CHAR_LITERAL> "=" value=<S_CHAR_LITERAL>
+		{
+    		newKey = key.toString();
+    		newValue = value.toString();
+    		properties.setProperty(newKey.substring(1, newKey.length() - 1),
+			                       newValue.substring(1, newValue.length() - 1));
+		}
+	)*
+	{
+		connect.setProperties(properties);
 		return connect;
-   }
+	}
 }
 
 

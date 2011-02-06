@@ -184,7 +184,9 @@ public interface CCJSqlParserConstants {
   /** RegularExpression Id. */
   int S_CHAR_LITERAL = 79;
   /** RegularExpression Id. */
-  int S_QUOTED_IDENTIFIER = 80;
+  int S_BARE_LITERAL = 80;
+  /** RegularExpression Id. */
+  int S_QUOTED_IDENTIFIER = 81;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -271,6 +273,7 @@ public interface CCJSqlParserConstants {
     "<LETTER>",
     "<SPECIAL_CHARS>",
     "<S_CHAR_LITERAL>",
+    "<S_BARE_LITERAL>",
     "<S_QUOTED_IDENTIFIER>",
     "\";\"",
     "\"=\"",

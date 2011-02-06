@@ -4,11 +4,12 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import net.eagledb.server.storage.*;
-import java.beans.XMLEncoder;
-import java.beans.XMLDecoder;
 
 public class Server {
 
+	/**
+	 * Server port number.
+	 */
 	public static int PORT = 6612;
 
 	public static final int MAJOR_VERSION = 1;
@@ -42,7 +43,7 @@ public class Server {
 		while(true) {
 			try {
 				Socket socket = server.accept();
-				new ClientConnection(this, socket).start();
+				new ClientConnection(this, socket, null).start();
 			}
 			catch(IOException e) {
 				e.printStackTrace();

@@ -23,16 +23,41 @@ public class Connection<T> implements java.sql.Connection {
 		if(parameters.get("port") == null)
 			parameters.put("port", String.valueOf(Server.PORT));
 
-		// setup socket and object streams
+		// try to get the name of the database from the URL
+		String dbname = "";
 		try {
-			socket = new Socket(parameters.getProperty("host"), Integer.valueOf(parameters.getProperty("port")));
+			dbname = new URI(url).getPath();
+			if(dbname.length() > 1)
+				dbname = dbname.substring(1);
 		}
-		catch(UnknownHostException e) {
-			throw new SQLException("Could not resolve host " + parameters.getProperty("host") + ":" +
-				parameters.getProperty("port"));
+		catch(URISyntaxException e) {
+			// do nothing, we didn't get the database name
 		}
-		catch(IOException e) {
-			throw new SQLException("Socket failed: " + e.getMessage());
+
+		if(!dbname.equals(""))
+			parameters.put("database", dbname);
+
+		// setup socket and object streams
+		for(int i = 1; i <= 3; ++i) {
+			try {
+				socket = new Socket(parameters.getProperty("host"), Integer.valueOf(parameters.getProperty("port")));
+			}
+			catch(UnknownHostException e) {
+				throw new SQLException("Could not resolve host " + parameters.getProperty("host") + ":" +
+					parameters.getProperty("port"));
+			}
+			catch(IOException e) {
+				if(i == 3)
+					throw new SQLException("Socket failed after " + i + " tries: " + e.getMessage());
+
+				// wait for 1 second
+				try {
+					Thread.sleep(1000);
+				}
+				catch(InterruptedException e2) {
+					break;
+				}
+			}
 		}
 		
 		try {
@@ -44,22 +69,26 @@ public class Connection<T> implements java.sql.Connection {
 		}
 
 		// translate the properties into a SQL statement
-		String paras = "";
+		String paras = "'";
 		Set<String> pnames = parameters.stringPropertyNames();
 		int i = 0;
 		for(String pname : pnames) {
 			if(i > 0)
-				paras += ",";
-			paras += pname + "=" + parameters.getProperty(pname);
+				paras += "','";
+			paras += pname + "'='" + parameters.getProperty(pname);
 			++i;
 		}
+		paras += "'";
 
 		// attempt to connect
 		try {
 			Result result = sendQuery(new Request("CONNECT " + paras));
 		}
 		catch(SQLException e) {
-			String msg = "Permission denied for user " + parameters.get("user") + ", using password ";
+			String msg = "Permission denied for user " + parameters.get("user");
+			if(!parameters.getProperty("database").equals(""))
+				msg += "@" + parameters.getProperty("database");
+			msg += ", using password ";
 			if(parameters.get("password") != null && !parameters.get("password").equals(""))
 				msg += "yes";
 			else
@@ -73,8 +102,8 @@ public class Connection<T> implements java.sql.Connection {
 			out.writeObject(request);
 			Result result = (Result) in.readObject();
 			
-			if(result.error != null)
-				throw new SQLException(result.error + "\nSQL " + request.sql);
+			if(result.sqlException != null)
+				throw new SQLException(result.sqlException + "\nSQL " + request.sql);
 
 			if(result.code != ResultCode.SUCCESS)
 				throw new SQLException("Failed with code: " + result.code + "\nSQL " + request.sql);

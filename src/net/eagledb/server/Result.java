@@ -5,7 +5,7 @@ import net.eagledb.server.storage.*;
 
 public class Result implements Serializable {
 
-	public String error = null;
+	public String sqlException = null;
 
 	public int code = ResultCode.UNKNOWN;
 

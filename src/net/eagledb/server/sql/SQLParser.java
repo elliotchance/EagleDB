@@ -6,6 +6,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.show.databases.ShowDatabases;
 import net.sf.jsqlparser.statement.create.database.CreateDatabase;
+import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.connect.Connect;
 import java.sql.*;
 import net.eagledb.server.*;
@@ -32,6 +33,8 @@ public class SQLParser {
 				result = new SQLConnect(server, conn, (Connect) stmt).getResult();
 			else if(stmt instanceof CreateDatabase)
 				result = new SQLCreateDatabase(server, conn, (CreateDatabase) stmt).getResult();
+			else if(stmt instanceof CreateTable)
+				result = new SQLCreateTable(server, conn, (CreateTable) stmt).getResult();
 			else if(stmt instanceof ShowDatabases)
 				result = new SQLShowDatabases(server, conn, (ShowDatabases) stmt).getResult();
 			else
