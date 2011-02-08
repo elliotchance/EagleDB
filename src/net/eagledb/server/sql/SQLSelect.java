@@ -75,7 +75,7 @@ public class SQLSelect extends SQLAction {
 
 			// create the executation plan
 			Plan p = new Plan();
-			p.plan.add(new FullTableScan(table, selectItems.size(), op));
+			p.plan.add(new FullTableScan(table, selectItems.size(), select.getWhere().toString(), op));
 
 			// add plan
 			p.plan.add(new FetchAttributes(table, faSources, faDestinations, faTypes));

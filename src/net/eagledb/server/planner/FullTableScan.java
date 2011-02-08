@@ -14,28 +14,18 @@ public class FullTableScan implements PlanItem {
 
 	private int tupleSize;
 
-	public FullTableScan(Table table, int tupleSize, PageOperation[] operations) {
+	private String clause;
+
+	public FullTableScan(Table table, int tupleSize, String clause, PageOperation[] operations) {
 		this.table = table;
 		this.operations = operations;
 		this.tupleSize = tupleSize;
+		this.clause = clause;
 	}
 
 	@Override
 	public String toString() {
-		String line = "FullTableScan ( " + table.getName(); // + "." + table.getAttributes().get(fieldID).getName();
-		
-		/*if(action == PageScanAction.OPERATOR_ALL)
-			line += " : all rows";
-		else {
-			if(action == PageScanAction.OPERATOR_EQUAL)
-				line += " = ";
-			else
-				line += "?";
-			line += value;
-		}*/
-		line += " )";
-		
-		return line;
+		return "FullTableScan ( " + table.getName() + ": " + clause + " )";
 	}
 
 	public void execute(ArrayList<Tuple> tuples) {
