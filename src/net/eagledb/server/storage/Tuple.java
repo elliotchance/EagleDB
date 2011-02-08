@@ -4,7 +4,7 @@ import java.io.*;
 
 public class Tuple implements Serializable {
 
-	public int tupleID;
+	public int tupleID = -1;
 
 	private Object[] attributes;
 

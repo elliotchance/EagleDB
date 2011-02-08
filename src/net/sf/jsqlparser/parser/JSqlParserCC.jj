@@ -216,6 +216,7 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_DATABASE:"DATABASE">
 |   <K_SHOW:"SHOW">
 |   <K_DATABASES:"DATABASES">
+|   <K_EXPLAIN:"EXPLAIN">
 }
 
 
@@ -251,22 +252,25 @@ TOKEN:
 
 
 Statement Statement() :
-{ Statement stm;}
+{ Statement stm; }
+
 {
 	(
     stm = Select()
     |
-    stm =  Update()
+    stm = Update()
     |
     stm = Insert()
     |
     stm = Delete()
     |
-    stm =  Replace()
+    stm = Replace()
     |
-    stm = CreateTable()
-    |
-    stm = CreateDatabase()
+    ( LOOKAHEAD(2)
+    	stm = CreateTable()
+    	|
+    	stm = CreateDatabase()
+    )
     |
     stm = ShowDatabases()
     |
@@ -288,9 +292,9 @@ ShowDatabases ShowDatabases():
 }
 {
 	<K_SHOW> <K_DATABASES>
-   {
+	{
 		return sql;
-   }
+	}
 }
 
 
@@ -354,7 +358,6 @@ Update Update():
 	List expList = new ArrayList(); 
 	List columns = new ArrayList(); 
 	Expression value = null;
-	
 }
 {
     <K_UPDATE> table=TableWithAlias()
@@ -555,13 +558,16 @@ Select Select():
 { 
 	Select select = new Select();
 	SelectBody selectBody = null;
-	List with = null; 
+	List with = null;
+	boolean explain = false;
 }
 {
+	[ <K_EXPLAIN> { explain = true; } ]
 	[ with=WithList() { select.setWithItemsList(with); } ]
     selectBody = SelectBody()
 	{ 
 		select.setSelectBody(selectBody);
+		select.setExplain(explain);
 		return select; 
 	}
 }

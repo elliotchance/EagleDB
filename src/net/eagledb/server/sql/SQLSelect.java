@@ -1,7 +1,6 @@
 package net.eagledb.server.sql;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import net.eagledb.server.ClientConnection;
 import net.eagledb.server.Result;
@@ -12,7 +11,7 @@ import net.eagledb.server.planner.FetchAttributes;
 import net.eagledb.server.planner.FullTableScan;
 import net.eagledb.server.planner.PageOperation;
 import net.eagledb.server.planner.Plan;
-import net.eagledb.server.sql.type.SQLType;
+import net.eagledb.server.storage.Attribute;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
@@ -81,10 +80,16 @@ public class SQLSelect extends SQLAction {
 			p.plan.add(new FetchAttributes(table, faSources, faDestinations, faTypes));
 
 			// execute plan
-			p.execute();
+			if(((net.sf.jsqlparser.statement.select.Select) sql).getExplain()) {
+				// return the EXPLAIN set
+				return new Result(ResultCode.SUCCESS, new Attribute[] {
+					new Attribute("explain", net.eagledb.server.sql.type.VarChar.class)
+				}, p.getExplainTuples());
+			}
+			else
+				p.execute();
 
 			// report
-			System.out.println(p + "\nTime: " + p.getExecutionTime() + " ms");
 			return new Result(ResultCode.SUCCESS, table.getAttributes(), p.getTuples());
 		}
 		catch(ExpressionException e) {

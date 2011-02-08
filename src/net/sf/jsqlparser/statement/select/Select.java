@@ -31,9 +31,18 @@ import net.sf.jsqlparser.statement.StatementVisitor;
 public class Select implements Statement {
 	private SelectBody selectBody;
 	private List withItemsList;
+	private boolean explain;
 	
 	public void accept(StatementVisitor statementVisitor) {
 		statementVisitor.visit(this);
+	}
+
+	public boolean getExplain() {
+		return explain;
+	}
+
+	public void setExplain(boolean explain) {
+		this.explain = explain;
 	}
 
 	public SelectBody getSelectBody() {

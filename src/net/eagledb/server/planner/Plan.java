@@ -18,9 +18,30 @@ public class Plan {
 	@Override
 	public String toString() {
 		String r = "Execution Plan\n";
-		for(PlanItem p : plan)
-			r += "  " + p.toString() + "\n";
+		String[] lines = getExplainLines();
+		for(String line : lines)
+			r += "  " + line + "\n";
 		return r;
+	}
+
+	public String[] getExplainLines() {
+		String[] lines = new String[plan.size()];
+		int i = 0;
+		for(PlanItem p : plan)
+			lines[i++] = p.toString();
+		return lines;
+	}
+
+	public Tuple[] getExplainTuples() {
+		String[] lines = getExplainLines();
+		Tuple[] ts = new Tuple[lines.length];
+		int i = 0;
+		for(String line : lines) {
+			ts[i] = new Tuple(1);
+			ts[i].set(0, line);
+			++i;
+		}
+		return ts;
 	}
 
 	public void execute() {
