@@ -12,9 +12,12 @@ public class FullTableScan implements PlanItem {
 
 	private ArrayList<Tuple> tuples;
 
-	public FullTableScan(Table table, PageOperation[] operations) {
+	private int tupleSize;
+
+	public FullTableScan(Table table, int tupleSize, PageOperation[] operations) {
 		this.table = table;
 		this.operations = operations;
+		this.tupleSize = tupleSize;
 	}
 
 	@Override
@@ -54,7 +57,7 @@ public class FullTableScan implements PlanItem {
 
 			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
 				if(buffer[totalBuffers][i])
-					tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, 2));
+					tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, tupleSize));
 			}
 		}
 		//System.out.println(Arrays.toString(buffer[0]));

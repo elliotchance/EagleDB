@@ -55,13 +55,10 @@ public class SQLSelect extends SQLAction {
 			PageOperation[] op = new net.eagledb.server.planner.Expression(table, select.getWhere()).parse();
 			//System.out.println(java.util.Arrays.toString(op));
 
-			// create the executation plan
-			Plan p = new Plan();
-			p.plan.add(new FullTableScan(table, op));
-
 			// do we need to fetch attributes?
 			List<SelectItem> selectItems = select.getSelectItems();
-			int[] faPositions = new int[selectItems.size()];
+			int[] faSources = new int[selectItems.size()];
+			int[] faDestinations = new int[selectItems.size()];
 			Class[] faTypes = new Class[selectItems.size()];
 			int i = 0;
 			for(SelectItem item : selectItems) {
@@ -70,13 +67,18 @@ public class SQLSelect extends SQLAction {
 				if(position < 0)
 					throw new Exception("Column '" + item.toString() + "' not found");
 
-				faPositions[i] = position;
+				faSources[i] = position;
+				faDestinations[i] = i;
 				faTypes[i] = table.getAttributes().get(position).getPageType();
 				++i;
 			}
 
+			// create the executation plan
+			Plan p = new Plan();
+			p.plan.add(new FullTableScan(table, selectItems.size(), op));
+
 			// add plan
-			p.plan.add(new FetchAttributes(table, faPositions, faTypes));
+			p.plan.add(new FetchAttributes(table, faSources, faDestinations, faTypes));
 
 			// execute plan
 			p.execute();
