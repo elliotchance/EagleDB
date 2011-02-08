@@ -32,4 +32,8 @@ public class Schema {
 		tables.add(table);
 	}
 
+	public ArrayList<Table> getTables() {
+		return tables;
+	}
+
 }

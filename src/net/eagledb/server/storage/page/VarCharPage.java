@@ -1,5 +1,8 @@
 package net.eagledb.server.storage.page;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 public class VarCharPage extends Page {
 
 	public String[] page;
@@ -21,6 +24,12 @@ public class VarCharPage extends Page {
 	public boolean addTuple(String value) {
 		page[tuples++] = value;
 		return true;
+	}
+
+	@Override
+	public synchronized void write(DataOutputStream os) throws IOException {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			os.writeBytes(page[i]);
 	}
 
 }

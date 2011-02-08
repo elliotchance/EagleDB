@@ -1,8 +1,12 @@
 package net.eagledb.server.storage;
 
-import java.io.*;
-import net.eagledb.server.sql.type.*;
-import java.lang.reflect.*;
+import java.io.DataOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import net.eagledb.server.sql.type.SQLType;
+import net.eagledb.server.storage.page.Page;
 
 public class Attribute implements Serializable {
 
@@ -10,9 +14,19 @@ public class Attribute implements Serializable {
 
 	private Class<? extends SQLType> pageType;
 
+	private transient DataOutputStream dataHandle;
+
+	public transient ArrayList<Page> pages = null;
+
 	public Attribute(String fieldName, Class<? extends SQLType> fieldPageType) {
 		name = fieldName;
 		pageType = fieldPageType;
+		initTransient();
+	}
+
+	public Attribute(String fieldName, Class<? extends SQLType> fieldPageType, DataOutputStream dataHandle) {
+		this(fieldName, fieldPageType);
+		this.dataHandle = dataHandle;
 	}
 
 	/**
@@ -50,6 +64,18 @@ public class Attribute implements Serializable {
 		}
 		
 		return null;
+	}
+
+	public void setDataHandle(DataOutputStream dataHandle) {
+		this.dataHandle = dataHandle;
+	}
+
+	public DataOutputStream getDataHandle() {
+		return dataHandle;
+	}
+
+	public void initTransient() {
+		pages = new ArrayList<Page>();
 	}
 
 }

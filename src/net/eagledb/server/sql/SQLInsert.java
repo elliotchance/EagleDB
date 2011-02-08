@@ -5,7 +5,7 @@ import net.eagledb.server.*;
 import java.sql.*;
 import net.eagledb.server.storage.*;
 import java.util.*;
-import net.sf.jsqlparser.expression.*;
+import net.eagledb.server.storage.page.Page;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 
 public class SQLInsert extends SQLAction {
@@ -49,8 +49,6 @@ public class SQLInsert extends SQLAction {
 				throw new SQLException("No such column " + table.getName() + "." + column.getColumnName());
 			
 			// put the data into the tuple
-			//System.out.println();
-			//double value = 2; //((DoubleValue) ).getValue();
 			double value = Double.valueOf(((ExpressionList) sql.getItemsList()).getExpressions().get(i).toString());
 			tuple.set(table.getAttributeLocation(column.getColumnName()), value);
 			++i;

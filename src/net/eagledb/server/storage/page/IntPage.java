@@ -1,8 +1,7 @@
 package net.eagledb.server.storage.page;
 
-import java.util.ArrayList;
-import net.eagledb.server.planner.*;
-import net.eagledb.server.storage.Tuple;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class IntPage extends Page {
 
@@ -20,6 +19,12 @@ public class IntPage extends Page {
 	public boolean addTuple(float value) {
 		page[tuples++] = (int) value;
 		return true;
+	}
+
+	@Override
+	public synchronized void write(DataOutputStream os) throws IOException {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			os.writeInt(page[i]);
 	}
 
 }

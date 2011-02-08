@@ -1,9 +1,18 @@
 package net.eagledb.server;
 
-import java.io.*;
-import java.net.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
-import net.eagledb.server.storage.*;
+import net.eagledb.server.storage.Database;
+import net.eagledb.server.storage.Schema;
+import net.eagledb.server.storage.Table;
 
 public class Server {
 
@@ -22,10 +31,18 @@ public class Server {
 
 	public String databaseLocation = ".";
 
+	private BackgroundWriter bgWriter;
+
 	public Server() {
 		init();
 		initUsers();
 		initDatabases();
+		initBackgroundWriter();
+	}
+
+	private void initBackgroundWriter() {
+		bgWriter = new BackgroundWriter(this);
+		bgWriter.start();
 	}
 	
 	public void start() {
@@ -100,9 +117,13 @@ public class Server {
 						continue;
 
 					try {
-						ObjectInputStream in = new ObjectInputStream(new FileInputStream(databaseLocation + "/data/" +
-							dbname + "/" + schemaName + "/" + tableName));
-						schema.addTable((Table) in.readObject());
+						String tablePath = databaseLocation + "/data/" + dbname + "/" + schemaName + "/" + tableName;
+						ObjectInputStream in = new ObjectInputStream(new FileInputStream(tablePath));
+						Table table = (Table) in.readObject();
+						table.initTransient();
+						table.transactionPageHandle = new DataOutputStream(new FileOutputStream(databaseLocation +
+							"/data/" + dbname + "/" + schemaName + "/" + table.getName() + ".t"));
+						schema.addTable(table);
 						in.close();
 					}
 					catch(IOException e) {
@@ -185,7 +206,12 @@ public class Server {
 	}
 
 	public synchronized void saveTable(String databaseName, String schemaName, Table table) {
-		/*try {
+		try {
+			// create the transaction file
+			table.transactionPageHandle = new DataOutputStream(new FileOutputStream(databaseLocation + "/data/" +
+				databaseName + "/" + schemaName + "/" + table.getName() + ".t"));
+			table.transactionPageHandle.write(new byte[] {});
+
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(databaseLocation + "/data/" +
 				databaseName + "/" + schemaName + "/" + table.getName() + ".table"));
 			out.writeObject(table);
@@ -193,7 +219,11 @@ public class Server {
 		}
 		catch(IOException e) {
 			e.printStackTrace();
-		}*/
+		}
+	}
+
+	public ArrayList<Database> getDatabases() {
+		return databases;
 	}
 
 }

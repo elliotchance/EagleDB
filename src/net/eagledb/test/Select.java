@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class Select implements Test {
 
-	public static String selectSQL = "select id, number, id from mytable where id>10 and id<20";
+	public static String selectSQL = "select id, number from mytable where id>10 and id<20";
 
 	public void run(Connection conn) throws SQLException {
 		Statement st = conn.createStatement();

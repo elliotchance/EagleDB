@@ -1,7 +1,11 @@
 package net.eagledb.server.storage;
 
-import net.eagledb.server.storage.page.*;
+import java.io.DataOutputStream;
 import java.util.ArrayList;
+import net.eagledb.server.storage.page.IntPage;
+import net.eagledb.server.storage.page.Page;
+import net.eagledb.server.storage.page.RealPage;
+import net.eagledb.server.storage.page.TransactionPage;
 
 public class Table implements java.io.Serializable {
 
@@ -9,22 +13,29 @@ public class Table implements java.io.Serializable {
 
 	private transient ArrayList<TransactionPage> transactionPages = null;
 	
-	private transient ArrayList<ArrayList<Page>> pages = null;
+	public transient ArrayList<TransactionPage> dirtyTransactionPages = null;
+
+	public transient DataOutputStream transactionPageHandle = null;
 
 	private ArrayList<Attribute> attributes;
 
 	public Table(String tableName, Attribute[] attrs) {
 		name = tableName;
 		attributes = new ArrayList<Attribute>();
-		transactionPages = new ArrayList<TransactionPage>();
-		pages = new ArrayList<ArrayList<Page>>();
+		initTransient();
 
 		for(Attribute attr : attrs)
 			addAttribute(attr);
 	}
 
+	public void initTransient() {
+		transactionPages = new ArrayList<TransactionPage>();
+		dirtyTransactionPages = new ArrayList<TransactionPage>();
+		for(Attribute attribute : attributes)
+			attribute.initTransient();
+	}
+
 	public boolean addAttribute(Attribute f) {
-		pages.add(new ArrayList<Page>());
 		attributes.add(f);
 		return true;
 	}
@@ -45,9 +56,9 @@ public class Table implements java.io.Serializable {
 					Class<? extends net.eagledb.server.sql.type.SQLType> pageType = f.getPageType();
 
 					if(pageType.equals(net.eagledb.server.sql.type.Integer.class))
-						pages.get(i).add(new IntPage());
+						attributes.get(i).pages.add(new IntPage());
 					else if(pageType.equals(net.eagledb.server.sql.type.Real.class))
-						pages.get(i).add(new RealPage());
+						attributes.get(i).pages.add(new RealPage());
 					else
 						throw new Exception("Unknown attribute type " + pageType);
 					++i;
@@ -60,10 +71,11 @@ public class Table implements java.io.Serializable {
 
 		// field data
 		int i = 0;
+		Page tail = null;
 		for(Attribute f : attributes) {
 			Class<? extends net.eagledb.server.sql.type.SQLType> pageType = f.getPageType();
 
-			Page tail = pages.get(i).get(pages.get(i).size() - 1);
+			tail = attributes.get(i).pages.get(attributes.get(i).pages.size() - 1);
 			if(pageType.equals(net.eagledb.server.sql.type.Integer.class))
 				tail.addTuple((int) ((double) Double.valueOf(t.get(i).toString())));
 			else if(pageType.equals(net.eagledb.server.sql.type.Real.class))
@@ -72,7 +84,10 @@ public class Table implements java.io.Serializable {
 		}
 
 		// the transaction page is created after the attributes have been put in
-		transactionPages.get(transactionPages.size() - 1).addTuple(1);
+		transactionPages.get(transactionPages.size() - 1).addTransactionTuple(1);
+
+		// add the dirty pages
+		addDirtyTransactionPage(transactionPages.get(transactionPages.size() - 1));
 	}
 
 	/**
@@ -121,11 +136,17 @@ public class Table implements java.io.Serializable {
 	}
 
 	public Page getPage(int fieldID, int location) {
-		return pages.get(fieldID).get(location);
+		return attributes.get(fieldID).pages.get(location);
 	}
 
 	public int getTotalPages() {
 		return transactionPages.size();
+	}
+
+	private void addDirtyTransactionPage(TransactionPage p) {
+		if(dirtyTransactionPages.contains(p))
+			return;
+		dirtyTransactionPages.add(p);
 	}
 
 }

@@ -29,4 +29,8 @@ public class Database {
 		schemas.add(schema);
 	}
 
+	public ArrayList<Schema> getSchemas() {
+		return schemas;
+	}
+
 }

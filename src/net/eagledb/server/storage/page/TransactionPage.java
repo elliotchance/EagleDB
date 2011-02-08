@@ -1,10 +1,11 @@
 package net.eagledb.server.storage.page;
 
-public class TransactionPage {
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+public class TransactionPage extends Page {
 
 	public int[] transactionID;
-
-	private int tuples = 0;
 
 	public TransactionPage() {
 		transactionID = new int[1000];
@@ -14,8 +15,24 @@ public class TransactionPage {
 		return tuples;
 	}
 
-	public void addTuple(int transaction) {
+	public void addTransactionTuple(int transaction) {
 		transactionID[tuples++] = transaction;
+	}
+
+	public boolean addTuple(int value) {
+		// not valid for transation page
+		return false;
+	}
+
+	public boolean addTuple(float value) {
+		// not valid for transation page
+		return false;
+	}
+
+	@Override
+	public synchronized void write(DataOutputStream os) throws IOException {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			os.writeInt(transactionID[i]);
 	}
 
 }
