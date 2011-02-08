@@ -23,7 +23,7 @@ public class PageCompare extends PageOperation {
 
 	@Override
 	public String toString() {
-		return "PageCompare ( #" + buffer1 + " " + action + " #" + buffer2 + " )";
+		return "PageCompare ( #" + buffer1 + " " + action + " #" + buffer2 + " ) => " + bufferDestination;
 	}
 
 	public void run(TransactionPage tp, Page p, boolean[][] buf) {

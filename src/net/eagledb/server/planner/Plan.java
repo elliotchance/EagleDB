@@ -9,6 +9,8 @@ public class Plan {
 
 	private ArrayList<Tuple> tuples;
 
+	private long executionTime = 0;
+
 	public Plan() {
 		plan = new ArrayList<PlanItem>();
 	}
@@ -22,9 +24,11 @@ public class Plan {
 	}
 
 	public void execute() {
+		long start = Calendar.getInstance().getTimeInMillis();
 		tuples = new ArrayList<Tuple>();
 		for(PlanItem p : plan)
 			p.execute(tuples);
+		executionTime = Calendar.getInstance().getTimeInMillis() - start;
 	}
 
 	/**
@@ -36,6 +40,10 @@ public class Plan {
 		for(Tuple t : tuples)
 			ts[i++] = t;
 		return ts;
+	}
+
+	public long getExecutionTime() {
+		return executionTime;
 	}
 
 }

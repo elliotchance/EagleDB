@@ -4,13 +4,43 @@ public enum PageAction {
 
 	ALL,
 
-	EQUAL,
-	NOT_EQUAL,
+	EQUAL {
+		@Override
+		public String toString() {
+			return "=";
+		}
+	},
+	NOT_EQUAL {
+		@Override
+		public String toString() {
+			return "!=";
+		}
+	},
 
-	GREATER_THAN,
-	LESS_THAN,
-	GREATER_THAN_EQUAL,
-	LESS_THAN_EQUAL,
+	GREATER_THAN {
+		@Override
+		public String toString() {
+			return ">";
+		}
+	},
+	LESS_THAN {
+		@Override
+		public String toString() {
+			return "<";
+		}
+	},
+	GREATER_THAN_EQUAL {
+		@Override
+		public String toString() {
+			return ">=";
+		}
+	},
+	LESS_THAN_EQUAL {
+		@Override
+		public String toString() {
+			return "<=";
+		}
+	},
 
 	AND,
 	OR

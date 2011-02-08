@@ -1,12 +1,24 @@
 package net.eagledb.server.sql;
 
-import net.eagledb.server.*;
-import java.sql.*;
-import net.eagledb.server.storage.*;
-import net.eagledb.server.storage.page.*;
-import net.eagledb.server.planner.*;
-import net.sf.jsqlparser.statement.select.*;
-import net.eagledb.server.sql.type.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import net.eagledb.server.ClientConnection;
+import net.eagledb.server.Result;
+import net.eagledb.server.ResultCode;
+import net.eagledb.server.Server;
+import net.eagledb.server.planner.ExpressionException;
+import net.eagledb.server.planner.FetchAttributes;
+import net.eagledb.server.planner.FullTableScan;
+import net.eagledb.server.planner.PageOperation;
+import net.eagledb.server.planner.Plan;
+import net.eagledb.server.sql.type.SQLType;
+import net.eagledb.server.storage.Database;
+import net.eagledb.server.storage.Schema;
+import net.eagledb.server.storage.Table;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectItem;
 
 public class SQLSelect extends SQLAction {
 	
@@ -38,25 +50,49 @@ public class SQLSelect extends SQLAction {
 		if(table == null)
 			throw new SQLException("Table " + schema.getName() + "." + select.getFromItem().toString() + " does not exist");
 
-		// expression operations: WHERE id>700 AND id<800
-		PageOperation[] op = new PageOperation[] {
-			new PageScan(0, table.getAttributeLocation("id"), PageAction.GREATER_THAN, 1800),
-			new PageScan(1, table.getAttributeLocation("id"), PageAction.LESS_THAN, 1810),
-			new PageCompare(0, 1, 2, PageAction.AND)
-		};
+		// parse expression operations
+		try {
+			PageOperation[] op = new net.eagledb.server.planner.Expression(table, select.getWhere()).parse();
+			//System.out.println(java.util.Arrays.toString(op));
 
-		// create the executation plan
-		Plan p = new Plan();
-		p.plan.add(new FullTableScan(table, op));
-		p.plan.add(new FetchAttributes(table,
-			new int[] { 0, 1 },
-			new Class[] { net.eagledb.server.sql.type.Integer.class, net.eagledb.server.sql.type.Real.class }
-		));
-		System.out.println(p);
-		p.execute();
+			// create the executation plan
+			Plan p = new Plan();
+			p.plan.add(new FullTableScan(table, op));
+
+			// do we need to fetch attributes?
+			List<SelectItem> selectItems = select.getSelectItems();
+			int[] faPositions = new int[selectItems.size()];
+			Class[] faTypes = new Class[selectItems.size()];
+			int i = 0;
+			for(SelectItem item : selectItems) {
+				// try to locate the field
+				int position = table.getAttributeLocation(item.toString());
+				if(position < 0)
+					throw new Exception("Column '" + item.toString() + "' not found");
+
+				faPositions[i] = position;
+				faTypes[i] = table.getAttributes().get(position).getPageType();
+				++i;
+			}
+
+			// add plan
+			p.plan.add(new FetchAttributes(table, faPositions, faTypes));
+
+			// execute plan
+			p.execute();
+
+			// report
+			System.out.println(p + "\nTime: " + p.getExecutionTime() + " ms");
+			return new Result(ResultCode.SUCCESS, table.getAttributes(), p.getTuples());
+		}
+		catch(ExpressionException e) {
+			e.printStackTrace();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 
 		/*
-
 		// convert the data into a tuple
 		List<net.sf.jsqlparser.schema.Column> columns = sql.getColumns();
 		for(net.sf.jsqlparser.schema.Column column : columns) {
@@ -68,12 +104,7 @@ public class SQLSelect extends SQLAction {
 			tuple.set(table.getAttributeLocation(column.getColumnName()), 10);
 		}*/
 
-		Tuple[] tuples = new Tuple[1];
-		tuples[0] = new Tuple(table.getAttributes().size());
-		tuples[0].set(0, 16);
-		tuples[0].set(1, 5467.45);
-
-		return new Result(ResultCode.SUCCESS, table.getAttributes(), p.getTuples());
+		return new Result(ResultCode.FAILED);
 	}
 
 }

@@ -49,13 +49,11 @@ public class FullTableScan implements PlanItem {
 		// run operations
 		for(int pageID = 0; pageID < table.getTotalPages(); ++pageID) {
 			TransactionPage tp = table.getTransactionPage(pageID);
-			for(PageOperation operation : operations) {
-				System.out.println(operation);
+			for(PageOperation operation : operations)
 				operation.run(tp, table.getPage(operation.fieldID, pageID), buffer);
-			}
 
 			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
-				if(buffer[2][i])
+				if(buffer[totalBuffers][i])
 					tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, 2));
 			}
 		}
