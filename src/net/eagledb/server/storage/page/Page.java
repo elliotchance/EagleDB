@@ -9,9 +9,13 @@ public abstract class Page {
 
 	public int tuples;
 
+	public int pageID;
+
 	public abstract boolean addTuple(int value);
 
 	public abstract boolean addTuple(float value);
+
+	public abstract int getPageSize();
 
 	public synchronized void write(DataOutputStream os) throws IOException {
 		// do nothing

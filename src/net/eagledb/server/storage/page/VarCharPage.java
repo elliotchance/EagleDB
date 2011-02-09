@@ -8,7 +8,7 @@ public class VarCharPage extends Page {
 	public String[] page;
 
 	public VarCharPage() {
-		page = new String[1000];
+		page = new String[Page.TUPLES_PER_PAGE];
 	}
 
 	public boolean addTuple(int value) {
@@ -30,6 +30,10 @@ public class VarCharPage extends Page {
 	public synchronized void write(DataOutputStream os) throws IOException {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			os.writeBytes(page[i]);
+	}
+
+	public int getPageSize() {
+		return 4 * Page.TUPLES_PER_PAGE;
 	}
 
 }

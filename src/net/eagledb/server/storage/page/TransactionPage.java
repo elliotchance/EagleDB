@@ -8,7 +8,7 @@ public class TransactionPage extends Page {
 	public int[] transactionID;
 
 	public TransactionPage() {
-		transactionID = new int[1000];
+		transactionID = new int[Page.TUPLES_PER_PAGE];
 	}
 
 	public int getTotalTuples() {
@@ -33,6 +33,10 @@ public class TransactionPage extends Page {
 	public synchronized void write(DataOutputStream os) throws IOException {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			os.writeInt(transactionID[i]);
+	}
+
+	public int getPageSize() {
+		return 4 * Page.TUPLES_PER_PAGE;
 	}
 
 }

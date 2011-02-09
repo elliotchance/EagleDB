@@ -8,7 +8,7 @@ public class IntPage extends Page {
 	public int[] page;
 
 	public IntPage() {
-		page = new int[1000];
+		page = new int[Page.TUPLES_PER_PAGE];
 	}
 
 	public boolean addTuple(int value) {
@@ -25,6 +25,10 @@ public class IntPage extends Page {
 	public synchronized void write(DataOutputStream os) throws IOException {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			os.writeInt(page[i]);
+	}
+
+	public int getPageSize() {
+		return 4 * Page.TUPLES_PER_PAGE;
 	}
 
 }
