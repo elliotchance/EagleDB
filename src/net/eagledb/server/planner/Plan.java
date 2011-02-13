@@ -57,8 +57,8 @@ public class Plan {
 		lines[i] = "Total: " + totalCost.estimateMinimumTimerons + ".." + totalCost.estimateMaximumTimerons +
 			" timerons";
 		if(hasExecuted)
-			lines[i] += ", " + totalCost.realMillis + " ms, " + totalCost.pagesReadFromCache + " RAM pages, " +
-				totalCost.pagesReadFromDisk + " disk pages";
+			lines[i] += ", " + tuples.size() + " tuples, " + totalCost.realMillis + " ms, " +
+				totalCost.pagesReadFromCache + " RAM pages, " + totalCost.pagesReadFromDisk + " disk pages";
 
 		return lines;
 	}
