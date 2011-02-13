@@ -1,9 +1,11 @@
 package net.eagledb.server;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.sql.SQLException;
 import net.eagledb.server.sql.SQLParser;
-import java.sql.*;
 import net.eagledb.server.storage.Database;
 
 public class ClientConnection extends Thread {
@@ -29,8 +31,8 @@ public class ClientConnection extends Thread {
 	public void run() {
 		try {
 			// communication
-			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
 			while(true) {
 				// get input
@@ -49,9 +51,12 @@ public class ClientConnection extends Thread {
 
 				// send result
 				out.writeObject(result);
+				out.flush();
 			}
 
 			socket.close();
+			//in.close();
+			out.close();
 		}
 		catch(IOException e) {
 			e.printStackTrace();

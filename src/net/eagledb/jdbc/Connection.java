@@ -27,6 +27,8 @@ public class Connection<T> implements java.sql.Connection {
 		String dbname = "";
 		try {
 			dbname = new URI(url).getPath();
+			if(dbname == null)
+				dbname = "";
 			if(dbname.length() > 1)
 				dbname = dbname.substring(1);
 		}
@@ -100,14 +102,15 @@ public class Connection<T> implements java.sql.Connection {
 	public Result sendQuery(Request request) throws SQLException {
 		try {
 			out.writeObject(request);
+			out.flush();
 			Result result = (Result) in.readObject();
-			
+
 			if(result.sqlException != null)
 				throw new SQLException(result.sqlException + "\nSQL " + request.sql);
 
 			if(result.code != ResultCode.SUCCESS)
 				throw new SQLException("Failed with code: " + result.code + "\nSQL " + request.sql);
-			
+
 			return result;
 		}
 		catch(IOException e) {

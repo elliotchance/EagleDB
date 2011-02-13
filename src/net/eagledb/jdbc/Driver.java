@@ -98,6 +98,8 @@ public class Driver implements java.sql.Driver {
 	 * @throws SQLException SQLException - if a database access error occurs
 	 */
 	public java.sql.Connection connect(String url, Properties info) throws SQLException {
+		if(!url.startsWith("eagledb://"))
+			return null;
 		return new net.eagledb.jdbc.Connection(url, info);
 	}
 

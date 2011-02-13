@@ -1,0 +1,10 @@
+02-11 22:52:56 jdbc[2]: connection not closed
+java.lang.Exception: Stack Trace
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:121)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:94)
+	at org.h2.Driver.connect(Driver.java:62)
+	at java.sql.DriverManager.getConnection(DriverManager.java:582)
+	at java.sql.DriverManager.getConnection(DriverManager.java:185)
+	at net.eagledb.test.compare.H2.init(H2.java:24)
+	at net.eagledb.test.compare.Run.<init>(Run.java:38)
+	at net.eagledb.test.compare.Run.main(Run.java:9)
