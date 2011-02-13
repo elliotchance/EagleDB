@@ -1,6 +1,6 @@
 package net.eagledb.server.storage;
 
-import java.io.DataOutputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.page.Page;
@@ -15,7 +15,7 @@ public class Table implements java.io.Serializable {
 	
 	public transient ArrayList<TransactionPage> dirtyTransactionPages = null;
 
-	public transient DataOutputStream transactionPageHandle = null;
+	public transient RandomAccessFile transactionPageHandle = null;
 
 	private ArrayList<Attribute> attributes;
 
@@ -48,19 +48,25 @@ public class Table implements java.io.Serializable {
 		// do we have space in the last page?
 		if(transactionPages.size() == 0 ||
 			transactionPages.get(transactionPages.size() - 1).getTotalTuples() >= Page.TUPLES_PER_PAGE) {
-			transactionPages.add(new TransactionPage());
+			TransactionPage tp = new TransactionPage();
+			tp.pageID = transactionPages.size();
+			transactionPages.add(tp);
 
 			try {
 				int i = 0;
 				for(Attribute f : attributes) {
 					Class<? extends net.eagledb.server.sql.type.SQLType> pageType = f.getPageType();
+					Page p = null;
 
 					if(pageType.equals(net.eagledb.server.sql.type.Integer.class))
-						attributes.get(i).pages.add(new IntPage());
+						p = new IntPage();
 					else if(pageType.equals(net.eagledb.server.sql.type.Real.class))
-						attributes.get(i).pages.add(new RealPage());
+						p = new RealPage();
 					else
 						throw new Exception("Unknown attribute type " + pageType);
+
+					p.pageID = transactionPages.size() - 1;
+					attributes.get(i).pages.add(p);
 					++i;
 				}
 			}

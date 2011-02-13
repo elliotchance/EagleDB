@@ -1,6 +1,7 @@
 package net.eagledb.server.storage;
 
 import java.io.DataOutputStream;
+import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,7 +15,7 @@ public class Attribute implements Serializable {
 
 	private Class<? extends SQLType> pageType;
 
-	private transient DataOutputStream dataHandle;
+	private transient RandomAccessFile dataHandle;
 
 	public transient ArrayList<Page> pages = null;
 
@@ -24,7 +25,7 @@ public class Attribute implements Serializable {
 		initTransient();
 	}
 
-	public Attribute(String fieldName, Class<? extends SQLType> fieldPageType, DataOutputStream dataHandle) {
+	public Attribute(String fieldName, Class<? extends SQLType> fieldPageType, RandomAccessFile dataHandle) {
 		this(fieldName, fieldPageType);
 		this.dataHandle = dataHandle;
 	}
@@ -66,11 +67,11 @@ public class Attribute implements Serializable {
 		return null;
 	}
 
-	public void setDataHandle(DataOutputStream dataHandle) {
+	public void setDataHandle(RandomAccessFile dataHandle) {
 		this.dataHandle = dataHandle;
 	}
 
-	public DataOutputStream getDataHandle() {
+	public RandomAccessFile getDataHandle() {
 		return dataHandle;
 	}
 

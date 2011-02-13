@@ -1,12 +1,12 @@
 package net.eagledb.server;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.RandomAccessFile;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -122,8 +122,8 @@ public class Server {
 						ObjectInputStream in = new ObjectInputStream(new FileInputStream(tablePath));
 						Table table = (Table) in.readObject();
 						table.initTransient();
-						table.transactionPageHandle = new DataOutputStream(new FileOutputStream(databaseLocation +
-							"/data/" + dbname + "/" + schemaName + "/" + table.getName() + ".t"));
+						table.transactionPageHandle = new RandomAccessFile(databaseLocation +
+							"/data/" + dbname + "/" + schemaName + "/" + table.getName() + ".t", "rw");
 						schema.addTable(table);
 						in.close();
 					}
@@ -209,15 +209,15 @@ public class Server {
 	public synchronized void saveTable(String databaseName, String schemaName, Table table) {
 		try {
 			// create the transaction file
-			table.transactionPageHandle = new DataOutputStream(new FileOutputStream(databaseLocation + "/data/" +
-				databaseName + "/" + schemaName + "/" + table.getName() + ".t"));
+			table.transactionPageHandle = new RandomAccessFile(databaseLocation + "/data/" +
+				databaseName + "/" + schemaName + "/" + table.getName() + ".t", "rw");
 			table.transactionPageHandle.write(new byte[] {});
 
 			// create the attribute files
 			int i = 0;
 			for(Attribute attribute : table.getAttributes()) {
-				attribute.setDataHandle(new DataOutputStream(new FileOutputStream(databaseLocation + "/data/" +
-					databaseName + "/" + schemaName + "/" + table.getName() + "." + i)));
+				attribute.setDataHandle(new RandomAccessFile(databaseLocation + "/data/" +
+					databaseName + "/" + schemaName + "/" + table.getName() + "." + i, "rw"));
 				attribute.getDataHandle().write(new byte[] {});
 				++i;
 			}

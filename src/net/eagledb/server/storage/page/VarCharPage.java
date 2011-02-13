@@ -1,7 +1,7 @@
 package net.eagledb.server.storage.page;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class VarCharPage extends Page {
 
@@ -27,7 +27,7 @@ public class VarCharPage extends Page {
 	}
 
 	@Override
-	public synchronized void write(DataOutputStream os) throws IOException {
+	public synchronized void write(RandomAccessFile os) throws IOException {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			os.writeBytes(page[i]);
 	}

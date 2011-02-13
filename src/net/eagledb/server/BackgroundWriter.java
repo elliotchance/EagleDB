@@ -5,6 +5,7 @@ import net.eagledb.server.storage.Attribute;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
+import net.eagledb.server.storage.page.Page;
 import net.eagledb.server.storage.page.TransactionPage;
 
 public class BackgroundWriter extends Thread {
@@ -24,13 +25,17 @@ public class BackgroundWriter extends Thread {
 					for(Table table : schema.getTables()) {
 						while(table.dirtyTransactionPages.size() > 0) {
 							TransactionPage page = table.dirtyTransactionPages.get(0);
+							table.transactionPageHandle.getChannel().position(page.getPageSize() * page.pageID);
 							page.write(table.transactionPageHandle);
 							table.dirtyTransactionPages.remove(0);
 							System.out.println("DIRTY TRANSACTION PAGE WRITTEN: " + page.pageID);
 
 							// look for dirty field pages
 							for(Attribute attribute : table.getAttributes()) {
-								attribute.pages.get(page.pageID).write(attribute.getDataHandle());
+								Page p = attribute.pages.get(page.pageID);
+								attribute.getDataHandle().getChannel().position(page.getPageSize() * p.pageID);
+								p.write(attribute.getDataHandle());
+								System.out.println("DIRTY PAGE WRITTEN: " + p.pageID);
 							}
 						}
 					}

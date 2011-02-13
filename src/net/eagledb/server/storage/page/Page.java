@@ -1,7 +1,7 @@
 package net.eagledb.server.storage.page;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public abstract class Page {
 
@@ -17,7 +17,7 @@ public abstract class Page {
 
 	public abstract int getPageSize();
 
-	public synchronized void write(DataOutputStream os) throws IOException {
+	public synchronized void write(RandomAccessFile os) throws IOException {
 		// do nothing
 	}
 
