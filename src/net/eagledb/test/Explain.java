@@ -15,7 +15,14 @@ public class Explain implements Test {
 		rs.close();
 		
 		rs = st.executeQuery("explain analyze " + Select.selectSQL);
-		System.out.println("EXPLAIN ANALYZE " + Select.selectSQL);
+		System.out.println("1: EXPLAIN ANALYZE " + Select.selectSQL);
+		while(rs.next())
+			System.out.println("  " + rs.getString(0));
+		System.out.println();
+		rs.close();
+
+		rs = st.executeQuery("explain analyze " + Select.selectSQL);
+		System.out.println("2: EXPLAIN ANALYZE " + Select.selectSQL);
 		while(rs.next())
 			System.out.println("  " + rs.getString(0));
 		System.out.println();

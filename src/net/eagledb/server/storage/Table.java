@@ -165,6 +165,11 @@ public class Table implements java.io.Serializable {
 			TransactionPage tp = new TransactionPage();
 			tp.pageID = location;
 			tp.read(transactionPageHandle);
+
+			// can we cache this page?
+			if(location == transactionPages.size())
+				transactionPages.add(tp);
+			
 			return tp;
 		}
 		catch(IOException e) {
@@ -190,6 +195,11 @@ public class Table implements java.io.Serializable {
 
 			page.pageID = location;
 			page.read(attribute.getDataHandle());
+
+			// can we cache this page?
+			if(location == attribute.pages.size())
+				attribute.pages.add(page);
+
 			return page;
 		}
 		catch(InstantiationException e) {
