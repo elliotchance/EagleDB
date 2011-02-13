@@ -16,11 +16,25 @@ public class FullTableScan implements PlanItem {
 
 	private String clause;
 
+	private PlanItemCost cost = new PlanItemCost();
+
 	public FullTableScan(Table table, int tupleSize, String clause, PageOperation[] operations) {
 		this.table = table;
 		this.operations = operations;
 		this.tupleSize = tupleSize;
 		this.clause = clause;
+		estimateCost();
+	}
+
+	private void estimateCost() {
+		int totalBuffers = 0;
+		for(int i = 0; i < operations.length; ++i) {
+			if(operations[i].getMaxBuffer() > totalBuffers)
+				totalBuffers += operations[i].getMaxBuffer();
+		}
+
+		// assume a full table scan reads every page, multiple that by how much work is done on each page
+		cost.estimateMinimumTimerons = cost.estimateMaximumTimerons = table.getTotalPages() * totalBuffers;
 	}
 
 	@Override
@@ -29,7 +43,7 @@ public class FullTableScan implements PlanItem {
 	}
 
 	public void execute(ArrayList<Tuple> tuples) {
-		System.out.println("FTS with " + table.getTotalPages() + " pages");
+		long start = Calendar.getInstance().getTimeInMillis();
 
 		// calculate the number of buffers we need
 		int totalBuffers = 0;
@@ -52,8 +66,13 @@ public class FullTableScan implements PlanItem {
 					tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, tupleSize));
 			}
 		}
-		//System.out.println(Arrays.toString(buffer[0]));
-		//table.pageHeads.get(fieldID).scan(tp, tuples, action, value);
+
+		cost.realMillis = Calendar.getInstance().getTimeInMillis() - start;
+	}
+
+	@Override
+	public PlanItemCost getPlanItemCost() {
+		return cost;
 	}
 
 }

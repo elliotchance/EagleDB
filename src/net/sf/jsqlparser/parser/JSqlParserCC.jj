@@ -217,6 +217,7 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_SHOW:"SHOW">
 |   <K_DATABASES:"DATABASES">
 |   <K_EXPLAIN:"EXPLAIN">
+|   <K_ANALYZE:"ANALYZE">
 }
 
 
@@ -559,15 +560,17 @@ Select Select():
 	Select select = new Select();
 	SelectBody selectBody = null;
 	List with = null;
-	boolean explain = false;
+	boolean explain = false, analyse = false;
 }
 {
 	[ <K_EXPLAIN> { explain = true; } ]
+	[ <K_ANALYZE> { analyse = true; } ]
 	[ with=WithList() { select.setWithItemsList(with); } ]
     selectBody = SelectBody()
 	{ 
 		select.setSelectBody(selectBody);
 		select.setExplain(explain);
+		select.setExplainAnalyse(analyse);
 		return select; 
 	}
 }

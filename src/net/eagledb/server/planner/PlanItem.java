@@ -10,4 +10,6 @@ public interface PlanItem {
 
 	public void execute(ArrayList<Tuple> tuples);
 
+	public PlanItemCost getPlanItemCost();
+
 }

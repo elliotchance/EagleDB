@@ -74,13 +74,17 @@ public class SQLSelect extends SQLAction {
 
 			// create the executation plan
 			Plan p = new Plan();
-			p.plan.add(new FullTableScan(table, selectItems.size(), select.getWhere().toString(), op));
+			p.addPlanItem(new FullTableScan(table, selectItems.size(), select.getWhere().toString(), op));
 
 			// add plan
-			p.plan.add(new FetchAttributes(table, faSources, faDestinations, faTypes));
+			p.addPlanItem(new FetchAttributes(table, faSources, faDestinations, faTypes));
 
 			// execute plan
 			if(((net.sf.jsqlparser.statement.select.Select) sql).getExplain()) {
+				// if its ANALYZE we need to execute the query
+				if(((net.sf.jsqlparser.statement.select.Select) sql).getExplainAnalyse())
+					p.execute();
+
 				// return the EXPLAIN set
 				return new Result(ResultCode.SUCCESS, new Attribute[] {
 					new Attribute("explain", net.eagledb.server.sql.type.VarChar.class)

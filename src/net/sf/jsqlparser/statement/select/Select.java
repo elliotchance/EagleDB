@@ -31,7 +31,8 @@ import net.sf.jsqlparser.statement.StatementVisitor;
 public class Select implements Statement {
 	private SelectBody selectBody;
 	private List withItemsList;
-	private boolean explain;
+	private boolean explain = false;
+	private boolean analyse = false;
 	
 	public void accept(StatementVisitor statementVisitor) {
 		statementVisitor.visit(this);
@@ -45,6 +46,14 @@ public class Select implements Statement {
 		this.explain = explain;
 	}
 
+	public void setExplainAnalyse(boolean analyse) {
+		this.analyse = analyse;
+	}
+
+	public boolean getExplainAnalyse() {
+		return analyse;
+	}
+
 	public SelectBody getSelectBody() {
 		return selectBody;
 	}
@@ -52,7 +61,8 @@ public class Select implements Statement {
 	public void setSelectBody(SelectBody body) {
 		selectBody = body;
 	}
-	
+
+	@Override
 	public String toString() {
 		StringBuffer retval = new StringBuffer();
 		if (withItemsList != null && !withItemsList.isEmpty()) {
