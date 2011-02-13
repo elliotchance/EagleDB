@@ -26,11 +26,12 @@ public class BackgroundWriter extends Thread {
 							TransactionPage page = table.dirtyTransactionPages.get(0);
 							page.write(table.transactionPageHandle);
 							table.dirtyTransactionPages.remove(0);
-							System.out.println("DIRTY TRANSACTION PAGE WRITTEN");
-							
-							/*for(Attribute attribute : table.getAttributes()) {
+							System.out.println("DIRTY TRANSACTION PAGE WRITTEN: " + page.pageID);
 
-							}*/
+							// look for dirty field pages
+							for(Attribute attribute : table.getAttributes()) {
+								attribute.pages.get(page.pageID).write(attribute.getDataHandle());
+							}
 						}
 					}
 				}

@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import net.eagledb.server.storage.Attribute;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
@@ -211,6 +212,15 @@ public class Server {
 			table.transactionPageHandle = new DataOutputStream(new FileOutputStream(databaseLocation + "/data/" +
 				databaseName + "/" + schemaName + "/" + table.getName() + ".t"));
 			table.transactionPageHandle.write(new byte[] {});
+
+			// create the attribute files
+			int i = 0;
+			for(Attribute attribute : table.getAttributes()) {
+				attribute.setDataHandle(new DataOutputStream(new FileOutputStream(databaseLocation + "/data/" +
+					databaseName + "/" + schemaName + "/" + table.getName() + "." + i)));
+				attribute.getDataHandle().write(new byte[] {});
+				++i;
+			}
 
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(databaseLocation + "/data/" +
 				databaseName + "/" + schemaName + "/" + table.getName() + ".table"));

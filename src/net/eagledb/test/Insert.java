@@ -10,7 +10,7 @@ public class Insert implements Test {
 
 		// insert a bunch of records
 		long start = Calendar.getInstance().getTimeInMillis();
-		int tuples = 50;
+		int tuples = 1500;
 		for(int i = 0; i < tuples; ++i) {
 			ResultSet rs = st.executeQuery("insert into mytable (id, number) values (" + i + ", " + Math.sqrt(i) + ")");
 			rs.close();
