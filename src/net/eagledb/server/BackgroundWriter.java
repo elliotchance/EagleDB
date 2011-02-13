@@ -28,14 +28,12 @@ public class BackgroundWriter extends Thread {
 							table.transactionPageHandle.getChannel().position(page.getPageSize() * page.pageID);
 							page.write(table.transactionPageHandle);
 							table.dirtyTransactionPages.remove(0);
-							System.out.println("DIRTY TRANSACTION PAGE WRITTEN: " + page.pageID);
 
 							// look for dirty field pages
 							for(Attribute attribute : table.getAttributes()) {
 								Page p = attribute.pages.get(page.pageID);
 								attribute.getDataHandle().getChannel().position(page.getPageSize() * p.pageID);
 								p.write(attribute.getDataHandle());
-								System.out.println("DIRTY PAGE WRITTEN: " + p.pageID);
 							}
 						}
 					}
