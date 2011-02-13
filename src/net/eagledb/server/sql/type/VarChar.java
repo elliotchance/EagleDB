@@ -29,4 +29,8 @@ public class VarChar extends SQLType {
 		return new String[] { "VARCHAR", "CHARACTER VARYING" };
 	}
 
+	public Class getPageClass() {
+		return null;
+	}
+
 }

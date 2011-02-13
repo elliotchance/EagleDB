@@ -29,4 +29,8 @@ public class Boolean extends SQLType {
 		return new String[] { "BOOL", "BOOLEAN" };
 	}
 
+	public Class getPageClass() {
+		return null;
+	}
+
 }

@@ -29,4 +29,8 @@ public class Integer extends SQLType {
 		return new String[] { "INT", "INTEGER" };
 	}
 
+	public Class getPageClass() {
+		return net.eagledb.server.storage.page.IntPage.class;
+	}
+
 }

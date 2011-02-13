@@ -29,4 +29,8 @@ public class Real extends SQLType {
 		return new String[] { "REAL", "FLOAT" };
 	}
 
+	public Class getPageClass() {
+		return net.eagledb.server.storage.page.RealPage.class;
+	}
+
 }

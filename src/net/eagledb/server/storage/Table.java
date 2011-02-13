@@ -1,5 +1,6 @@
 package net.eagledb.server.storage;
 
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import net.eagledb.server.storage.page.IntPage;
@@ -19,6 +20,8 @@ public class Table implements java.io.Serializable {
 
 	private ArrayList<Attribute> attributes;
 
+	private int totalPages = 0;
+
 	public Table(String tableName, Attribute[] attrs) {
 		name = tableName;
 		attributes = new ArrayList<Attribute>();
@@ -26,6 +29,14 @@ public class Table implements java.io.Serializable {
 
 		for(Attribute attr : attrs)
 			addAttribute(attr);
+	}
+
+	public synchronized void setTotalPages(int totalPages) {
+		this.totalPages = totalPages;
+	}
+
+	public int getTotalPages() {
+		return totalPages;
 	}
 
 	public void initTransient() {
@@ -51,6 +62,7 @@ public class Table implements java.io.Serializable {
 			TransactionPage tp = new TransactionPage();
 			tp.pageID = transactionPages.size();
 			transactionPages.add(tp);
+			++totalPages;
 
 			try {
 				int i = 0;
@@ -138,15 +150,52 @@ public class Table implements java.io.Serializable {
 	}
 
 	public TransactionPage getTransactionPage(int location) {
-		return transactionPages.get(location);
+		// do we have the page already in RAM?
+		if(location < transactionPages.size())
+			return transactionPages.get(location);
+
+		// we have to fetch it, don't cache it
+		try {
+			transactionPageHandle.getChannel().position(location * TransactionPage.getPageSize());
+			
+			TransactionPage tp = new TransactionPage();
+			tp.pageID = location;
+			tp.read(transactionPageHandle);
+			return tp;
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public Page getPage(int fieldID, int location) {
-		return attributes.get(fieldID).pages.get(location);
-	}
+		// do we have the page already in RAM?
+		Attribute attribute = attributes.get(fieldID);
+		if(location < attribute.pages.size())
+			return attribute.pages.get(location);
 
-	public int getTotalPages() {
-		return transactionPages.size();
+		// we have to fetch it, don't cache it
+		try {
+			Page page = (Page) attribute.getPageType().newInstance().getPageClass().newInstance();
+			attribute.getDataHandle().getChannel().position(location * page.getPageSize());
+
+			page.pageID = location;
+			page.read(attribute.getDataHandle());
+			return page;
+		}
+		catch(InstantiationException e) {
+			e.printStackTrace();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+		catch(IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	private void addDirtyTransactionPage(TransactionPage p) {

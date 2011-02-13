@@ -27,7 +27,13 @@ public class RealPage extends Page {
 			os.writeFloat(page[i]);
 	}
 
-	public int getPageSize() {
+	@Override
+	public synchronized void read(RandomAccessFile is) throws IOException {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			page[i] = is.readFloat();
+	}
+
+	public static int getPageSize() {
 		return 4 * Page.TUPLES_PER_PAGE;
 	}
 

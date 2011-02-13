@@ -25,4 +25,8 @@ public class BigInt extends SQLType {
 		return new String[] { "BIGINT" };
 	}
 
+	public Class getPageClass() {
+		return null;
+	}
+
 }

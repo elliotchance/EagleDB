@@ -16,10 +16,11 @@ public class Client extends Thread {
 
 			//new CreateDatabase().run(conn);
 			//new ShowDatabases().run(conn);
-			new CreateTable().run(conn);
-			new Insert().run(conn);
-			new Explain().run(conn);
+			//new CreateTable().run(conn);
+			//new Insert().run(conn);
+			//new Explain().run(conn);
 			new Select().run(conn);
+			System.out.println("Done");
 		}
 		catch(ClassNotFoundException e) {
 			e.printStackTrace();

@@ -1,6 +1,6 @@
 package net.eagledb.server.sql.type;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public abstract class SQLType {
 
@@ -15,6 +15,8 @@ public abstract class SQLType {
 	public abstract int getMaximumVariableSize();
 
 	public abstract String[] getNames();
+	
+	public abstract Class getPageClass();
 
 	public void registerTypes() {
 		SQLType.registerClass(this);

@@ -29,4 +29,8 @@ public class Timestamp extends SQLType {
 		return new String[] { "TIMESTAMP" };
 	}
 
+	public Class getPageClass() {
+		return null;
+	}
+
 }

@@ -29,4 +29,8 @@ public class Time extends SQLType {
 		return new String[] { "TIME" };
 	}
 
+	public Class getPageClass() {
+		return null;
+	}
+
 }

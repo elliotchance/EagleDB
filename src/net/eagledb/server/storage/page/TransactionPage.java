@@ -35,7 +35,13 @@ public class TransactionPage extends Page {
 			os.writeInt(transactionID[i]);
 	}
 
-	public int getPageSize() {
+	@Override
+	public synchronized void read(RandomAccessFile is) throws IOException {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			transactionID[i] = is.readInt();
+	}
+
+	public static int getPageSize() {
 		return 4 * Page.TUPLES_PER_PAGE;
 	}
 

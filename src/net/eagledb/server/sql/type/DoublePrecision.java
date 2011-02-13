@@ -29,4 +29,8 @@ public class DoublePrecision extends SQLType {
 		return new String[] { "DOUBLE", "DOUBLE PRECISION" };
 	}
 
+	public Class getPageClass() {
+		return null;
+	}
+
 }

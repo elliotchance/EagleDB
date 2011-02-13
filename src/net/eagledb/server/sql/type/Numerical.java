@@ -29,4 +29,8 @@ public class Numerical extends SQLType {
 		return new String[] { "NUMERICAL", "DECIMAL" };
 	}
 
+	public Class getPageClass() {
+		return null;
+	}
+
 }

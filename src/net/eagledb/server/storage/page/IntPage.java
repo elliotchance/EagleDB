@@ -27,7 +27,13 @@ public class IntPage extends Page {
 			os.writeInt(page[i]);
 	}
 
-	public int getPageSize() {
+	@Override
+	public synchronized void read(RandomAccessFile is) throws IOException {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			page[i] = is.readInt();
+	}
+
+	public static int getPageSize() {
 		return 4 * Page.TUPLES_PER_PAGE;
 	}
 

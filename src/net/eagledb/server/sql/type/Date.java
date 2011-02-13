@@ -29,4 +29,8 @@ public class Date extends SQLType {
 		return new String[] { "DATE" };
 	}
 
+	public Class getPageClass() {
+		return null;
+	}
+
 }

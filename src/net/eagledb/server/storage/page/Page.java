@@ -15,9 +15,15 @@ public abstract class Page {
 
 	public abstract boolean addTuple(float value);
 
-	public abstract int getPageSize();
+	public static int getPageSize() {
+		return 0;
+	}
 
 	public synchronized void write(RandomAccessFile os) throws IOException {
+		// do nothing
+	}
+
+	public synchronized void read(RandomAccessFile is) throws IOException {
 		// do nothing
 	}
 

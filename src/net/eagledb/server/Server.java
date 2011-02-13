@@ -14,6 +14,7 @@ import net.eagledb.server.storage.Attribute;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
+import net.eagledb.server.storage.page.TransactionPage;
 
 public class Server {
 
@@ -124,6 +125,19 @@ public class Server {
 						table.initTransient();
 						table.transactionPageHandle = new RandomAccessFile(databaseLocation +
 							"/data/" + dbname + "/" + schemaName + "/" + table.getName() + ".t", "rw");
+
+						// handles for attributes
+						int i = 0;
+						for(Attribute attribute : table.getAttributes()) {
+							attribute.setDataHandle(new RandomAccessFile(databaseLocation +
+								"/data/" + dbname + "/" + schemaName + "/" + table.getName() + "." + i, "rw"));
+							++i;
+						}
+
+						// calculate how many pages this table is
+						table.setTotalPages((int) (table.transactionPageHandle.length() /
+							(long) (TransactionPage.TUPLES_PER_PAGE * 4)));
+
 						schema.addTable(table);
 						in.close();
 					}

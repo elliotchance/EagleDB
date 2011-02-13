@@ -29,4 +29,8 @@ public class Blob extends SQLType {
 		return new String[] { "BLOB" };
 	}
 
+	public Class getPageClass() {
+		return null;
+	}
+
 }

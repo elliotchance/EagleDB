@@ -29,6 +29,8 @@ public class FullTableScan implements PlanItem {
 	}
 
 	public void execute(ArrayList<Tuple> tuples) {
+		System.out.println("FTS with " + table.getTotalPages() + " pages");
+
 		// calculate the number of buffers we need
 		int totalBuffers = 0;
 		for(int i = 0; i < operations.length; ++i) {

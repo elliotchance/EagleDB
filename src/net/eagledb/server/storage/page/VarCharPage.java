@@ -32,7 +32,7 @@ public class VarCharPage extends Page {
 			os.writeBytes(page[i]);
 	}
 
-	public int getPageSize() {
+	public static int getPageSize() {
 		return 4 * Page.TUPLES_PER_PAGE;
 	}
 

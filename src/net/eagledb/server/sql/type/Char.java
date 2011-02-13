@@ -29,4 +29,8 @@ public class Char extends SQLType {
 		return new String[] { "CHAR", "CHARACTER" };
 	}
 
+	public Class getPageClass() {
+		return null;
+	}
+
 }
