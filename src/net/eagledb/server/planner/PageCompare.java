@@ -27,8 +27,16 @@ public class PageCompare extends PageOperation {
 	}
 
 	public void run(TransactionPage tp, Page p, boolean[][] buf) {
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
-			buf[bufferDestination][i] = buf[buffer1][i] && buf[buffer2][i];
+		if(action == PageAction.AND) {
+			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+				buf[bufferDestination][i] = buf[buffer1][i] && buf[buffer2][i];
+			return;
+		}
+		if(action == PageAction.OR) {
+			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+				buf[bufferDestination][i] = buf[buffer1][i] || buf[buffer2][i];
+			return;
+		}
 	}
 
 }

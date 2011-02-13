@@ -34,6 +34,15 @@ public class Expression {
 			operations.add(new PageCompare(buf1, buf2, dest, PageAction.AND));
 			return dest;
 		}
+
+		if(ex instanceof OrExpression) {
+			OrExpression current = (OrExpression) ex;
+			int buf1 = subparse(current.getLeftExpression());
+			int buf2 = subparse(current.getRightExpression());
+			int dest = resultBuffer++;
+			operations.add(new PageCompare(buf1, buf2, dest, PageAction.OR));
+			return dest;
+		}
 		
 		if(ex instanceof GreaterThan) {
 			GreaterThan current = (GreaterThan) ex;
