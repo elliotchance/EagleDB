@@ -3,6 +3,7 @@ package net.eagledb.server.storage;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import net.eagledb.server.planner.PlanItemCost;
 import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.page.Page;
 import net.eagledb.server.storage.page.RealPage;
@@ -149,12 +150,15 @@ public class Table implements java.io.Serializable {
 		return -1;
 	}
 
-	public TransactionPage getTransactionPage(int location) {
+	public TransactionPage getTransactionPage(int location, PlanItemCost cost) {
 		// do we have the page already in RAM?
-		if(location < transactionPages.size())
+		if(location < transactionPages.size()) {
+			++cost.pagesReadFromCache;
 			return transactionPages.get(location);
+		}
 
 		// we have to fetch it, don't cache it
+		++cost.pagesReadFromDisk;
 		try {
 			transactionPageHandle.getChannel().position(location * TransactionPage.getPageSize());
 			
@@ -170,13 +174,16 @@ public class Table implements java.io.Serializable {
 		return null;
 	}
 
-	public Page getPage(int fieldID, int location) {
+	public Page getPage(int fieldID, int location, PlanItemCost cost) {
 		// do we have the page already in RAM?
 		Attribute attribute = attributes.get(fieldID);
-		if(location < attribute.pages.size())
+		if(location < attribute.pages.size()) {
+			++cost.pagesReadFromCache;
 			return attribute.pages.get(location);
+		}
 
 		// we have to fetch it, don't cache it
+		++cost.pagesReadFromDisk;
 		try {
 			Page page = (Page) attribute.getPageType().newInstance().getPageClass().newInstance();
 			attribute.getDataHandle().getChannel().position(location * page.getPageSize());

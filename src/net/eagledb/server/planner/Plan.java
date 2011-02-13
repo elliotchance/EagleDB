@@ -30,11 +30,12 @@ public class Plan {
 	public String[] getExplainLines() {
 		String[] lines = new String[plan.size() + 1];
 		
-		int i = 0, totalMinTimerons = 0, totalMaxTimerons = 0, totalRealMillis = 0;
+		int i = 0;
+		PlanItemCost totalCost = new PlanItemCost();
 		for(PlanItem p : plan) {
 			PlanItemCost cost = p.getPlanItemCost();
-			totalMinTimerons += cost.estimateMinimumTimerons;
-			totalMaxTimerons += cost.estimateMaximumTimerons;
+			totalCost.estimateMinimumTimerons += cost.estimateMinimumTimerons;
+			totalCost.estimateMaximumTimerons += cost.estimateMaximumTimerons;
 
 			String line = "";
 			if(cost.estimateMinimumTimerons != cost.estimateMaximumTimerons)
@@ -45,15 +46,19 @@ public class Plan {
 
 			if(hasExecuted) {
 				line += ", " + cost.realMillis + " ms";
-				totalRealMillis += cost.realMillis;
+				totalCost.realMillis += cost.realMillis;
+				totalCost.pagesReadFromCache += cost.pagesReadFromCache;
+				totalCost.pagesReadFromDisk += cost.pagesReadFromDisk;
 			}
 			lines[i++] = line;
 		}
 
 		// total line
-		lines[i] = "Total: " + totalMinTimerons + ".." + totalMaxTimerons + " timerons";
+		lines[i] = "Total: " + totalCost.estimateMinimumTimerons + ".." + totalCost.estimateMaximumTimerons +
+			" timerons";
 		if(hasExecuted)
-			lines[i] += ", " + totalRealMillis + " ms";
+			lines[i] += ", " + totalCost.realMillis + " ms, " + totalCost.pagesReadFromCache + " RAM pages, " +
+				totalCost.pagesReadFromDisk + " disk pages";
 
 		return lines;
 	}
