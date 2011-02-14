@@ -54,6 +54,29 @@ public class TestSelect {
 	}
 
     @Test
+	public void selectEqual() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id=2", 2);
+		assertArrayEquals(new String[][] {
+			{ "2", "2.5" },
+		}, set);
+	}
+
+    @Test
+	public void selectNotEqual() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id!=2", 2);
+		assertArrayEquals(new String[][] {
+			{ "1", "1.0" },
+			{ "3", "8.7" },
+		}, set);
+
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id<>2", 2);
+		assertArrayEquals(new String[][] {
+			{ "1", "1.0" },
+			{ "3", "8.7" },
+		}, set);
+	}
+
+    @Test
 	public void selectGreaterThan() throws Exception {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id>2", 2);
 		assertArrayEquals(new String[][] {

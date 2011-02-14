@@ -108,6 +108,38 @@ public class Expression {
 			}
 		}
 
+		if(ex instanceof EqualsTo) {
+			EqualsTo current = (EqualsTo) ex;
+
+			// check if the left side is a column and the right side is a value
+			if(current.getLeftExpression() instanceof Column && current.getRightExpression() instanceof LongValue) {
+				int dest = resultBuffer++;
+				operations.add(new PageScan(
+					dest,
+					table.getAttributeLocation(current.getLeftExpression().toString()),
+					PageAction.EQUAL,
+					Double.valueOf(current.getRightExpression().toString())
+				));
+				return dest;
+			}
+		}
+
+		if(ex instanceof NotEqualsTo) {
+			NotEqualsTo current = (NotEqualsTo) ex;
+
+			// check if the left side is a column and the right side is a value
+			if(current.getLeftExpression() instanceof Column && current.getRightExpression() instanceof LongValue) {
+				int dest = resultBuffer++;
+				operations.add(new PageScan(
+					dest,
+					table.getAttributeLocation(current.getLeftExpression().toString()),
+					PageAction.NOT_EQUAL,
+					Double.valueOf(current.getRightExpression().toString())
+				));
+				return dest;
+			}
+		}
+
 		if(ex instanceof LongValue) {
 			int dest = resultBuffer++;
 			operations.add(new PageScan(
