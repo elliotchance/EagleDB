@@ -28,12 +28,30 @@ public class PageScan extends PageOperation {
 		if(p instanceof net.eagledb.server.storage.page.IntPage) {
 			IntPage page = (IntPage) p;
 			int compare = (int) (double) Double.valueOf(value.toString());
-			if(action == PageAction.GREATER_THAN)
-				for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
-					buf[buffer][i] = (page.page[i] > compare);
-			else if(action == PageAction.LESS_THAN)
-				for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
-					buf[buffer][i] = (page.page[i] < compare);
+			
+			if(action == PageAction.ALL) {
+				for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
+					if(tp.transactionID[i] > 0)
+						buf[buffer][i] = true;
+				}
+				return;
+			}
+
+			if(action == PageAction.GREATER_THAN) {
+				for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
+					if(tp.transactionID[i] > 0)
+						buf[buffer][i] = (page.page[i] > compare);
+				}
+				return;
+			}
+			
+			if(action == PageAction.LESS_THAN) {
+				for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
+					if(tp.transactionID[i] > 0)
+						buf[buffer][i] = (page.page[i] < compare);
+				}
+				return;
+			}
 		}
 	}
 

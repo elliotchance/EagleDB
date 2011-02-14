@@ -1,11 +1,17 @@
 package net.eagledb.server.sql;
 
+import java.sql.SQLException;
+import java.util.List;
+import net.eagledb.server.ClientConnection;
+import net.eagledb.server.Result;
+import net.eagledb.server.ResultCode;
+import net.eagledb.server.Server;
+import net.eagledb.server.storage.Database;
+import net.eagledb.server.storage.Schema;
+import net.eagledb.server.storage.Table;
+import net.eagledb.server.storage.TemporaryTable;
+import net.eagledb.server.storage.Tuple;
 import net.sf.jsqlparser.statement.insert.Insert;
-import net.eagledb.server.*;
-import java.sql.*;
-import net.eagledb.server.storage.*;
-import java.util.*;
-import net.eagledb.server.storage.page.Page;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 
 public class SQLInsert extends SQLAction {
@@ -35,8 +41,15 @@ public class SQLInsert extends SQLAction {
 
 		// see if the table exists
 		Table table = schema.getTable(sql.getTable().getName());
-		if(table == null)
-			throw new SQLException("Table " + schemaName + "." + sql.getTable().getName() + " does not exist");
+		if(table == null) {
+			// temporary table?
+			TemporaryTable tt = conn.getTemporaryTable(sql.getTable().getName());
+			if(tt != null)
+				table = schema.getTable(tt.internalName);
+
+			if(table == null)
+				throw new SQLException("Table " + schemaName + "." + sql.getTable().getName() + " does not exist");
+		}
 
 		// create the tuple
 		Tuple tuple = new Tuple(table.getAttributes().size());

@@ -101,6 +101,14 @@ public class ClientConnection extends Thread {
 		temporaryTables.add(tt);
 	}
 
+	public TemporaryTable getTemporaryTable(String name) {
+		for(TemporaryTable tt : temporaryTables) {
+			if(tt.name.equals(name))
+				return tt;
+		}
+		return null;
+	}
+
 	public void close() {
 		// remove temporary tables
 		while(temporaryTables.size() > 0) {

@@ -2,7 +2,9 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import net.eagledb.server.EmbeddedServer;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -70,6 +72,28 @@ public class TestSuiteEmbeddedDatabase {
 		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
 		st.executeUpdate(sql);
 		st.close();
+	}
+
+	public static String[][] executeQuery(String sql, int columns) throws Exception {
+		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
+		ResultSet rs = st.executeQuery(sql);
+
+		ArrayList<String[]> tuples = new ArrayList<String[]>();
+		while(rs.next()) {
+			String[] tuple = new String[columns];
+			for(int i = 0; i < columns; ++i)
+				tuple[i] = rs.getString(i);
+			tuples.add(tuple);
+		}
+		rs.close();
+		st.close();
+
+		String[][] r = new String[tuples.size()][columns];
+		for(int i = 0; i < tuples.size(); ++i) {
+			for(int j = 0; j < columns; ++j)
+				r[i][j] = tuples.get(i)[j];
+		}
+		return r;
 	}
 
 }

@@ -76,22 +76,23 @@ public class Expression {
 			}
 		}
 
-		/*if(ex instanceof MinorThan) {
-			MinorThan current = (MinorThan) ex;
-			int buf1 = subparse(current.getLeftExpression());
-			int buf2 = subparse(current.getRightExpression());
+		if(ex instanceof LongValue) {
 			int dest = resultBuffer++;
-			operations.add(new PageScan(dest, table.getAttributeLocation("id"), PageAction.LESS_THAN, 42));
+			operations.add(new PageScan(
+				dest,
+				0,
+				PageAction.ALL,
+				Double.valueOf(ex.toString())
+			));
 			return dest;
-		}*/
+		}
 
 		throw new ExpressionException(ex);
 	}
 
 	public PageOperation[] parse() throws ExpressionException {
-		/*operations.add();
-		operations.add(new PageScan(1, table.getAttributeLocation("id"), PageAction.LESS_THAN, 40));
-		operations.add(new PageCompare(0, 1, 2, PageAction.AND));*/
+		if(expression == null)
+			expression = new LongValue("1");
 		subparse(expression);
 
 		// convert to array

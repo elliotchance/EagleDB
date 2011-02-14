@@ -15,6 +15,9 @@ import net.eagledb.server.storage.Attribute;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
+import net.eagledb.server.storage.TemporaryTable;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectItem;
@@ -46,13 +49,24 @@ public class SQLSelect extends SQLAction {
 		// see if the table exists
 		PlainSelect select = (PlainSelect) sql.getSelectBody();
 		Table table = schema.getTable(select.getFromItem().toString());
-		if(table == null)
-			throw new SQLException("Table " + schema.getName() + "." + select.getFromItem().toString() + " does not exist");
+		if(table == null) {
+			// temporary table?
+			TemporaryTable tt = conn.getTemporaryTable(select.getFromItem().toString());
+			if(tt != null)
+				table = schema.getTable(tt.internalName);
+
+			if(table == null)
+				throw new SQLException("Table " + schema.getName() + "." + select.getFromItem().toString() +
+					" does not exist");
+		}
 
 		// parse expression operations
 		try {
-			PageOperation[] op = new net.eagledb.server.planner.Expression(table, select.getWhere()).parse();
-			//System.out.println(java.util.Arrays.toString(op));
+			Expression whereClause = select.getWhere();
+			if(whereClause == null)
+				whereClause = new LongValue("1");
+
+			PageOperation[] op = new net.eagledb.server.planner.Expression(table, whereClause).parse();
 
 			// do we need to fetch attributes?
 			List<SelectItem> selectItems = select.getSelectItems();
@@ -74,7 +88,7 @@ public class SQLSelect extends SQLAction {
 
 			// create the executation plan
 			Plan p = new Plan();
-			p.addPlanItem(new FullTableScan(table, selectItems.size(), select.getWhere().toString(), op));
+			p.addPlanItem(new FullTableScan(table, selectItems.size(), whereClause.toString(), op));
 
 			// add plan
 			p.addPlanItem(new FetchAttributes(table, faSources, faDestinations, faTypes));

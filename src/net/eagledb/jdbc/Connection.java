@@ -105,7 +105,7 @@ public class Connection<T> implements java.sql.Connection {
 			out.flush();
 			Result result = (Result) in.readObject();
 
-			if(result.sqlException != null)
+			if(result.sqlException != null && !result.sqlException.equals(""))
 				throw new SQLException(result.sqlException + "\nSQL " + request.sql);
 
 			if(result.code != ResultCode.SUCCESS)

@@ -1111,8 +1111,13 @@ Expression Condition():
 	Expression result;
 }
 {
-	(LOOKAHEAD(SQLCondition()) result=SQLCondition()
-	| result=RegularCondition())
+	(LOOKAHEAD(SQLCondition())
+	result=SQLCondition()
+	|
+	LOOKAHEAD(PrimaryExpression())
+	result=PrimaryExpression()
+	|
+	result=RegularCondition())
 	
 	{ return result; }
 }

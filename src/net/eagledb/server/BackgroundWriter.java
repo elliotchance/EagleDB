@@ -21,9 +21,15 @@ public class BackgroundWriter extends Thread {
 
 	private synchronized void flushPages() {
 		try {
-			for(Database database : server.getDatabases()) {
-				for(Schema schema : database.getSchemas()) {
-					for(Table table : schema.getTables()) {
+			for(int i = 0; i < server.getDatabases().size(); ++i) {
+				Database database = server.getDatabases().get(i);
+
+				for(int j = 0; j < database.getSchemas().size(); ++i) {
+					Schema schema = database.getSchemas().get(j);
+
+					for(int k = 0; k < schema.getTables().size(); ++k) {
+						Table table = schema.getTables().get(k);
+						
 						while(table.dirtyTransactionPages.size() > 0) {
 							TransactionPage page = table.dirtyTransactionPages.get(0);
 							table.transactionPageHandle.getChannel().position(page.getPageSize() * page.pageID);
