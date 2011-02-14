@@ -1,6 +1,6 @@
-import java.sql.ResultSet;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.sql.SQLException;
-import java.sql.Statement;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,13 +30,21 @@ public class TestCreateDatabase {
 
     @Test
 	public void createDatabase() throws Exception {
+		TestSuiteEmbeddedDatabase.executeUpdate("create database \"" + TestSuiteEmbeddedDatabase.databaseName + "\"");
+	}
+
+    @Test
+	public void createDatabaseExists() throws Exception {
 		try {
-			TestSuiteEmbeddedDatabase.executeUpdate("create database mydb");
+			TestSuiteEmbeddedDatabase.executeUpdate("create database \"" + TestSuiteEmbeddedDatabase.databaseName + "\"");
 		}
 		catch(SQLException e) {
 			if(e.getMessage().indexOf("already exists") < 0)
 				throw e;
+			return;
 		}
+
+		throw new Exception("Failed: SQLException was never thrown");
 	}
 
 }

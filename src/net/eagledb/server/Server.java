@@ -206,9 +206,24 @@ public class Server {
 		return names;
 	}
 
-	public synchronized void createDatabase(String name) {
+	public synchronized Schema createSchema(String dbname, String schemaName) {
+		// create files
+		new File(databaseLocation + "/data/" + dbname + "/" + schemaName).mkdir();
+
+		// register
+		Schema newSchema = new Schema(schemaName);
+		getDatabase(dbname).addSchema(newSchema);
+		return newSchema;
+	}
+
+	public synchronized Database createDatabase(String name) {
+		// create files
 		new File(databaseLocation + "/data/" + name).mkdir();
-		new File(databaseLocation + "/data/" + name + "/public").mkdir();
+
+		// register
+		Database newDB = new Database(name);
+		databases.add(newDB);
+		return newDB;
 	}
 
 	public synchronized void saveTable(String databaseName, String schemaName, Table table) {

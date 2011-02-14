@@ -27,7 +27,7 @@ public class SQLConnect extends SQLAction {
 			   user.getHashedPassword().equals(crypt.crypt(password))) {
 				// update the currently privilaged user
 				conn.setUser(user);
-				if(!p.getProperty("database").equals(""))
+				if(p.getProperty("database") != null && !p.getProperty("database").equals(""))
 					conn.setSelectedDatabase(p.getProperty("database"));
 
 				// return success

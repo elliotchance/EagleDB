@@ -13,17 +13,17 @@ import net.sf.jsqlparser.schema.Column;
  */
 public class CreateDatabase implements Statement {
 
-    private Column name;
+    private String name;
 
     public void accept(StatementVisitor statementVisitor) {
         statementVisitor.visit(this);
     }
 
-    public Column getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(Column name) {
+    public void setName(String name) {
         this.name = name;
     }
 

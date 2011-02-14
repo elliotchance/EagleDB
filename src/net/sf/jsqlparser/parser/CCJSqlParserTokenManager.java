@@ -97,6 +97,7 @@ import net.sf.jsqlparser.statement.connect.Connect;
 import net.sf.jsqlparser.statement.create.database.CreateDatabase;
 import net.sf.jsqlparser.statement.show.databases.ShowDatabases;
 import net.sf.jsqlparser.statement.disconnect.Disconnect;
+import net.eagledb.server.sql.SQLParser;
 
 /** Token Manager. */
 public class CCJSqlParserTokenManager implements CCJSqlParserConstants

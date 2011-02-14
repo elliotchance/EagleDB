@@ -28,14 +28,15 @@ public class SQLInsert extends SQLAction {
 		//	throw new SQLException("Permission denied. You must have the CREATE TABLE privilege.");
 
 		// get schema
-		Schema schema = selectedDatabase.getSchema("public");
+		String schemaName = "public";
+		Schema schema = selectedDatabase.getSchema(schemaName);
 		if(schema == null)
-			throw new SQLException("No such schema " + schema.getName());
+			throw new SQLException("No such schema " + schemaName);
 
 		// see if the table exists
 		Table table = schema.getTable(sql.getTable().getName());
 		if(table == null)
-			throw new SQLException("Table " + schema.getName() + "." + sql.getTable().getName() + " does not exist");
+			throw new SQLException("Table " + schemaName + "." + sql.getTable().getName() + " does not exist");
 
 		// create the tuple
 		Tuple tuple = new Tuple(table.getAttributes().size());

@@ -27,9 +27,10 @@ public class SQLCreateTable extends SQLAction {
 			throw new SQLException("Permission denied. You must have the CREATE TABLE privilege.");
 
 		// get schema
-		Schema schema = selectedDatabase.getSchema("public");
+		String schemaName = "public";
+		Schema schema = selectedDatabase.getSchema(schemaName);
 		if(schema == null)
-			throw new SQLException("No such schema " + schema.getName());
+			throw new SQLException("No such schema " + schemaName);
 
 		// if this is a temporary table we need to translate the name to something random
 		TemporaryTable tt = null;

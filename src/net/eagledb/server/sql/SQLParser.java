@@ -40,6 +40,12 @@ public class SQLParser {
 		return false;
 	}
 
+	public static String getRawName(String entity) {
+		if(entity.startsWith("\""))
+			return entity.substring(1, entity.length() - 1);
+		return entity;
+	}
+
 	public Result parse(String sql, int action) throws SQLException {
 		try {
 			Result result = new Result(ResultCode.UNKNOWN);

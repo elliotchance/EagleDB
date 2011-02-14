@@ -1,6 +1,7 @@
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import net.eagledb.server.EmbeddedServer;
 import org.junit.After;
@@ -12,13 +13,24 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+	// databases
 	TestCreateDatabase.class,
+	TestShowDatabases.class,
+	TestConnect.class,
+
+	// tables
 	TestCreateTable.class,
 	TestDropTable.class,
-	TestExplain.class,
+		
+	// INSERT
 	TestInsert.class,
+
+	// SELECT
+	TestExplain.class,
 	TestSelect.class,
-	TestShowDatabases.class
+
+	// disconnect
+	TestDisconnect.class
 })
 public class TestSuiteEmbeddedDatabase {
 
@@ -26,19 +38,23 @@ public class TestSuiteEmbeddedDatabase {
 
 	public static Connection conn = null;
 
+	public static String databaseName;
+
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		// start the server
 		server = new EmbeddedServer();
 
-		// client connection
+		// generate a random database name
+		databaseName = new BigInteger(130, new SecureRandom()).toString(32);
+
+		// client connection without database
 		Class.forName("net.eagledb.jdbc.Driver");
-		conn = DriverManager.getConnection("eagledb://localhost/eagledb", "root", "123");
+		conn = DriverManager.getConnection("eagledb://localhost", "root", "123");
 	}
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
-		conn.close();
 		server.stop();
 	}
 
