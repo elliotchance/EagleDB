@@ -12,6 +12,7 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import java.sql.*;
 import net.eagledb.server.*;
+import net.sf.jsqlparser.statement.drop.Drop;
 
 public class SQLParser {
 
@@ -33,6 +34,8 @@ public class SQLParser {
 			return true;
 		if(stmt instanceof Insert)
 			return true;
+		if(stmt instanceof Drop)
+			return true;
 		return false;
 	}
 
@@ -51,6 +54,8 @@ public class SQLParser {
 				result = new SQLCreateDatabase(server, conn, (CreateDatabase) stmt).getResult();
 			else if(stmt instanceof CreateTable)
 				result = new SQLCreateTable(server, conn, (CreateTable) stmt).getResult();
+			else if(stmt instanceof Drop)
+				result = new SQLDropTable(server, conn, (Drop) stmt).getResult();
 			else if(stmt instanceof Insert)
 				result = new SQLInsert(server, conn, (Insert) stmt).getResult();
 			else if(stmt instanceof Select)

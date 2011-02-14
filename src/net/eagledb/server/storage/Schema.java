@@ -32,6 +32,15 @@ public class Schema {
 		tables.add(table);
 	}
 
+	public synchronized void dropTable(String tableName) {
+		for(int i = 0; i < tables.size(); ++i) {
+			if(tables.get(i).getName().equals(tableName)) {
+				tables.remove(i);
+				return;
+			}
+		}
+	}
+
 	public ArrayList<Table> getTables() {
 		return tables;
 	}
