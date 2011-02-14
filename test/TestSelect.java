@@ -22,12 +22,21 @@ public class TestSelect {
 	}
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+		// create the temporary table used for these tests
+		executeQuery("create temp table test1 (id int, number double)");
     }
 
     @After
     public void tearDown() {
     }
+
+	private void executeQuery(String sql) throws Exception {
+		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
+		ResultSet rs = st.executeQuery(sql);
+		rs.close();
+		st.close();
+	}
 
     @Test
 	public void select() throws Exception {

@@ -218,6 +218,8 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_DATABASES:"DATABASES">
 |   <K_EXPLAIN:"EXPLAIN">
 |   <K_ANALYZE:"ANALYZE">
+|   <K_TEMP:"TEMP">
+|   <K_TEMPORARY:"TEMPORARY">
 }
 
 
@@ -1542,11 +1544,11 @@ CreateTable CreateTable():
 	List colNames = null;
 	Index index = null;
 	String parameter = null;
+	boolean temporary = false;
 }
 {
 	<K_CREATE> 
-	// TODO:
-//	[ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } ] 
+	[ ( <K_TEMP> | <K_TEMPORARY> ) { temporary = true; } ]
 	(CreateParameter())*
 
 	<K_TABLE> table=Table() 
@@ -1646,6 +1648,7 @@ CreateTable CreateTable():
 			createTable.setTableOptionsStrings(tableOptions);
 		if (columnDefinitions.size() > 0)
 			createTable.setColumnDefinitions(columnDefinitions);
+		createTable.setTemporary(temporary);
 		return createTable;
 	}
 	

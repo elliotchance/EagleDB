@@ -42,4 +42,12 @@ public class TestCreateTable {
 		}
 	}
 
+    @Test
+	public void createTemporaryTable() throws Exception {
+		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
+		ResultSet rs = st.executeQuery("create temporary table mytemp (id int, number real)");
+		rs.close();
+		st.close();
+	}
+
 }

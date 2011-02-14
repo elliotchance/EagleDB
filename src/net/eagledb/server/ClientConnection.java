@@ -5,8 +5,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import net.eagledb.server.sql.SQLParser;
 import net.eagledb.server.storage.Database;
+import net.eagledb.server.storage.TemporaryTable;
 
 public class ClientConnection extends Thread {
 
@@ -20,11 +22,14 @@ public class ClientConnection extends Thread {
 
 	private Database selectedDatabase;
 
+	private ArrayList<TemporaryTable> temporaryTables;
+
 	public ClientConnection(Server s, Socket sock, Database selectedDatabase) {
 		server = s;
 		socket = sock;
 		this.selectedDatabase = selectedDatabase;
 		parser = new SQLParser(this, server);
+		temporaryTables = new ArrayList<TemporaryTable>();
 	}
 
 	@Override
@@ -80,6 +85,16 @@ public class ClientConnection extends Thread {
 
 	public void setSelectedDatabase(String dbname) {
 		selectedDatabase = server.getDatabase(dbname);
+	}
+
+	public void addTemporaryTable(TemporaryTable tt) {
+		temporaryTables.add(tt);
+	}
+
+	@Override
+	public void finalize() {
+		// remove temporary tables
+		//server.dropTable("al97lnnqkkbptj4o83ipfplmj8");
 	}
 
 }

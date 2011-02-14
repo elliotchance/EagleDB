@@ -16,9 +16,18 @@ public class CreateTable implements Statement {
     private List tableOptionsStrings;
     private List columnDefinitions;
     private List indexes;
+	private boolean temporary;
 
     public void accept(StatementVisitor statementVisitor) {
         statementVisitor.visit(this);
+    }
+
+    public boolean getTemporary() {
+        return temporary;
+    }
+
+    public void setTemporary(boolean temporary) {
+        this.temporary = temporary;
     }
 
     /**

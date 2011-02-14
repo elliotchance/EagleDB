@@ -31,13 +31,20 @@ public class SQLCreateTable extends SQLAction {
 		if(schema == null)
 			throw new SQLException("No such schema " + schema.getName());
 
+		// if this is a temporary table we need to translate the name to something random
+		TemporaryTable tt = null;
+		if(sql.getTemporary())
+			tt = new TemporaryTable(sql.getTable().getName());
+		else
+			tt = new TemporaryTable(sql.getTable().getName(), sql.getTable().getName());
+
 		// see if the table already exists
-		Table table = schema.getTable(sql.getTable().getName());
+		Table table = schema.getTable(tt.internalName);
 		if(table != null)
-			throw new SQLException("Table " + schema.getName() + "." + sql.getTable().getName() + " already exists");
+			throw new SQLException("Table " + schema.getName() + "." + tt.internalName + " already exists");
 
 		// create the table object
-		table = new Table(sql.getTable().getName(), new Attribute[] {});
+		table = new Table(tt.internalName, new Attribute[] {});
 
 		// add fields
 		List<net.sf.jsqlparser.statement.create.table.ColumnDefinition> columns = sql.getColumnDefinitions();
@@ -51,6 +58,10 @@ public class SQLCreateTable extends SQLAction {
 			Attribute attr = new Attribute(column.getColumnName(), internalType);
 			table.addAttribute(attr);
 		}
+
+		// register its temporary status
+		if(!tt.name.equals(tt.internalName))
+			conn.addTemporaryTable(tt);
 
 		// create the table
 		schema.addTable(table);
