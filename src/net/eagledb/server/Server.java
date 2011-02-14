@@ -256,6 +256,24 @@ public class Server {
 		return databases;
 	}
 
+	public synchronized void dropDatabase(String databaseName) {
+		try {
+			// delete definition
+			for(int i = 0; i < databases.size(); ++i) {
+				if(databases.get(i).getName().equals(databaseName)) {
+					databases.remove(i);
+					break;
+				}
+			}
+
+			// delete database files
+			deleteDirectory(new File(databaseLocation + "/data/" + databaseName));
+		}
+		catch(NullPointerException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public synchronized void dropTable(String databaseName, String schemaName, Table table) {
 		try {
 			// delete the transaction file
@@ -277,6 +295,21 @@ public class Server {
 		catch(NullPointerException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static boolean deleteDirectory(File path) {
+		if (path.exists()) {
+			File[] files = path.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				if (files[i].isDirectory()) {
+					deleteDirectory(files[i]);
+				}
+				else {
+					files[i].delete();
+				}
+			}
+		}
+		return (path.delete());
 	}
 
 }

@@ -31,7 +31,8 @@ import org.junit.runners.Suite;
 	TestExplain.class,
 	TestSelect.class,
 
-	// disconnect
+	// finish
+	TestDropDatabase.class,
 	TestDisconnect.class
 })
 public class TestSuiteEmbeddedDatabase {

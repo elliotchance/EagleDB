@@ -2,6 +2,13 @@ package net.eagledb.server.sql;
 
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import java.io.StringReader;
+import java.sql.SQLException;
+import net.eagledb.server.ClientConnection;
+import net.eagledb.server.DisconnectClient;
+import net.eagledb.server.RequestAction;
+import net.eagledb.server.Result;
+import net.eagledb.server.ResultCode;
+import net.eagledb.server.Server;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.show.databases.ShowDatabases;
@@ -10,8 +17,6 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.connect.Connect;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
-import java.sql.*;
-import net.eagledb.server.*;
 import net.sf.jsqlparser.statement.disconnect.Disconnect;
 import net.sf.jsqlparser.statement.drop.Drop;
 
@@ -64,8 +69,15 @@ public class SQLParser {
 				result = new SQLCreateDatabase(server, conn, (CreateDatabase) stmt).getResult();
 			else if(stmt instanceof CreateTable)
 				result = new SQLCreateTable(server, conn, (CreateTable) stmt).getResult();
-			else if(stmt instanceof Drop)
-				result = new SQLDropTable(server, conn, (Drop) stmt).getResult();
+			else if(stmt instanceof Drop) {
+				Drop newStmt = (Drop) stmt;
+				if(newStmt.getType().toUpperCase().equals("DATABASE"))
+					result = new SQLDropDatabase(server, conn, newStmt).getResult();
+				else if(newStmt.getType().toUpperCase().equals("TABLE"))
+					result = new SQLDropTable(server, conn, newStmt).getResult();
+				else
+					throw new SQLException("Invalid SQL: " + sql);
+			}
 			else if(stmt instanceof Insert)
 				result = new SQLInsert(server, conn, (Insert) stmt).getResult();
 			else if(stmt instanceof Select)

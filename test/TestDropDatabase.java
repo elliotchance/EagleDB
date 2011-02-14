@@ -1,6 +1,3 @@
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -29,9 +26,8 @@ public class TestDropDatabase {
     }
 
     @Test
-	public void dropTable() throws Exception {
-		TestSuiteEmbeddedDatabase.executeUpdate("create table droptable (id int)");
-		TestSuiteEmbeddedDatabase.executeUpdate("drop table droptable");
+	public void dropDatabase() throws Exception {
+		TestSuiteEmbeddedDatabase.executeUpdate("drop database " + TestSuiteEmbeddedDatabase.databaseName);
 	}
 
 }
