@@ -1111,11 +1111,9 @@ Expression Condition():
 	Expression result;
 }
 {
-	(LOOKAHEAD(SQLCondition())
+	(
+	LOOKAHEAD(SQLCondition())
 	result=SQLCondition()
-	|
-	LOOKAHEAD(PrimaryExpression())
-	result=PrimaryExpression()
 	|
 	result=RegularCondition())
 	
@@ -1134,22 +1132,24 @@ Expression RegularCondition():
 	[ <K_NOT> { not = true; } ] 
 	leftExpression=ComparisonItem() { result = leftExpression; }
 
-	(
-	">" { result = new GreaterThan(); }
-	| "<" { result = new MinorThan(); }
-	| "=" { result = new EqualsTo(); }
-	| ">=" { result = new GreaterThanEquals(); }
-	| "<=" { result = new MinorThanEquals(); }
-	| ("<>" | "!=") { result = new NotEqualsTo(); }
-	)
-	rightExpression=ComparisonItem()
-	{
-		BinaryExpression regCond = (BinaryExpression) result;
-		regCond.setLeftExpression(leftExpression);
-		regCond.setRightExpression(rightExpression);
-		if (not)
-			regCond.setNot();
-	}		
+	[
+		(
+		">" { result = new GreaterThan(); }
+		| "<" { result = new MinorThan(); }
+		| "=" { result = new EqualsTo(); }
+		| ">=" { result = new GreaterThanEquals(); }
+		| "<=" { result = new MinorThanEquals(); }
+		| ("<>" | "!=") { result = new NotEqualsTo(); }
+		)
+		rightExpression=ComparisonItem()
+		{
+			BinaryExpression regCond = (BinaryExpression) result;
+			regCond.setLeftExpression(leftExpression);
+			regCond.setRightExpression(rightExpression);
+			if (not)
+				regCond.setNot();
+		}	
+	]	
 	
 	{ return result; }
 }

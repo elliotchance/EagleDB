@@ -52,6 +52,22 @@ public class PageScan extends PageOperation {
 				}
 				return;
 			}
+
+			if(action == PageAction.GREATER_THAN_EQUAL) {
+				for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
+					if(tp.transactionID[i] > 0)
+						buf[buffer][i] = (page.page[i] >= compare);
+				}
+				return;
+			}
+
+			if(action == PageAction.LESS_THAN_EQUAL) {
+				for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
+					if(tp.transactionID[i] > 0)
+						buf[buffer][i] = (page.page[i] <= compare);
+				}
+				return;
+			}
 		}
 	}
 

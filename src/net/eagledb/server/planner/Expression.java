@@ -60,6 +60,22 @@ public class Expression {
 			}
 		}
 
+		if(ex instanceof GreaterThanEquals) {
+			GreaterThanEquals current = (GreaterThanEquals) ex;
+
+			// check if the left side is a column and the right side is a value
+			if(current.getLeftExpression() instanceof Column && current.getRightExpression() instanceof LongValue) {
+				int dest = resultBuffer++;
+				operations.add(new PageScan(
+					dest,
+					table.getAttributeLocation(current.getLeftExpression().toString()),
+					PageAction.GREATER_THAN_EQUAL,
+					Double.valueOf(current.getRightExpression().toString())
+				));
+				return dest;
+			}
+		}
+
 		if(ex instanceof MinorThan) {
 			MinorThan current = (MinorThan) ex;
 
@@ -70,6 +86,22 @@ public class Expression {
 					dest,
 					table.getAttributeLocation(current.getLeftExpression().toString()),
 					PageAction.LESS_THAN,
+					Double.valueOf(current.getRightExpression().toString())
+				));
+				return dest;
+			}
+		}
+
+		if(ex instanceof MinorThanEquals) {
+			MinorThanEquals current = (MinorThanEquals) ex;
+
+			// check if the left side is a column and the right side is a value
+			if(current.getLeftExpression() instanceof Column && current.getRightExpression() instanceof LongValue) {
+				int dest = resultBuffer++;
+				operations.add(new PageScan(
+					dest,
+					table.getAttributeLocation(current.getLeftExpression().toString()),
+					PageAction.LESS_THAN_EQUAL,
 					Double.valueOf(current.getRightExpression().toString())
 				));
 				return dest;

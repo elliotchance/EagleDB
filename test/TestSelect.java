@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 
 public class TestSelect {
 
+	private String[][] set;
+
     public TestSelect() {
     }
 
@@ -35,13 +37,53 @@ public class TestSelect {
     }
 
     @Test
-	public void select() throws Exception {
-		String[][] set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1", 2);
-		assertEquals(3, set.length);
+	public void selectAll() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1", 2);
 		assertArrayEquals(new String[][] {
 			{ "1", "1.0" },
 			{ "2", "2.5" },
 			{ "3", "8.7" },
+		}, set);
+
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where 1", 2);
+		assertArrayEquals(new String[][] {
+			{ "1", "1.0" },
+			{ "2", "2.5" },
+			{ "3", "8.7" },
+		}, set);
+	}
+
+    @Test
+	public void selectGreaterThan() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id>2", 2);
+		assertArrayEquals(new String[][] {
+			{ "3", "8.7" },
+		}, set);
+	}
+
+    @Test
+	public void selectGreaterThanEqual() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id>=2", 2);
+		assertArrayEquals(new String[][] {
+			{ "2", "2.5" },
+			{ "3", "8.7" },
+		}, set);
+	}
+
+    @Test
+	public void selectLessThan() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id<2", 2);
+		assertArrayEquals(new String[][] {
+			{ "1", "1.0" },
+		}, set);
+	}
+
+    @Test
+	public void selectLessThanEqual() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id<=2", 2);
+		assertArrayEquals(new String[][] {
+			{ "1", "1.0" },
+			{ "2", "2.5" },
 		}, set);
 	}
 
