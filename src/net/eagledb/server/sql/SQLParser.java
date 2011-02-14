@@ -26,11 +26,25 @@ public class SQLParser {
 		this.conn = conn;
 	}
 
-	public Result parse(String sql) throws SQLException {
+	public boolean requiresUpdate(Statement stmt) {
+		if(stmt instanceof CreateDatabase)
+			return true;
+		if(stmt instanceof CreateTable)
+			return true;
+		if(stmt instanceof Insert)
+			return true;
+		return false;
+	}
+
+	public Result parse(String sql, boolean isUpdate) throws SQLException {
 		try {
 			Result result = new Result(ResultCode.UNKNOWN);
-
 			Statement stmt = parserManager.parse(new StringReader(sql));
+
+			// executeQuery() vs executeUpdate()
+			if(requiresUpdate(stmt) && !isUpdate)
+				throw new SQLException("You must use executeUpdate() for modification queries.");
+
 			if(stmt instanceof Connect)
 				result = new SQLConnect(server, conn, (Connect) stmt).getResult();
 			else if(stmt instanceof CreateDatabase)

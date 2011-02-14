@@ -7,9 +7,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestCreateDatabase {
+public class TestDropTable {
 
-    public TestCreateDatabase() {
+    public TestDropTable() {
     }
 
 	@BeforeClass
@@ -29,14 +29,9 @@ public class TestCreateDatabase {
     }
 
     @Test
-	public void createDatabase() throws Exception {
-		try {
-			TestSuiteEmbeddedDatabase.executeUpdate("create database mydb");
-		}
-		catch(SQLException e) {
-			if(e.getMessage().indexOf("already exists") < 0)
-				throw e;
-		}
+	public void dropTable() throws Exception {
+		TestSuiteEmbeddedDatabase.executeUpdate("create table droptable (id int)");
+		TestSuiteEmbeddedDatabase.executeUpdate("drop table droptable");
 	}
 
 }

@@ -1,5 +1,7 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import net.eagledb.server.EmbeddedServer;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -12,6 +14,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 	TestCreateDatabase.class,
 	TestCreateTable.class,
+	TestDropTable.class,
 	TestExplain.class,
 	TestInsert.class,
 	TestSelect.class,
@@ -44,6 +47,12 @@ public class TestSuiteEmbeddedDatabase {
 
 	@After
 	public void tearDown() throws Exception {
+	}
+
+	public static void executeUpdate(String sql) throws Exception {
+		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
+		st.executeUpdate(sql);
+		st.close();
 	}
 
 }

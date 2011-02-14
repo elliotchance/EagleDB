@@ -31,10 +31,7 @@ public class TestCreateTable {
     @Test
 	public void createTable() throws Exception {
 		try {
-			Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
-			ResultSet rs = st.executeQuery("create table mytable (id int, number real)");
-			rs.close();
-			st.close();
+			TestSuiteEmbeddedDatabase.executeUpdate("create table mytable (id int, number real)");
 		}
 		catch(SQLException e) {
 			if(e.getMessage().indexOf("already exists") < 0)
@@ -44,10 +41,7 @@ public class TestCreateTable {
 
     @Test
 	public void createTemporaryTable() throws Exception {
-		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
-		ResultSet rs = st.executeQuery("create temporary table mytemp (id int, number real)");
-		rs.close();
-		st.close();
+		TestSuiteEmbeddedDatabase.executeUpdate("create temporary table mytemp (id int, number real)");
 	}
 
 }

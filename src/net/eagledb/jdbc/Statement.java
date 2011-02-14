@@ -14,7 +14,9 @@ public class Statement implements java.sql.Statement {
 	public ResultSet executeQuery(String sql) throws SQLException {
 		// send request to server
 		try {
-			Result result = conn.sendQuery(new Request(sql));
+			Request request = new Request(sql);
+			request.isUpdate = false;
+			Result result = conn.sendQuery(request);
 			return new ResultSet(result.fields, result.tuples);
 		}
 		catch(SQLException e) {
@@ -23,7 +25,16 @@ public class Statement implements java.sql.Statement {
 	}
 
 	public int executeUpdate(String sql) throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		// send request to server
+		try {
+			Request request = new Request(sql);
+			request.isUpdate = true;
+			Result result = conn.sendQuery(request);
+			return result.code;
+		}
+		catch(SQLException e) {
+			throw e;
+		}
 	}
 
 	public void close() throws SQLException {

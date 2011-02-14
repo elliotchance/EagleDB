@@ -48,7 +48,7 @@ public class ClientConnection extends Thread {
 				// process
 				Result result = new Result(ResultCode.UNKNOWN);
 				try {
-					result = parser.parse(request.sql);
+					result = parser.parse(request.sql, request.isUpdate);
 				}
 				catch(SQLException e) {
 					result.sqlException = e.getMessage();
