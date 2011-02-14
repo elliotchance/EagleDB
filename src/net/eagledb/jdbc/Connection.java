@@ -154,7 +154,7 @@ public class Connection<T> implements java.sql.Connection {
 	}
 
 	public void close() throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		sendQuery(new Request("DISCONNECT"));
 	}
 
 	public boolean isClosed() throws SQLException {

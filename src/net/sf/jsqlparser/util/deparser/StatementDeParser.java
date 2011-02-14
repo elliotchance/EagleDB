@@ -14,6 +14,7 @@ import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.connect.Connect;
+import net.sf.jsqlparser.statement.disconnect.Disconnect;
 import net.sf.jsqlparser.statement.show.databases.ShowDatabases;
 
 public class StatementDeParser implements StatementVisitor {
@@ -96,33 +97,15 @@ public class StatementDeParser implements StatementVisitor {
 	}
 
 	public void visit(CreateDatabase createdb) {
-		/*SelectDeParser selectDeParser = new SelectDeParser();
-		selectDeParser.setBuffer(buffer);
-		ExpressionDeParser expressionDeParser = new ExpressionDeParser(selectDeParser, buffer);
-		UpdateDeParser updateDeParser = new UpdateDeParser(expressionDeParser, buffer);
-		selectDeParser.setExpressionVisitor(expressionDeParser);
-		updateDeParser.deParse(connect);*/
-
 	}
 
 	public void visit(Connect connect) {
-		/*SelectDeParser selectDeParser = new SelectDeParser();
-		selectDeParser.setBuffer(buffer);
-		ExpressionDeParser expressionDeParser = new ExpressionDeParser(selectDeParser, buffer);
-		UpdateDeParser updateDeParser = new UpdateDeParser(expressionDeParser, buffer);
-		selectDeParser.setExpressionVisitor(expressionDeParser);
-		updateDeParser.deParse(connect);*/
+	}
 
+	public void visit(Disconnect disconnect) {
 	}
 
 	public void visit(ShowDatabases showdbs) {
-		/*SelectDeParser selectDeParser = new SelectDeParser();
-		selectDeParser.setBuffer(buffer);
-		ExpressionDeParser expressionDeParser = new ExpressionDeParser(selectDeParser, buffer);
-		UpdateDeParser updateDeParser = new UpdateDeParser(expressionDeParser, buffer);
-		selectDeParser.setExpressionVisitor(expressionDeParser);
-		updateDeParser.deParse(connect);*/
-
 	}
 
 	public StringBuffer getBuffer() {

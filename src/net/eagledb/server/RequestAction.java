@@ -1,11 +1,13 @@
 package net.eagledb.server;
 
-import java.io.Serializable;
+public class RequestAction {
 
-public enum RequestAction implements Serializable {
+	public static final int UNKNOWN = 0;
 
-	CLOSE_CONNECTION,
-	SQL_QUERY,
-	SQL_UPDATE
+	public static final int QUERY = 1;
+	
+	public static final int UPDATE = 2;
+	
+	public static final int DISCONNECT = 3;
 
 }

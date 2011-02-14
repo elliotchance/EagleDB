@@ -20,27 +20,18 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package net.sf.jsqlparser.statement.connect;
+package net.sf.jsqlparser.statement.disconnect;
 
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.StatementVisitor;
 
 /**
- * The CONNECT statement.
+ * The DISCONNECT statement.
  */
-public class Connect implements Statement {
-	private java.util.Properties properties;
+public class Disconnect implements Statement {
 
 	public void accept(StatementVisitor statementVisitor) {
 		statementVisitor.visit(this);
-	}
-
-	public void setProperties(java.util.Properties p) {
-		properties = p;
-	}
-
-	public java.util.Properties getProperties() {
-		return properties;
 	}
 
 }

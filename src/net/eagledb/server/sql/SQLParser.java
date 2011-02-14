@@ -12,6 +12,7 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import java.sql.*;
 import net.eagledb.server.*;
+import net.sf.jsqlparser.statement.disconnect.Disconnect;
 import net.sf.jsqlparser.statement.drop.Drop;
 
 public class SQLParser {
@@ -39,13 +40,16 @@ public class SQLParser {
 		return false;
 	}
 
-	public Result parse(String sql, boolean isUpdate) throws SQLException {
+	public Result parse(String sql, int action) throws SQLException {
 		try {
 			Result result = new Result(ResultCode.UNKNOWN);
 			Statement stmt = parserManager.parse(new StringReader(sql));
 
+			if(stmt instanceof Disconnect)
+				return new SQLDisconnect(server, conn, (Disconnect) stmt).getResult();
+
 			// executeQuery() vs executeUpdate()
-			if(requiresUpdate(stmt) && !isUpdate)
+			if(requiresUpdate(stmt) && action != RequestAction.UPDATE)
 				throw new SQLException("You must use executeUpdate() for modification queries.");
 
 			if(stmt instanceof Connect)
@@ -66,6 +70,9 @@ public class SQLParser {
 				throw new SQLException("Invalid SQL: " + sql);
 
 			return result;
+		}
+		catch(DisconnectClient e) {
+			throw e;
 		}
 		catch(JSQLParserException e) {
 			throw new SQLException(e.getCause().toString());

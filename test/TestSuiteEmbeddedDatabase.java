@@ -38,6 +38,7 @@ public class TestSuiteEmbeddedDatabase {
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
+		conn.close();
 		server.stop();
 	}
 

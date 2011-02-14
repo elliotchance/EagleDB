@@ -6,13 +6,10 @@ public class Request implements Serializable {
 
 	public String sql = null;
 
-	public RequestAction requestAction = null;
-
-	public boolean isUpdate = false;
+	public int action = RequestAction.UNKNOWN;
 
 	public Request(String sql) {
 		this.sql = sql;
-		requestAction = RequestAction.SQL_QUERY;
 	}
 
 }

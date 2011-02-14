@@ -1,6 +1,7 @@
 package net.eagledb.server;
 
 import java.io.IOException;
+import java.util.ConcurrentModificationException;
 import net.eagledb.server.storage.Attribute;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Schema;
@@ -39,6 +40,9 @@ public class BackgroundWriter extends Thread {
 					}
 				}
 			}
+		}
+		catch(ConcurrentModificationException e) {
+			e.printStackTrace();
 		}
 		catch(IOException e) {
 			e.printStackTrace();

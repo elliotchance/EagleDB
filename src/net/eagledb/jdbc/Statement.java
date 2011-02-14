@@ -15,7 +15,7 @@ public class Statement implements java.sql.Statement {
 		// send request to server
 		try {
 			Request request = new Request(sql);
-			request.isUpdate = false;
+			request.action = RequestAction.QUERY;
 			Result result = conn.sendQuery(request);
 			return new ResultSet(result.fields, result.tuples);
 		}
@@ -28,7 +28,7 @@ public class Statement implements java.sql.Statement {
 		// send request to server
 		try {
 			Request request = new Request(sql);
-			request.isUpdate = true;
+			request.action = RequestAction.UPDATE;
 			Result result = conn.sendQuery(request);
 			return result.code;
 		}

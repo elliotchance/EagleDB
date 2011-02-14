@@ -69,15 +69,6 @@ public class Server {
 				continue;
 			}
 		}
-
-		// clean up
-		/*try {
-			server.close();
-		}
-		catch(IOException e) {
-			e.printStackTrace();
-			return;
-		}*/
 	}
 	
 	private void init() {
@@ -251,21 +242,26 @@ public class Server {
 	}
 
 	public synchronized void dropTable(String databaseName, String schemaName, Table table) {
-		// delete the transaction file
-		new File(databaseLocation + "/data/" + databaseName + "/" + schemaName + "/" + table.getName() +
-			".t").delete();
+		try {
+			// delete the transaction file
+			new File(databaseLocation + "/data/" + databaseName + "/" + schemaName + "/" + table.getName() +
+				".t").delete();
 
-		// delete the attribute files
-		int i = 0;
-		for(Attribute attribute : table.getAttributes()) {
-			new File(databaseLocation + "/data/" + databaseName + "/" + schemaName + "/" + table.getName() + "." +
-				i).delete();
-			++i;
+			// delete the attribute files
+			int i = 0;
+			for(Attribute attribute : table.getAttributes()) {
+				new File(databaseLocation + "/data/" + databaseName + "/" + schemaName + "/" + table.getName() + "." +
+					i).delete();
+				++i;
+			}
+
+			// delete table definition
+			new File(databaseLocation + "/data/" + databaseName + "/" + schemaName + "/" + table.getName() +
+				".table").delete();
 		}
-
-		// delete table definition
-		new File(databaseLocation + "/data/" + databaseName + "/" + schemaName + "/" + table.getName() +
-			".table").delete();
+		catch(NullPointerException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

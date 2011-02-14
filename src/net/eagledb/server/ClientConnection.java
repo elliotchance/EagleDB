@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import net.eagledb.server.sql.SQLParser;
 import net.eagledb.server.storage.Database;
+import net.eagledb.server.storage.Table;
 import net.eagledb.server.storage.TemporaryTable;
 
 public class ClientConnection extends Thread {
@@ -24,6 +25,8 @@ public class ClientConnection extends Thread {
 
 	private ArrayList<TemporaryTable> temporaryTables;
 
+	private boolean isOpen = true;
+
 	public ClientConnection(Server s, Socket sock, Database selectedDatabase) {
 		server = s;
 		socket = sock;
@@ -39,16 +42,19 @@ public class ClientConnection extends Thread {
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
+			boolean closeConnection = false;
 			while(true) {
 				// get input
 				Request request = (Request) in.readObject();
-				if(request.requestAction == RequestAction.CLOSE_CONNECTION)
-					break;
 
 				// process
 				Result result = new Result(ResultCode.UNKNOWN);
 				try {
-					result = parser.parse(request.sql, request.isUpdate);
+					result = parser.parse(request.sql, request.action);
+				}
+				catch(DisconnectClient e) {
+					closeConnection = true;
+					result.code = ResultCode.SUCCESS;
 				}
 				catch(SQLException e) {
 					result.sqlException = e.getMessage();
@@ -57,10 +63,14 @@ public class ClientConnection extends Thread {
 				// send result
 				out.writeObject(result);
 				out.flush();
+
+				if(closeConnection)
+					break;
 			}
 
+			// clean up
+			close();
 			socket.close();
-			//in.close();
 			out.close();
 		}
 		catch(IOException e) {
@@ -91,10 +101,20 @@ public class ClientConnection extends Thread {
 		temporaryTables.add(tt);
 	}
 
+	public void close() {
+		// remove temporary tables
+		while(temporaryTables.size() > 0) {
+			Table table = selectedDatabase.getSchema("public").getTable(temporaryTables.get(0).internalName);
+			server.dropTable(selectedDatabase.getName(), "public", table);
+			temporaryTables.remove(0);
+		}
+		isOpen = false;
+	}
+
 	@Override
 	public void finalize() {
-		// remove temporary tables
-		//server.dropTable("al97lnnqkkbptj4o83ipfplmj8");
+		if(isOpen)
+			close();
 	}
 
 }
