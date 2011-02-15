@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.Calendar;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -107,6 +107,14 @@ public class TestSelect {
 		assertArrayEquals(new String[][] {
 			{ "1", "1.0" },
 			{ "2", "2.5" },
+		}, set);
+	}
+
+    @Test
+	public void selectAdd() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id+1=2", 2);
+		assertArrayEquals(new String[][] {
+			{ "1", "1.0" },
 		}, set);
 	}
 

@@ -13,7 +13,7 @@ public enum PageAction {
 	NOT_EQUAL {
 		@Override
 		public String toString() {
-			return "!=";
+			return "<>";
 		}
 	},
 
@@ -39,6 +39,13 @@ public enum PageAction {
 		@Override
 		public String toString() {
 			return "<=";
+		}
+	},
+
+	PLUS {
+		@Override
+		public String toString() {
+			return "+";
 		}
 	},
 

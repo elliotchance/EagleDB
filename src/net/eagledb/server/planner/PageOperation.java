@@ -1,16 +1,14 @@
 package net.eagledb.server.planner;
 
-import net.eagledb.server.storage.page.*;
-
 public abstract class PageOperation {
 
-	public int fieldID;
+	public int bufferPage;
 
 	public PageAction action;
 
 	public abstract int getMaxBuffer();
 
-	public abstract void run(TransactionPage tp, Page p, boolean[][] buffer);
+	public abstract void run(FullTableScan fts);
 
 	@Override
 	public abstract String toString();

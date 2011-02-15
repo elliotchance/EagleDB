@@ -27,7 +27,7 @@ public class TestDropDatabase {
 
     @Test
 	public void dropDatabase() throws Exception {
-		TestSuiteEmbeddedDatabase.executeUpdate("drop database " + TestSuiteEmbeddedDatabase.databaseName);
+		TestSuiteEmbeddedDatabase.executeUpdate("drop database \"" + TestSuiteEmbeddedDatabase.databaseName + "\"");
 	}
 
 }

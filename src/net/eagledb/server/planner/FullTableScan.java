@@ -6,9 +6,9 @@ import java.util.*;
 
 public class FullTableScan implements PlanItem {
 
-	private Table table;
+	public Table table;
 
-	private PageOperation[] operations;
+	public PageOperation[] operations;
 
 	private ArrayList<Tuple> tuples;
 
@@ -16,7 +16,11 @@ public class FullTableScan implements PlanItem {
 
 	private String clause;
 
-	private PlanItemCost cost = new PlanItemCost();
+	public PlanItemCost cost = new PlanItemCost();
+
+	public Page[] buffer;
+
+	public int pageID;
 
 	public FullTableScan(Table table, int tupleSize, String clause, PageOperation[] operations) {
 		this.table = table;
@@ -48,21 +52,26 @@ public class FullTableScan implements PlanItem {
 		// calculate the number of buffers we need
 		int totalBuffers = 0;
 		for(int i = 0; i < operations.length; ++i) {
-			if(operations[i].getMaxBuffer() > totalBuffers)
-				totalBuffers = operations[i].getMaxBuffer();
+			int bufID = operations[i].getMaxBuffer();
+			if(bufID >= totalBuffers && bufID < Expression.MAXIMUM_BUFFERS)
+				totalBuffers = bufID + 1;
 		}
 
 		// create buffers
-		boolean[][] buffer = new boolean[totalBuffers + 1][Page.TUPLES_PER_PAGE];
+		buffer = new Page[totalBuffers];
+		for(int i = 0; i < totalBuffers; ++i) {
+			buffer[i] = new IntPage();
+		}
 
 		// run operations
-		for(int pageID = 0; pageID < table.getTotalPages(); ++pageID) {
-			TransactionPage tp = table.getTransactionPage(pageID, cost);
+		for(pageID = 0; pageID < table.getTotalPages(); ++pageID) {
 			for(PageOperation operation : operations)
-				operation.run(tp, table.getPage(operation.fieldID, pageID, cost), buffer);
+				operation.run(this);
 
+			TransactionPage tp = table.getTransactionPage(pageID, cost);
+			IntPage result = (IntPage) buffer[totalBuffers - 1];
 			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
-				if(buffer[totalBuffers][i])
+				if(result.page[i] > 0 && tp.transactionID[i] > 0)
 					tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, tupleSize));
 			}
 		}

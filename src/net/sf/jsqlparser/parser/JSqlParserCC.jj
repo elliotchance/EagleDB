@@ -1763,6 +1763,7 @@ Drop Drop():
 {
 	Drop drop = new Drop();
 	Token tk = null;
+	Column name = null;
 	List dropArgs = new ArrayList();
 }
 {
@@ -1777,8 +1778,8 @@ Drop Drop():
 		tk=<K_INDEX>
 	)
     { drop.setType(tk.image); }
-	tk=<S_IDENTIFIER> { drop.setName(tk.image); }
-	(tk=<S_IDENTIFIER> { dropArgs.add(tk.image); })*
+	name=Column() { drop.setName(SQLParser.getRawName(name.toString())); }
+	(name=Column() { dropArgs.add(SQLParser.getRawName(name.toString())); })*
 	
 	{
 		if (dropArgs.size() > 0)

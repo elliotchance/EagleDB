@@ -1,13 +1,13 @@
 package net.eagledb.server.planner;
 
 import java.util.ArrayList;
-import net.sf.jsqlparser.expression.operators.conditional.*;
-import net.sf.jsqlparser.expression.operators.relational.*;
 import net.eagledb.server.storage.Table;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.schema.*;
 
 public class Expression {
+
+	public static int MAXIMUM_BUFFERS = 10;
 
 	public ArrayList<PageOperation> operations;
 
@@ -26,7 +26,20 @@ public class Expression {
 	}
 
 	private int subparse(net.sf.jsqlparser.expression.Expression ex) throws ExpressionException {
-		if(ex instanceof AndExpression) {
+		if(ex instanceof Column) {
+			return MAXIMUM_BUFFERS + table.getAttributeLocation(ex.toString());
+		}
+
+		if(ex instanceof LongValue) {
+			int dest = resultBuffer++;
+			operations.add(new PageFill(
+				dest,
+				Double.valueOf(ex.toString())
+			));
+			return dest;
+		}
+
+		/*if(ex instanceof AndExpression) {
 			AndExpression current = (AndExpression) ex;
 			int buf1 = subparse(current.getLeftExpression());
 			int buf2 = subparse(current.getRightExpression());
@@ -42,112 +55,29 @@ public class Expression {
 			int dest = resultBuffer++;
 			operations.add(new PageCompare(buf1, buf2, dest, PageAction.OR));
 			return dest;
-		}
-		
-		if(ex instanceof GreaterThan) {
-			GreaterThan current = (GreaterThan) ex;
+		}*/
 
-			// check if the left side is a column and the right side is a value
-			if(current.getLeftExpression() instanceof Column && current.getRightExpression() instanceof LongValue) {
-				int dest = resultBuffer++;
-				operations.add(new PageScan(
-					dest,
-					table.getAttributeLocation(current.getLeftExpression().toString()),
-					PageAction.GREATER_THAN,
-					Double.valueOf(current.getRightExpression().toString())
-				));
-				return dest;
+		// + - * / < > <= >= = != <>
+		if(ex instanceof BinaryExpression) {
+			BinaryExpression current = (BinaryExpression) ex;
+
+			// render each side
+			int lhs = subparse(current.getLeftExpression());
+			int rhs = subparse(current.getRightExpression());
+
+			// get the PageAction
+			PageAction action = null;
+			for(PageAction a : PageAction.values()) {
+				if(a.toString().equals(current.getStringExpression())) {
+					action = a;
+					break;
+				}
 			}
-		}
+			if(action == null)
+				throw new ExpressionException(ex);
 
-		if(ex instanceof GreaterThanEquals) {
-			GreaterThanEquals current = (GreaterThanEquals) ex;
-
-			// check if the left side is a column and the right side is a value
-			if(current.getLeftExpression() instanceof Column && current.getRightExpression() instanceof LongValue) {
-				int dest = resultBuffer++;
-				operations.add(new PageScan(
-					dest,
-					table.getAttributeLocation(current.getLeftExpression().toString()),
-					PageAction.GREATER_THAN_EQUAL,
-					Double.valueOf(current.getRightExpression().toString())
-				));
-				return dest;
-			}
-		}
-
-		if(ex instanceof MinorThan) {
-			MinorThan current = (MinorThan) ex;
-
-			// check if the left side is a column and the right side is a value
-			if(current.getLeftExpression() instanceof Column && current.getRightExpression() instanceof LongValue) {
-				int dest = resultBuffer++;
-				operations.add(new PageScan(
-					dest,
-					table.getAttributeLocation(current.getLeftExpression().toString()),
-					PageAction.LESS_THAN,
-					Double.valueOf(current.getRightExpression().toString())
-				));
-				return dest;
-			}
-		}
-
-		if(ex instanceof MinorThanEquals) {
-			MinorThanEquals current = (MinorThanEquals) ex;
-
-			// check if the left side is a column and the right side is a value
-			if(current.getLeftExpression() instanceof Column && current.getRightExpression() instanceof LongValue) {
-				int dest = resultBuffer++;
-				operations.add(new PageScan(
-					dest,
-					table.getAttributeLocation(current.getLeftExpression().toString()),
-					PageAction.LESS_THAN_EQUAL,
-					Double.valueOf(current.getRightExpression().toString())
-				));
-				return dest;
-			}
-		}
-
-		if(ex instanceof EqualsTo) {
-			EqualsTo current = (EqualsTo) ex;
-
-			// check if the left side is a column and the right side is a value
-			if(current.getLeftExpression() instanceof Column && current.getRightExpression() instanceof LongValue) {
-				int dest = resultBuffer++;
-				operations.add(new PageScan(
-					dest,
-					table.getAttributeLocation(current.getLeftExpression().toString()),
-					PageAction.EQUAL,
-					Double.valueOf(current.getRightExpression().toString())
-				));
-				return dest;
-			}
-		}
-
-		if(ex instanceof NotEqualsTo) {
-			NotEqualsTo current = (NotEqualsTo) ex;
-
-			// check if the left side is a column and the right side is a value
-			if(current.getLeftExpression() instanceof Column && current.getRightExpression() instanceof LongValue) {
-				int dest = resultBuffer++;
-				operations.add(new PageScan(
-					dest,
-					table.getAttributeLocation(current.getLeftExpression().toString()),
-					PageAction.NOT_EQUAL,
-					Double.valueOf(current.getRightExpression().toString())
-				));
-				return dest;
-			}
-		}
-
-		if(ex instanceof LongValue) {
 			int dest = resultBuffer++;
-			operations.add(new PageScan(
-				dest,
-				0,
-				PageAction.ALL,
-				Double.valueOf(ex.toString())
-			));
+			operations.add(new PageCompare(dest, lhs, action, rhs));
 			return dest;
 		}
 

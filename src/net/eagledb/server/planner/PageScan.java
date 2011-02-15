@@ -1,7 +1,5 @@
 package net.eagledb.server.planner;
 
-import net.eagledb.server.storage.page.*;
-
 public class PageScan extends PageOperation {
 	
 	public int buffer;
@@ -10,7 +8,6 @@ public class PageScan extends PageOperation {
 
 	public PageScan(int buffer, int fieldID, PageAction action, Object value) {
 		this.buffer = buffer;
-		this.fieldID = fieldID;
 		this.action = action;
 		this.value = value;
 	}
@@ -21,10 +18,13 @@ public class PageScan extends PageOperation {
 
 	@Override
 	public String toString() {
-		return "PageScan ( " + fieldID + " " + action + " " + value + " ) => #" + buffer;
+		return "PageScan ( " + action + " " + value + " ) => #" + buffer;
 	}
 
-	public void run(TransactionPage tp, Page p, boolean[][] buf) {
+	public void run(FullTableScan fts) {
+		/*TransactionPage tp = fts.table.getTransactionPage(fts.pageID, fts.cost);
+		Page p = fts.table.getPage(fts.operation.fieldID, fts.pageID, fts.cost);
+		
 		if(p instanceof net.eagledb.server.storage.page.IntPage) {
 			IntPage page = (IntPage) p;
 			int compare = (int) (double) Double.valueOf(value.toString());
@@ -84,7 +84,7 @@ public class PageScan extends PageOperation {
 				}
 				return;
 			}
-		}
+		}*/
 	}
 
 }
