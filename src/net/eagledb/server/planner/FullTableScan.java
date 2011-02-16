@@ -18,27 +18,28 @@ public class FullTableScan implements PlanItem {
 
 	public PlanItemCost cost = new PlanItemCost();
 
-	public Page[] buffer;
+	public ArrayList<Page> buffers;
 
 	public int pageID;
 
-	public FullTableScan(Table table, int tupleSize, String clause, PageOperation[] operations) {
+	public FullTableScan(Table table, int tupleSize, String clause, PageOperation[] operations, ArrayList<Page> buffers) {
 		this.table = table;
 		this.operations = operations;
 		this.tupleSize = tupleSize;
 		this.clause = clause;
+		this.buffers = buffers;
 		estimateCost();
 	}
 
 	private void estimateCost() {
-		int totalBuffers = 0;
+		/*int totalBuffers = 0;
 		for(int i = 0; i < operations.length; ++i) {
 			if(operations[i].getMaxBuffer() > totalBuffers)
 				totalBuffers += operations[i].getMaxBuffer();
 		}
 
 		// assume a full table scan reads every page, multiple that by how much work is done on each page
-		cost.estimateMinimumTimerons = cost.estimateMaximumTimerons = table.getTotalPages() * totalBuffers;
+		cost.estimateMinimumTimerons = cost.estimateMaximumTimerons = table.getTotalPages() * totalBuffers;*/
 	}
 
 	@Override
@@ -49,19 +50,9 @@ public class FullTableScan implements PlanItem {
 	public void execute(ArrayList<Tuple> tuples) {
 		long start = Calendar.getInstance().getTimeInMillis();
 
-		// calculate the number of buffers we need
-		int totalBuffers = 0;
-		for(int i = 0; i < operations.length; ++i) {
-			int bufID = operations[i].getMaxBuffer();
-			if(bufID >= totalBuffers && bufID < Expression.MAXIMUM_BUFFERS)
-				totalBuffers = bufID + 1;
-		}
-
-		// create buffers
-		buffer = new Page[totalBuffers];
-		for(int i = 0; i < totalBuffers; ++i) {
-			buffer[i] = new IntPage();
-		}
+		// show buffers
+		//for(int i = 0; i < buffers.size(); ++i)
+		//	System.out.println("buffer[" + i + "] = " + buffers.get(i));
 
 		// run operations
 		for(pageID = 0; pageID < table.getTotalPages(); ++pageID) {
@@ -69,9 +60,9 @@ public class FullTableScan implements PlanItem {
 				operation.run(this);
 
 			TransactionPage tp = table.getTransactionPage(pageID, cost);
-			IntPage result = (IntPage) buffer[totalBuffers - 1];
+			BooleanPage result = (BooleanPage) buffers.get(buffers.size() - 1);
 			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
-				if(result.page[i] > 0 && tp.transactionID[i] > 0)
+				if(result.page[i] && tp.transactionID[i] > 0)
 					tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, tupleSize));
 			}
 		}

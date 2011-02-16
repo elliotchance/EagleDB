@@ -1,23 +1,33 @@
 package net.eagledb.server.planner;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import net.eagledb.server.storage.Table;
-import net.sf.jsqlparser.expression.*;
-import net.sf.jsqlparser.schema.*;
+import net.eagledb.server.storage.page.BooleanPage;
+import net.eagledb.server.storage.page.IntPage;
+import net.eagledb.server.storage.page.Page;
+import net.sf.jsqlparser.expression.BinaryExpression;
+import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.schema.Column;
 
 public class Expression {
 
+	/**
+	 * The maxiumum allowed buffers. This is "up to" so buffers are not allocated if not needed. A location ID greater
+	 * than MAXIMUM_BUFFERS will mean a field at an index.
+	 */
 	public static int MAXIMUM_BUFFERS = 10;
 
 	public ArrayList<PageOperation> operations;
 
-	private int bufferID = 0;
-
-	private int resultBuffer = 0;
-
 	private net.sf.jsqlparser.expression.Expression expression;
 
+	/**
+	 * Table reference.
+	 */
 	private Table table;
+
+	public ArrayList<Page> buffers = new ArrayList<Page>();
 
 	public Expression(Table table, net.sf.jsqlparser.expression.Expression expression) {
 		operations = new ArrayList<PageOperation>();
@@ -31,7 +41,8 @@ public class Expression {
 		}
 
 		if(ex instanceof LongValue) {
-			int dest = resultBuffer++;
+			buffers.add(new IntPage());
+			int dest = buffers.size() - 1;
 			operations.add(new PageFill(
 				dest,
 				Double.valueOf(ex.toString())
@@ -76,8 +87,36 @@ public class Expression {
 			if(action == null)
 				throw new ExpressionException(ex);
 
-			int dest = resultBuffer++;
-			operations.add(new PageCompare(dest, lhs, action, rhs));
+			Class lhsClass = null, rhsClass = null;
+
+			if(lhs < Expression.MAXIMUM_BUFFERS)
+				lhsClass = buffers.get(lhs).getClass();
+			else
+				lhsClass = table.getAttributes().get(lhs - Expression.MAXIMUM_BUFFERS).pages.get(0).getClass();
+
+			if(rhs < Expression.MAXIMUM_BUFFERS)
+				rhsClass = buffers.get(rhs).getClass();
+			else
+				rhsClass = table.getAttributes().get(rhs - Expression.MAXIMUM_BUFFERS).pages.get(0).getClass();
+			
+			Method operator = Operator.getMethodForOperator(lhsClass, action, rhsClass);
+			if(operator == null)
+				throw new OperatorException(lhsClass, action, rhsClass, ex);
+
+			// return type of that operator
+			Class returnType = operator.getParameterTypes()[0];
+			//System.out.println("  (" + new Operator(lhsClass, action, rhsClass, null) + ") for (" + ex + ") returns " +
+			//	returnType);
+
+			int dest = -1;
+			try {
+				buffers.add((Page) returnType.newInstance());
+				dest = buffers.size() - 1;
+				operations.add(new PageCompare(dest, operator, lhs, rhs));
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
 			return dest;
 		}
 

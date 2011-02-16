@@ -4,6 +4,9 @@ public class ExpressionException extends Exception {
 
 	private net.sf.jsqlparser.expression.Expression ex;
 
+	public ExpressionException() {
+	}
+
 	public ExpressionException(net.sf.jsqlparser.expression.Expression ex) {
 		this.ex = ex;
 	}

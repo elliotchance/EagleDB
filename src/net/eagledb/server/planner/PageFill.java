@@ -13,18 +13,12 @@ public class PageFill extends PageOperation {
 		this.value = value;
 	}
 
-	public int getMaxBuffer() {
-		if(destination < Expression.MAXIMUM_BUFFERS)
-			return destination;
-		return 0;
-	}
-
 	public void run(FullTableScan fts) {
 		Page page = null;
 		if(destination >= Expression.MAXIMUM_BUFFERS)
 			page = fts.table.getPage(destination - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
 		else
-			page = fts.buffer[destination];
+			page = fts.buffers.get(destination);
 		
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			page.addTuple(Float.valueOf(value.toString()));

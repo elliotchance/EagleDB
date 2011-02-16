@@ -6,8 +6,6 @@ public abstract class PageOperation {
 
 	public PageAction action;
 
-	public abstract int getMaxBuffer();
-
 	public abstract void run(FullTableScan fts);
 
 	@Override

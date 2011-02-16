@@ -66,7 +66,8 @@ public class SQLSelect extends SQLAction {
 			if(whereClause == null)
 				whereClause = new LongValue("1");
 
-			PageOperation[] op = new net.eagledb.server.planner.Expression(table, whereClause).parse();
+			net.eagledb.server.planner.Expression ex = new net.eagledb.server.planner.Expression(table, whereClause);
+			PageOperation[] op = ex.parse();
 
 			// do we need to fetch attributes?
 			List<SelectItem> selectItems = select.getSelectItems();
@@ -88,7 +89,7 @@ public class SQLSelect extends SQLAction {
 
 			// create the executation plan
 			Plan p = new Plan();
-			p.addPlanItem(new FullTableScan(table, selectItems.size(), whereClause.toString(), op));
+			p.addPlanItem(new FullTableScan(table, selectItems.size(), whereClause.toString(), op, ex.buffers));
 
 			// add plan
 			p.addPlanItem(new FetchAttributes(table, faSources, faDestinations, faTypes));
@@ -116,18 +117,6 @@ public class SQLSelect extends SQLAction {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-
-		/*
-		// convert the data into a tuple
-		List<net.sf.jsqlparser.schema.Column> columns = sql.getColumns();
-		for(net.sf.jsqlparser.schema.Column column : columns) {
-			// make sure the column exists
-			if(!table.attributeExists(column.getColumnName()))
-				throw new SQLException("No such column " + table.getName() + "." + column.getColumnName());
-			
-			// put the data into the tuple
-			tuple.set(table.getAttributeLocation(column.getColumnName()), 10);
-		}*/
 
 		return new Result(ResultCode.FAILED);
 	}

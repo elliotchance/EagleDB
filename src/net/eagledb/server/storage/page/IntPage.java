@@ -37,4 +37,14 @@ public class IntPage extends Page {
 		return 4 * Page.TUPLES_PER_PAGE;
 	}
 
+	public static void operatorPlus(IntPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] + page2.page[i]);
+	}
+
+	public static void operatorEqual(BooleanPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] == page2.page[i]);
+	}
+
 }
