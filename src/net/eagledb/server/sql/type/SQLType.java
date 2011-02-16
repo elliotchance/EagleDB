@@ -1,6 +1,7 @@
 package net.eagledb.server.sql.type;
 
 import java.util.Hashtable;
+import net.eagledb.server.storage.page.Page;
 
 public abstract class SQLType {
 

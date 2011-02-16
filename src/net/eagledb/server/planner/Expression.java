@@ -103,16 +103,12 @@ public class Expression {
 			if(operator == null)
 				throw new OperatorException(lhsClass, action, rhsClass, ex);
 
-			// return type of that operator
-			Class returnType = operator.getParameterTypes()[0];
-			//System.out.println("  (" + new Operator(lhsClass, action, rhsClass, null) + ") for (" + ex + ") returns " +
-			//	returnType);
-
 			int dest = -1;
 			try {
+				Class returnType = operator.getParameterTypes()[0];
 				buffers.add((Page) returnType.newInstance());
 				dest = buffers.size() - 1;
-				operations.add(new PageCompare(dest, operator, lhs, rhs));
+				operations.add(new PageBinaryOperation(dest, operator, lhs, rhs));
 			}
 			catch(Exception e) {
 				e.printStackTrace();
@@ -127,6 +123,13 @@ public class Expression {
 		if(expression == null)
 			expression = new LongValue("1");
 		subparse(expression);
+
+		// the last Page type must be a boolean
+		if(buffers.get(buffers.size() - 1).getClass() != BooleanPage.class) {
+			buffers.add(new BooleanPage());
+			Method operator = Operator.getMethodForOperator(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST, null);
+			operations.add(new PageUnaryOperation(buffers.size() - 1, operator, buffers.size() - 2));
+		}
 
 		// convert to array
 		PageOperation[] op = new PageOperation[operations.size()];

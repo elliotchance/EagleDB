@@ -45,4 +45,8 @@ public class TransactionPage extends Page {
 		return 4 * Page.TUPLES_PER_PAGE;
 	}
 
+	public static String sqlName() {
+		return "TRANSACTION";
+	}
+
 }

@@ -47,4 +47,38 @@ public class IntPage extends Page {
 			destination.page[i] = (page1.page[i] == page2.page[i]);
 	}
 
+	public static void operatorNotEqual(BooleanPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] != page2.page[i]);
+	}
+
+	public static void operatorGreater(BooleanPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] > page2.page[i]);
+	}
+
+	public static void operatorLess(BooleanPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] < page2.page[i]);
+	}
+
+	public static void operatorGreaterEqual(BooleanPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] >= page2.page[i]);
+	}
+
+	public static void operatorLessEqual(BooleanPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] <= page2.page[i]);
+	}
+
+	public static void operatorCast(BooleanPage destination, IntPage page) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page.page[i] != 0);
+	}
+
+	public static String sqlName() {
+		return "INTEGER";
+	}
+
 }

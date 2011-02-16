@@ -15,6 +15,10 @@ public abstract class Page {
 
 	public abstract boolean addTuple(float value);
 
+	public static String sqlName() {
+		return null;
+	}
+
 	public static int getPageSize() {
 		return 0;
 	}

@@ -36,4 +36,8 @@ public class VarCharPage extends Page {
 		return 4 * Page.TUPLES_PER_PAGE;
 	}
 
+	public static String sqlName() {
+		return "VARCHAR";
+	}
+
 }

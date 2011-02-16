@@ -20,7 +20,13 @@ public class Operator {
 		try {
 			operators = new Operator[] {
 				getPageMethod(IntPage.class, "operatorPlus", IntPage.class, PageAction.PLUS, IntPage.class, IntPage.class),
-				getPageMethod(IntPage.class, "operatorEqual", IntPage.class, PageAction.EQUAL, IntPage.class, BooleanPage.class)
+				getPageMethod(IntPage.class, "operatorEqual", IntPage.class, PageAction.EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorGreater", IntPage.class, PageAction.GREATER_THAN, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorLess", IntPage.class, PageAction.LESS_THAN, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorGreaterEqual", IntPage.class, PageAction.GREATER_THAN_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorLessEqual", IntPage.class, PageAction.LESS_THAN_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorCast", IntPage.class, PageAction.CAST, BooleanPage.class)
 			};
 		}
 		catch(NoSuchMethodException e) {
@@ -33,6 +39,10 @@ public class Operator {
 		this.op = op;
 		this.rhs = rhs;
 		this.method = method;
+	}
+
+	public static Operator getPageMethod(Class c, String name, Class lhs, PageAction action, Class dest) throws NoSuchMethodException {
+		return new Operator(lhs, action, null, c.getMethod(name, dest, lhs));
 	}
 
 	public static Operator getPageMethod(Class c, String name, Class lhs, PageAction action, Class rhs, Class dest) throws NoSuchMethodException {

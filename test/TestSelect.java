@@ -36,7 +36,7 @@ public class TestSelect {
     public void tearDown() {
     }
 
-    /*@Test
+    @Test
 	public void selectAll() throws Exception {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1", 2);
 		assertArrayEquals(new String[][] {
@@ -108,7 +108,7 @@ public class TestSelect {
 			{ "1", "1.0" },
 			{ "2", "2.5" },
 		}, set);
-	}*/
+	}
 
     @Test
 	public void selectAdd() throws Exception {

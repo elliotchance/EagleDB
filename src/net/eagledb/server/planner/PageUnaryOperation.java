@@ -3,43 +3,35 @@ package net.eagledb.server.planner;
 import java.lang.reflect.Method;
 import net.eagledb.server.storage.page.Page;
 
-public class PageCompare extends PageOperation {
+public class PageUnaryOperation extends PageOperation {
 
 	public int buffer1;
-
-	public int buffer2;
 
 	public int bufferDestination;
 
 	private Method operation;
 
-	public PageCompare(int bufferDestination, Method operation, int buffer1, int buffer2) {
+	public PageUnaryOperation(int bufferDestination, Method operation, int buffer1) {
 		this.bufferDestination = bufferDestination;
 		this.buffer1 = buffer1;
-		this.buffer2 = buffer2;
 		this.operation = operation;
 	}
 
 	@Override
 	public String toString() {
-		return "PageCompare ( #" + buffer1 + " " + action + " #" + buffer2 + " ) => " + bufferDestination;
+		return "PageUnaryOperation ( #" + buffer1 + " " + action + " ) => " + bufferDestination;
 	}
 
 	public void run(FullTableScan fts) {
-		Page lhs = null, rhs = null;
+		Page lhs = null;
 
 		if(buffer1 >= Expression.MAXIMUM_BUFFERS)
 			lhs = fts.table.getPage(buffer1 - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
 		else
 			lhs = fts.buffers.get(buffer1);
 
-		if(buffer2 >= Expression.MAXIMUM_BUFFERS)
-			rhs = fts.table.getPage(buffer2 - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
-		else
-			rhs = fts.buffers.get(buffer2);
-
 		try {
-			operation.invoke(null, fts.buffers.get(bufferDestination), lhs, rhs);
+			operation.invoke(null, fts.buffers.get(bufferDestination), lhs);
 		}
 		catch(Exception e) {
 			e.printStackTrace();

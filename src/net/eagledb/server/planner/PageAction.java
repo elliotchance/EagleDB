@@ -50,6 +50,13 @@ public enum PageAction {
 	},
 
 	AND,
-	OR
+	OR,
+
+	CAST {
+		@Override
+		public String toString() {
+			return "::";
+		}
+	}
 
 }

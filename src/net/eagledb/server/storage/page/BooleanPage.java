@@ -37,4 +37,8 @@ public class BooleanPage extends Page {
 		return 1 * Page.TUPLES_PER_PAGE;
 	}
 
+	public static String sqlName() {
+		return "BOOLEAN";
+	}
+
 }
