@@ -4,9 +4,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import net.eagledb.server.storage.Table;
 import net.eagledb.server.storage.page.BooleanPage;
-import net.eagledb.server.storage.page.IntPage;
+import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.Page;
 import net.sf.jsqlparser.expression.BinaryExpression;
+import net.sf.jsqlparser.expression.DoubleValue;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.schema.Column;
 
@@ -36,12 +37,14 @@ public class Expression {
 	}
 
 	private int subparse(net.sf.jsqlparser.expression.Expression ex) throws ExpressionException {
+		// table column
 		if(ex instanceof Column) {
 			return MAXIMUM_BUFFERS + table.getAttributeLocation(ex.toString());
 		}
 
-		if(ex instanceof LongValue) {
-			buffers.add(new IntPage());
+		// constant value
+		if(ex instanceof LongValue || ex instanceof DoubleValue) {
+			buffers.add(new DoublePage());
 			int dest = buffers.size() - 1;
 			operations.add(new PageFill(
 				dest,
@@ -49,24 +52,6 @@ public class Expression {
 			));
 			return dest;
 		}
-
-		/*if(ex instanceof AndExpression) {
-			AndExpression current = (AndExpression) ex;
-			int buf1 = subparse(current.getLeftExpression());
-			int buf2 = subparse(current.getRightExpression());
-			int dest = resultBuffer++;
-			operations.add(new PageCompare(buf1, buf2, dest, PageAction.AND));
-			return dest;
-		}
-
-		if(ex instanceof OrExpression) {
-			OrExpression current = (OrExpression) ex;
-			int buf1 = subparse(current.getLeftExpression());
-			int buf2 = subparse(current.getRightExpression());
-			int dest = resultBuffer++;
-			operations.add(new PageCompare(buf1, buf2, dest, PageAction.OR));
-			return dest;
-		}*/
 
 		// + - * / < > <= >= = != <>
 		if(ex instanceof BinaryExpression) {
@@ -113,6 +98,7 @@ public class Expression {
 			catch(Exception e) {
 				e.printStackTrace();
 			}
+			
 			return dest;
 		}
 
@@ -127,7 +113,11 @@ public class Expression {
 		// the last Page type must be a boolean
 		if(buffers.get(buffers.size() - 1).getClass() != BooleanPage.class) {
 			buffers.add(new BooleanPage());
-			Method operator = Operator.getMethodForOperator(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST, null);
+			Method operator = Operator.getMethodForOperator(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST,
+				null);
+			if(operator == null)
+				throw new OperatorException(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST, null,
+					expression);
 			operations.add(new PageUnaryOperation(buffers.size() - 1, operator, buffers.size() - 2));
 		}
 

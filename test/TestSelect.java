@@ -118,4 +118,28 @@ public class TestSelect {
 		}, set);
 	}
 
+    @Test
+	public void selectSubtract() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id-1=2", 2);
+		assertArrayEquals(new String[][] {
+			{ "3", "8.7" },
+		}, set);
+	}
+
+    @Test
+	public void selectMultiply() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id*2=2", 2);
+		assertArrayEquals(new String[][] {
+			{ "1", "1.0" },
+		}, set);
+	}
+
+    @Test
+	public void selectDivide() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id/2=1", 2);
+		assertArrayEquals(new String[][] {
+			{ "2", "2.5" },
+		}, set);
+	}
+
 }

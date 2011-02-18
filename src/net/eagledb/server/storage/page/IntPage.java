@@ -37,12 +37,52 @@ public class IntPage extends Page {
 		return 4 * Page.TUPLES_PER_PAGE;
 	}
 
-	public static void operatorPlus(IntPage destination, IntPage page1, IntPage page2) {
+	public static void operatorAdd(IntPage destination, IntPage page1, IntPage page2) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = (page1.page[i] + page2.page[i]);
 	}
 
+	public static void operatorAdd(DoublePage destination, IntPage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] + page2.page[i]);
+	}
+
+	public static void operatorSubtract(IntPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] - page2.page[i]);
+	}
+
+	public static void operatorSubtract(DoublePage destination, IntPage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] - page2.page[i]);
+	}
+
+	public static void operatorMultiply(IntPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] * page2.page[i]);
+	}
+
+	public static void operatorMultiply(DoublePage destination, IntPage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] * page2.page[i]);
+	}
+
+	public static void operatorDivide(IntPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] / page2.page[i]);
+	}
+
+	public static void operatorDivide(DoublePage destination, IntPage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] / page2.page[i]);
+	}
+
 	public static void operatorEqual(BooleanPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] == page2.page[i]);
+	}
+
+	public static void operatorEqual(BooleanPage destination, IntPage page1, DoublePage page2) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = (page1.page[i] == page2.page[i]);
 	}
@@ -52,7 +92,17 @@ public class IntPage extends Page {
 			destination.page[i] = (page1.page[i] != page2.page[i]);
 	}
 
+	public static void operatorNotEqual(BooleanPage destination, IntPage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] != page2.page[i]);
+	}
+
 	public static void operatorGreater(BooleanPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] > page2.page[i]);
+	}
+
+	public static void operatorGreater(BooleanPage destination, IntPage page1, DoublePage page2) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = (page1.page[i] > page2.page[i]);
 	}
@@ -62,12 +112,27 @@ public class IntPage extends Page {
 			destination.page[i] = (page1.page[i] < page2.page[i]);
 	}
 
+	public static void operatorLess(BooleanPage destination, IntPage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] < page2.page[i]);
+	}
+
 	public static void operatorGreaterEqual(BooleanPage destination, IntPage page1, IntPage page2) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = (page1.page[i] >= page2.page[i]);
 	}
 
+	public static void operatorGreaterEqual(BooleanPage destination, IntPage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] >= page2.page[i]);
+	}
+
 	public static void operatorLessEqual(BooleanPage destination, IntPage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] <= page2.page[i]);
+	}
+
+	public static void operatorLessEqual(BooleanPage destination, IntPage page1, DoublePage page2) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = (page1.page[i] <= page2.page[i]);
 	}

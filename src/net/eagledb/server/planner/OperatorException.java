@@ -20,8 +20,13 @@ public class OperatorException extends ExpressionException {
 
 	@Override
 	public String toString() {
-		return "No operator for expression (" + ex + ") using types (" + lhs.getSimpleName() + " " + op + " " +
-			rhs.getSimpleName() + ")";
+		String r = "No operator for expression (" + ex + ") using types (";
+		if(lhs != null)
+			r += lhs.getSimpleName();
+		r += " " + op + " ";
+		if(rhs != null)
+			r += rhs.getSimpleName();
+		return r + ")";
 	}
 
 }

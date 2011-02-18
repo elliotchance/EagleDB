@@ -2,6 +2,7 @@ package net.eagledb.server.planner;
 
 import java.lang.reflect.Method;
 import net.eagledb.server.storage.page.BooleanPage;
+import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
 
 public class Operator {
@@ -19,14 +20,39 @@ public class Operator {
 	static {
 		try {
 			operators = new Operator[] {
-				getPageMethod(IntPage.class, "operatorPlus", IntPage.class, PageAction.PLUS, IntPage.class, IntPage.class),
+				getPageMethod(IntPage.class, "operatorCast", IntPage.class, PageAction.CAST, BooleanPage.class),
+				getPageMethod(DoublePage.class, "operatorCast", DoublePage.class, PageAction.CAST, BooleanPage.class),
+
 				getPageMethod(IntPage.class, "operatorEqual", IntPage.class, PageAction.EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorEqual", IntPage.class, PageAction.EQUAL, DoublePage.class, BooleanPage.class),
+				getPageMethod(DoublePage.class, "operatorEqual", DoublePage.class, PageAction.EQUAL, DoublePage.class, BooleanPage.class),
+
 				getPageMethod(IntPage.class, "operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, DoublePage.class, BooleanPage.class),
+
 				getPageMethod(IntPage.class, "operatorGreater", IntPage.class, PageAction.GREATER_THAN, IntPage.class, BooleanPage.class),
-				getPageMethod(IntPage.class, "operatorLess", IntPage.class, PageAction.LESS_THAN, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorGreater", IntPage.class, PageAction.GREATER_THAN, DoublePage.class, BooleanPage.class),
+
 				getPageMethod(IntPage.class, "operatorGreaterEqual", IntPage.class, PageAction.GREATER_THAN_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorGreaterEqual", IntPage.class, PageAction.GREATER_THAN_EQUAL, DoublePage.class, BooleanPage.class),
+
+				getPageMethod(IntPage.class, "operatorLess", IntPage.class, PageAction.LESS_THAN, IntPage.class, BooleanPage.class),
+				getPageMethod(IntPage.class, "operatorLess", IntPage.class, PageAction.LESS_THAN, DoublePage.class, BooleanPage.class),
+
 				getPageMethod(IntPage.class, "operatorLessEqual", IntPage.class, PageAction.LESS_THAN_EQUAL, IntPage.class, BooleanPage.class),
-				getPageMethod(IntPage.class, "operatorCast", IntPage.class, PageAction.CAST, BooleanPage.class)
+				getPageMethod(IntPage.class, "operatorLessEqual", IntPage.class, PageAction.LESS_THAN_EQUAL, DoublePage.class, BooleanPage.class),
+
+				getPageMethod(IntPage.class, "operatorAdd", IntPage.class, PageAction.ADD, IntPage.class, IntPage.class),
+				getPageMethod(IntPage.class, "operatorAdd", IntPage.class, PageAction.ADD, DoublePage.class, DoublePage.class),
+
+				getPageMethod(IntPage.class, "operatorSubtract", IntPage.class, PageAction.SUBTRACT, IntPage.class, IntPage.class),
+				getPageMethod(IntPage.class, "operatorSubtract", IntPage.class, PageAction.SUBTRACT, DoublePage.class, DoublePage.class),
+
+				getPageMethod(IntPage.class, "operatorMultiply", IntPage.class, PageAction.MULTIPLY, IntPage.class, IntPage.class),
+				getPageMethod(IntPage.class, "operatorMultiply", IntPage.class, PageAction.MULTIPLY, DoublePage.class, DoublePage.class),
+
+				getPageMethod(IntPage.class, "operatorDivide", IntPage.class, PageAction.DIVIDE, IntPage.class, IntPage.class),
+				getPageMethod(IntPage.class, "operatorDivide", IntPage.class, PageAction.DIVIDE, DoublePage.class, DoublePage.class),
 			};
 		}
 		catch(NoSuchMethodException e) {
