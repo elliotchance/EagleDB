@@ -32,7 +32,7 @@ public class ResultSetMetaData implements java.sql.ResultSetMetaData {
 	}
 
 	public String getColumnName(int column) throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		return resultSet.fields[column].getName();
 	}
 
 	public int getColumnType(int column) throws SQLException {

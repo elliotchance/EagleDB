@@ -34,7 +34,7 @@ public class SQLParser {
 		this.conn = conn;
 	}
 
-	public boolean requiresUpdate(Statement stmt) {
+	public static boolean requiresUpdate(Statement stmt) {
 		if(stmt instanceof CreateDatabase)
 			return true;
 		if(stmt instanceof CreateTable)

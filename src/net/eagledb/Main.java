@@ -1,5 +1,6 @@
 package net.eagledb;
 
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8,6 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 import net.eagledb.server.EmbeddedServer;
+import net.eagledb.server.sql.SQLParser;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserManager;
 
 public class Main {
 
@@ -61,6 +65,21 @@ public class Main {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 
+			for(int i = 0; i < cols; ++i) {
+				if(i > 0)
+					System.out.print("|");
+				System.out.print(" " + rsmd.getColumnName(i) + " ");
+			}
+			System.out.println();
+
+			for(int i = 0; i < cols; ++i) {
+				if(i > 0)
+					System.out.print("|");
+				for(int j = 0; j < rsmd.getColumnName(i).length() + 2; ++j)
+					System.out.print("-");
+			}
+			System.out.println();
+
 			while(rs.next()) {
 				for(int i = 0; i < cols; ++i) {
 					if(i > 0)
@@ -69,6 +88,7 @@ public class Main {
 				}
 				System.out.println();
 			}
+			System.out.println();
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
@@ -107,14 +127,34 @@ public class Main {
 
 		// CLI
 		Scanner in = new Scanner(System.in);
+		CCJSqlParserManager parserManager = new CCJSqlParserManager();
 		while(true) {
 			System.out.print("eagledb " + databaseUser + "@" + databaseName + "> ");
 			String sql = in.nextLine();
-			
+
+			// we need to know if we should use executeQuery() or executeUpdate(), easiest way to do that is by parsing
+			// it
+			net.sf.jsqlparser.statement.Statement sqlStmt = null;
+			try {
+				sqlStmt = parserManager.parse(new StringReader(sql));
+			}
+			catch(JSQLParserException e) {
+				// do nothing
+			}
+
 			try {
 				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql);
-				renderResultSet(rs);
+
+				// executeUpdate
+				if(SQLParser.requiresUpdate(sqlStmt)) {
+					int result = stmt.executeUpdate(sql);
+					System.out.println("Query OK");
+				}
+				// executeQuery
+				else {
+					ResultSet rs = stmt.executeQuery(sql);
+					renderResultSet(rs);
+				}
 			}
 			catch(SQLException e) {
 				System.out.println("ERROR: " + e.getMessage());
