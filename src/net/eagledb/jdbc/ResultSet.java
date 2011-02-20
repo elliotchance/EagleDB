@@ -12,7 +12,7 @@ public class ResultSet implements java.sql.ResultSet {
 	/**
 	 * Field definitions.
 	 */
-	private Attribute[] fields;
+	public Attribute[] fields;
 	
 	/**
 	 * Tuple data.
@@ -267,7 +267,7 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public ResultSetMetaData getMetaData() throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		return new net.eagledb.jdbc.ResultSetMetaData(this);
 	}
 
 	public Reader getNCharacterStream(int columnIndex) throws SQLException {
@@ -833,4 +833,5 @@ public class ResultSet implements java.sql.ResultSet {
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
 		throw new SQLFeatureNotSupportedException();
 	}
+
 }
