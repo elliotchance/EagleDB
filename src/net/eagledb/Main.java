@@ -8,6 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+import net.eagledb.gui.MainWindow;
 import net.eagledb.server.EmbeddedServer;
 import net.eagledb.server.sql.SQLParser;
 import net.sf.jsqlparser.JSQLParserException;
@@ -80,6 +81,7 @@ public class Main {
 			}
 			System.out.println();
 
+			int rows = 0;
 			while(rs.next()) {
 				for(int i = 0; i < cols; ++i) {
 					if(i > 0)
@@ -87,8 +89,10 @@ public class Main {
 					System.out.print(rs.getString(i));
 				}
 				System.out.println();
+				++rows;
 			}
 			System.out.println();
+			System.out.println(rows + " rows\n");
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
@@ -164,7 +168,7 @@ public class Main {
 	}
 
 	public final void gui() {
-		System.err.println("'gui' mode is not supported yet.");
+		new MainWindow().setVisible(true);
 	}
 
 }
