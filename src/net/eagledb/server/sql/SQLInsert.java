@@ -69,7 +69,7 @@ public class SQLInsert extends SQLAction {
 		}
 
 		// add tuple
-		table.addTuple(tuple);
+		table.addTuple(tuple, conn.transactionID);
 
 		return new Result(ResultCode.SUCCESS);
 	}

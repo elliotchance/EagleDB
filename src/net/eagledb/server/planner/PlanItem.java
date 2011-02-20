@@ -8,7 +8,7 @@ public interface PlanItem {
 	@Override
 	public String toString();
 
-	public void execute(ArrayList<Tuple> tuples);
+	public void execute(ArrayList<Tuple> tuples, long transactionID);
 
 	public PlanItemCost getPlanItemCost();
 

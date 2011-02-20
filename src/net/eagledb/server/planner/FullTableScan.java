@@ -8,6 +8,8 @@ public class FullTableScan implements PlanItem {
 
 	public Table table;
 
+	private Database selectedDatabase;
+
 	public PageOperation[] operations;
 
 	private ArrayList<Tuple> tuples;
@@ -22,7 +24,15 @@ public class FullTableScan implements PlanItem {
 
 	public int pageID;
 
-	public FullTableScan(Table table, int tupleSize, String clause, PageOperation[] operations, ArrayList<Page> buffers) {
+	/**
+	 * Initialise with execute(). This array holds all the transaction IDs currently in progress before the full table
+	 * scan starts.
+	 */
+	private long[] transactionIDs;
+
+	public FullTableScan(Database selectedDatabase, Table table, int tupleSize, String clause,
+		PageOperation[] operations, ArrayList<Page> buffers) {
+		this.selectedDatabase = selectedDatabase;
 		this.table = table;
 		this.operations = operations;
 		this.tupleSize = tupleSize;
@@ -47,7 +57,15 @@ public class FullTableScan implements PlanItem {
 		return "FullTableScan ( " + table.getName() + ": " + clause + " )";
 	}
 
-	public void execute(ArrayList<Tuple> tuples) {
+	private boolean inTransactionIDs(long XID) {
+		for(int i = 0; i < transactionIDs.length; ++i) {
+			if(transactionIDs[i] == XID)
+				return true;
+		}
+		return false;
+	}
+
+	public void execute(ArrayList<Tuple> tuples, long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
 
 		// show buffers
@@ -62,8 +80,26 @@ public class FullTableScan implements PlanItem {
 			TransactionPage tp = table.getTransactionPage(pageID, cost);
 			BooleanPage result = (BooleanPage) buffers.get(buffers.size() - 1);
 			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
-				if(result.page[i] && tp.transactionID[i] > 0)
-					tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, tupleSize));
+				// Display all the row versions that match the following criteria:
+				if(
+					// * The WHERE clause evaluates to true
+					result.page[i] &&
+
+					// * The row's creation transaction ID is a committed transaction and is less than the current
+					//   transaction counter.
+					(
+						selectedDatabase.transactionIsCommitted(tp.createTransactionID[i]) &&
+						tp.createTransactionID[i] < transactionID
+					) &&
+					
+					// * The row lacks an expiration transaction ID or its expiration transaction ID was in process at
+					//   query start.
+					(
+						tp.expireTransactionID[i] == TransactionPage.EXPIRE_NEVER ||
+						inTransactionIDs(tp.expireTransactionID[i])
+					)
+				)
+						tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, tupleSize));
 			}
 		}
 

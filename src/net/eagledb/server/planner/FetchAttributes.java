@@ -46,7 +46,7 @@ public class FetchAttributes implements PlanItem {
 		return line + " )";
 	}
 
-	public void execute(ArrayList<Tuple> tuples) {
+	public void execute(ArrayList<Tuple> tuples, long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
 
 		for(int i = 0; i < destinations.length; ++i) {

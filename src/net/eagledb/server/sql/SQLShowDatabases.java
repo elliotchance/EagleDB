@@ -1,15 +1,15 @@
 package net.eagledb.server.sql;
 
-import net.sf.jsqlparser.statement.show.databases.ShowDatabases;
+import net.sf.jsqlparser.statement.show.Show;
 import net.eagledb.server.*;
 import net.eagledb.server.storage.*;
 import java.sql.*;
 
 public class SQLShowDatabases extends SQLAction {
 	
-	private ShowDatabases sql;
+	private Show sql;
 
-	public SQLShowDatabases(Server server, ClientConnection conn, ShowDatabases sql) {
+	public SQLShowDatabases(Server server, ClientConnection conn, Show sql) {
 		super(server, conn);
 		this.sql = sql;
 	}

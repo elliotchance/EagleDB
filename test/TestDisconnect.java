@@ -28,8 +28,8 @@ public class TestDisconnect {
 
     @Test
 	public void disconnect() throws Exception {
-		if(TestSuiteEmbeddedDatabase.conn != null)
-			TestSuiteEmbeddedDatabase.conn.close();
+		if(TestSuiteEmbeddedDatabase.connection != null)
+			TestSuiteEmbeddedDatabase.connection.close();
 	}
 
 }

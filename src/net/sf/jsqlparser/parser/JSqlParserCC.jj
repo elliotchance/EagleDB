@@ -127,8 +127,11 @@ import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.connect.Connect;
 import net.sf.jsqlparser.statement.create.database.CreateDatabase;
-import net.sf.jsqlparser.statement.show.databases.ShowDatabases;
+import net.sf.jsqlparser.statement.show.Show;
+import net.sf.jsqlparser.statement.show.ShowObject;
 import net.sf.jsqlparser.statement.disconnect.Disconnect;
+import net.sf.jsqlparser.statement.transaction.Transaction;
+import net.sf.jsqlparser.statement.transaction.TransactionCommand;
 import net.eagledb.server.sql.SQLParser;
 
 /**
@@ -223,6 +226,9 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_TEMP:"TEMP">
 |   <K_TEMPORARY:"TEMPORARY">
 |   <K_DISCONNECT:"DISCONNECT">
+|   <K_COMMIT:"COMMIT">
+|   <K_ROLLBACK:"ROLLBACK">
+|   <K_TRANSACTION:"TRANSACTION">
 }
 
 
@@ -262,6 +268,8 @@ Statement Statement() :
 
 {
 	(
+	stm = Transaction()
+	|
     stm = Select()
     |
     stm = Update()
@@ -278,7 +286,7 @@ Statement Statement() :
     	stm = CreateDatabase()
     )
     |
-    stm = ShowDatabases()
+    stm = Show()
     |
     stm = Drop()
     |
@@ -294,14 +302,38 @@ Statement Statement() :
 }
 
 
-ShowDatabases ShowDatabases():
+Transaction Transaction():
 { 
-	ShowDatabases sql = new ShowDatabases();
+	Transaction sql = new Transaction();
 }
 {
-	<K_SHOW> <K_DATABASES>
+	(
+	(
+		<K_BEGIN> { sql.setCommand(TransactionCommand.BEGIN); }
+		|
+		<K_COMMIT> { sql.setCommand(TransactionCommand.COMMIT); }
+		|
+		<K_ROLLBACK> { sql.setCommand(TransactionCommand.ROLLBACK); }
+	)
+	[<K_TRANSACTION>] { /* do nothing */ }
+	)
 	{
 		return sql;
+	}
+}
+
+
+Show Show():
+{ 
+	Show show = new Show();
+}
+{
+	<K_SHOW>
+	(
+		<K_DATABASES> { show.setShowObject(ShowObject.DATABASES); }
+	)
+	{
+		return show;
 	}
 }
 

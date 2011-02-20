@@ -1,5 +1,3 @@
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -30,7 +28,7 @@ public class TestExplain {
 
     @Test
 	public void explain() throws Exception {
-		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
+		Statement st = TestSuiteEmbeddedDatabase.connection.createStatement();
 
 		/*ResultSet rs = st.executeQuery("explain " + Select.selectSQL);
 		System.out.println("EXPLAIN " + Select.selectSQL);

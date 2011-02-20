@@ -3,6 +3,7 @@ import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import net.eagledb.server.EmbeddedServer;
@@ -15,15 +16,17 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	// databases
+	// required
 	TestCreateDatabase.class,
-	TestShowDatabases.class,
 	TestConnect.class,
+
+	// databases
+	TestShowDatabases.class,
 
 	// tables
 	TestCreateTable.class,
 	TestDropTable.class,
-		
+	
 	// INSERT
 	TestInsert.class,
 
@@ -31,7 +34,10 @@ import org.junit.runners.Suite;
 	TestExplain.class,
 	TestSelect.class,
 
-	// finish
+	// transactions
+	TestTransaction.class,
+
+	// required
 	TestDropDatabase.class,
 	TestDisconnect.class
 })
@@ -39,9 +45,15 @@ public class TestSuiteEmbeddedDatabase {
 
 	public static EmbeddedServer server = null;
 
-	public static Connection conn = null;
+	public static Connection connection = null;
 
 	public static String databaseName;
+
+	public static String databaseUser = "root";
+
+	public static String databasePassword = "123";
+
+	public static String connectionURL = "eagledb://localhost";
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -53,7 +65,15 @@ public class TestSuiteEmbeddedDatabase {
 
 		// client connection without database
 		Class.forName("net.eagledb.jdbc.Driver");
-		conn = DriverManager.getConnection("eagledb://localhost", "root", "123");
+		connection = newConnection();
+	}
+
+	public static Connection newConnection() throws SQLException {
+		return DriverManager.getConnection(connectionURL, databaseUser, databasePassword);
+	}
+
+	public static Connection newConnection(String database) throws SQLException {
+		return DriverManager.getConnection(connectionURL + "/" + database, databaseUser, databasePassword);
 	}
 
 	@AfterClass
@@ -69,14 +89,21 @@ public class TestSuiteEmbeddedDatabase {
 	public void tearDown() throws Exception {
 	}
 
-	public static void executeUpdate(String sql) throws Exception {
-		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
+	public static void executeUpdate(String sql) throws SQLException {
+		executeUpdate(sql, TestSuiteEmbeddedDatabase.connection);
+	}
+
+	public static void executeUpdate(String sql, Connection conn) throws SQLException {
+		if(conn == null)
+			throw new SQLException("Not a valid connection");
+		
+		Statement st = conn.createStatement();
 		st.executeUpdate(sql);
 		st.close();
 	}
 
-	public static String[][] executeQuery(String sql, int columns) throws Exception {
-		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
+	public static String[][] executeQuery(String sql, int columns, Connection conn) throws SQLException {
+		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(sql);
 
 		ArrayList<String[]> tuples = new ArrayList<String[]>();
@@ -95,6 +122,10 @@ public class TestSuiteEmbeddedDatabase {
 				r[i][j] = tuples.get(i)[j];
 		}
 		return r;
+	}
+
+	public static String[][] executeQuery(String sql, int columns) throws SQLException {
+		return executeQuery(sql, columns, TestSuiteEmbeddedDatabase.connection);
 	}
 
 }

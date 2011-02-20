@@ -14,8 +14,7 @@ public class Statement implements java.sql.Statement {
 	public ResultSet executeQuery(String sql) throws SQLException {
 		// send request to server
 		try {
-			Request request = new Request(sql);
-			request.action = RequestAction.QUERY;
+			Request request = new Request(sql, RequestAction.QUERY);
 			Result result = conn.sendQuery(request);
 			return new ResultSet(result.fields, result.tuples);
 		}
@@ -27,8 +26,7 @@ public class Statement implements java.sql.Statement {
 	public int executeUpdate(String sql) throws SQLException {
 		// send request to server
 		try {
-			Request request = new Request(sql);
-			request.action = RequestAction.UPDATE;
+			Request request = new Request(sql, RequestAction.UPDATE);
 			Result result = conn.sendQuery(request);
 			return result.code;
 		}

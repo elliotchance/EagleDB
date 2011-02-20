@@ -1,5 +1,4 @@
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -30,7 +29,7 @@ public class TestShowDatabases {
 
     @Test
 	public void showDatabases() throws Exception {
-		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
+		Statement st = TestSuiteEmbeddedDatabase.connection.createStatement();
 		ResultSet rs = st.executeQuery("show databases");
 		//while(rs.next())
 		//	System.out.println(rs.getString("database"));

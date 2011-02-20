@@ -12,4 +12,9 @@ public class Request implements Serializable {
 		this.sql = sql;
 	}
 
+	public Request(String sql, int action) {
+		this.sql = sql;
+		this.action = action;
+	}
+
 }

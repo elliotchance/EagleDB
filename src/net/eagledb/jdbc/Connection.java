@@ -8,15 +8,40 @@ import java.util.*;
 
 public class Connection<T> implements java.sql.Connection {
 
+	/**
+	 * Connection parameters.
+	 */
 	private Properties parameters;
 
+	/**
+	 * Socket handle.
+	 */
 	private Socket socket;
 
+	/**
+	 * Socket output stream.
+	 */
 	private ObjectOutputStream out;
 
+	/**
+	 * Socket input stream.
+	 */
 	private ObjectInputStream in;
 
+	/**
+	 * COMMIT after each statement. Default is on.
+	 */
+	private boolean isAutoCommit = true;
+
+	/**
+	 * Make a connection.
+	 * @param url URL.
+	 * @param parameters Connection parameters.
+	 * @throws SQLException If the socket or its respective streams could not connect.
+	 */
 	public Connection(String url, java.util.Properties parameters) throws SQLException {
+		this.parameters = parameters;
+
 		// default options
 		if(parameters.get("host") == null)
 			parameters.put("host", "localhost");
@@ -84,11 +109,11 @@ public class Connection<T> implements java.sql.Connection {
 
 		// attempt to connect
 		try {
-			Result result = sendQuery(new Request("CONNECT " + paras));
+			sendSingularQuery(new Request("CONNECT " + paras));
 		}
 		catch(SQLException e) {
 			String msg = "Permission denied for user " + parameters.get("user");
-			if(!parameters.getProperty("database").equals(""))
+			if(parameters.getProperty("database") != null && !parameters.getProperty("database").equals(""))
 				msg += "@" + parameters.getProperty("database");
 			msg += ", using password ";
 			if(parameters.get("password") != null && !parameters.get("password").equals(""))
@@ -98,8 +123,17 @@ public class Connection<T> implements java.sql.Connection {
 			throw new SQLException(msg);
 		}
 	}
-	
-	public Result sendQuery(Request request) throws SQLException {
+
+	/**
+	 * Check if a database name has been supplied by the connection. This is important for the actions that should only
+	 * occur when a database is active like COMMIT.
+	 */
+	private boolean hasSelectedDatabase() {
+		return parameters != null && parameters.getProperty("database") != null &&
+			!parameters.getProperty("database").equals("");
+	}
+
+	public final Result sendSingularQuery(Request request) throws SQLException {
 		try {
 			out.writeObject(request);
 			out.flush();
@@ -120,6 +154,20 @@ public class Connection<T> implements java.sql.Connection {
 			throw new SQLException(e.getMessage());
 		}
 	}
+	
+	public final Result sendQuery(Request request) throws SQLException {
+		// auto commit?
+		if(isAutoCommit && hasSelectedDatabase())
+			sendSingularQuery(new Request("BEGIN TRANSACTION", RequestAction.UPDATE));
+
+		Result result = sendSingularQuery(request);
+
+		// auto commit?
+		if(isAutoCommit && hasSelectedDatabase())
+			commit();
+
+		return result;
+	}
 
 	public Statement createStatement() throws SQLException {
 		return new Statement(this);
@@ -138,23 +186,23 @@ public class Connection<T> implements java.sql.Connection {
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		isAutoCommit = autoCommit;
 	}
 
 	public boolean getAutoCommit() throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		return isAutoCommit;
 	}
 
 	public void commit() throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		sendSingularQuery(new Request("COMMIT TRANSACTION", RequestAction.UPDATE));
 	}
 
 	public void rollback() throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		sendSingularQuery(new Request("ROLLBACK TRANSACTION", RequestAction.UPDATE));
 	}
 
 	public void close() throws SQLException {
-		sendQuery(new Request("DISCONNECT"));
+		sendSingularQuery(new Request("DISCONNECT"));
 	}
 
 	public boolean isClosed() throws SQLException {

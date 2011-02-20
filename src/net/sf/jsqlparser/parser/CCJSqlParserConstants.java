@@ -176,27 +176,33 @@ public interface CCJSqlParserConstants {
   /** RegularExpression Id. */
   int K_DISCONNECT = 75;
   /** RegularExpression Id. */
-  int S_DOUBLE = 76;
+  int K_COMMIT = 76;
   /** RegularExpression Id. */
-  int S_INTEGER = 77;
+  int K_ROLLBACK = 77;
   /** RegularExpression Id. */
-  int DIGIT = 78;
+  int K_TRANSACTION = 78;
   /** RegularExpression Id. */
-  int LINE_COMMENT = 79;
+  int S_DOUBLE = 79;
   /** RegularExpression Id. */
-  int MULTI_LINE_COMMENT = 80;
+  int S_INTEGER = 80;
   /** RegularExpression Id. */
-  int S_IDENTIFIER = 81;
+  int DIGIT = 81;
   /** RegularExpression Id. */
-  int LETTER = 82;
+  int LINE_COMMENT = 82;
   /** RegularExpression Id. */
-  int SPECIAL_CHARS = 83;
+  int MULTI_LINE_COMMENT = 83;
   /** RegularExpression Id. */
-  int S_CHAR_LITERAL = 84;
+  int S_IDENTIFIER = 84;
   /** RegularExpression Id. */
-  int S_BARE_LITERAL = 85;
+  int LETTER = 85;
   /** RegularExpression Id. */
-  int S_QUOTED_IDENTIFIER = 86;
+  int SPECIAL_CHARS = 86;
+  /** RegularExpression Id. */
+  int S_CHAR_LITERAL = 87;
+  /** RegularExpression Id. */
+  int S_BARE_LITERAL = 88;
+  /** RegularExpression Id. */
+  int S_QUOTED_IDENTIFIER = 89;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -279,6 +285,9 @@ public interface CCJSqlParserConstants {
     "\"TEMP\"",
     "\"TEMPORARY\"",
     "\"DISCONNECT\"",
+    "\"COMMIT\"",
+    "\"ROLLBACK\"",
+    "\"TRANSACTION\"",
     "<S_DOUBLE>",
     "<S_INTEGER>",
     "<DIGIT>",

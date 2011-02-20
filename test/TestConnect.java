@@ -28,11 +28,11 @@ public class TestConnect {
 
     @Test
 	public void connect() throws Exception {
-		if(TestSuiteEmbeddedDatabase.conn != null)
-			TestSuiteEmbeddedDatabase.conn.close();
+		if(TestSuiteEmbeddedDatabase.connection != null)
+			TestSuiteEmbeddedDatabase.connection.close();
 		
-		TestSuiteEmbeddedDatabase.conn = DriverManager.getConnection("eagledb://localhost/" +
-			TestSuiteEmbeddedDatabase.databaseName, "root", "123");
+		TestSuiteEmbeddedDatabase.connection =
+			TestSuiteEmbeddedDatabase.newConnection(TestSuiteEmbeddedDatabase.databaseName);
 	}
 
 }

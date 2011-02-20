@@ -89,7 +89,8 @@ public class SQLSelect extends SQLAction {
 
 			// create the executation plan
 			Plan p = new Plan();
-			p.addPlanItem(new FullTableScan(table, selectItems.size(), whereClause.toString(), op, ex.buffers));
+			p.addPlanItem(new FullTableScan(conn.getSelectedDatabase(), table, selectItems.size(),
+				whereClause.toString(), op, ex.buffers));
 
 			// add plan
 			p.addPlanItem(new FetchAttributes(table, faSources, faDestinations, faTypes));
@@ -98,7 +99,7 @@ public class SQLSelect extends SQLAction {
 			if(((net.sf.jsqlparser.statement.select.Select) sql).getExplain()) {
 				// if its ANALYZE we need to execute the query
 				if(((net.sf.jsqlparser.statement.select.Select) sql).getExplainAnalyse())
-					p.execute();
+					p.execute(conn.transactionID);
 
 				// return the EXPLAIN set
 				return new Result(ResultCode.SUCCESS, new Attribute[] {
@@ -106,7 +107,7 @@ public class SQLSelect extends SQLAction {
 				}, p.getExplainTuples());
 			}
 			else
-				p.execute();
+				p.execute(conn.transactionID);
 
 			// report
 			return new Result(ResultCode.SUCCESS, table.getAttributes(), p.getTuples());

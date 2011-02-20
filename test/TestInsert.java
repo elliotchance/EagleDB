@@ -1,4 +1,3 @@
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Calendar;
 import org.junit.After;
@@ -30,7 +29,7 @@ public class TestInsert {
 
     @Test
 	public void insert() throws Exception {
-		Statement st = TestSuiteEmbeddedDatabase.conn.createStatement();
+		Statement st = TestSuiteEmbeddedDatabase.connection.createStatement();
 
 		// insert a bunch of records
 		long start = Calendar.getInstance().getTimeInMillis();

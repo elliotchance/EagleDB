@@ -31,7 +31,6 @@ public class PageUnaryOperation extends PageOperation {
 			lhs = fts.buffers.get(buffer1);
 
 		try {
-			System.out.println(operation);
 			operation.invoke(null, fts.buffers.get(bufferDestination), lhs);
 		}
 		catch(Exception e) {

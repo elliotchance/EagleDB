@@ -56,9 +56,9 @@ public class Table implements java.io.Serializable {
 		return attributes;
 	}
 
-	public void addTuple(Tuple t) {
+	public void addTuple(Tuple t, long transactionID) {
 		// do we have space in the last page?
-		if(transactionPages.size() == 0 ||
+		if(transactionPages.isEmpty() ||
 			transactionPages.get(transactionPages.size() - 1).getTotalTuples() >= Page.TUPLES_PER_PAGE) {
 			TransactionPage tp = new TransactionPage();
 			tp.pageID = transactionPages.size();
@@ -103,7 +103,7 @@ public class Table implements java.io.Serializable {
 		}
 
 		// the transaction page is created after the attributes have been put in
-		transactionPages.get(transactionPages.size() - 1).addTransactionTuple(1);
+		transactionPages.get(transactionPages.size() - 1).addTransactionTuple(transactionID);
 
 		// add the dirty pages
 		addDirtyTransactionPage(transactionPages.get(transactionPages.size() - 1));

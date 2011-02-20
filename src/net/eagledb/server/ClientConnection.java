@@ -1,5 +1,6 @@
 package net.eagledb.server;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,6 +27,8 @@ public class ClientConnection extends Thread {
 	private ArrayList<TemporaryTable> temporaryTables;
 
 	private boolean isOpen = true;
+
+	public long transactionID = 0;
 
 	public ClientConnection(Server s, Socket sock, Database selectedDatabase) {
 		server = s;
@@ -72,6 +75,9 @@ public class ClientConnection extends Thread {
 			close();
 			socket.close();
 			out.close();
+		}
+		catch(EOFException e) {
+			// do nothing
 		}
 		catch(IOException e) {
 			e.printStackTrace();

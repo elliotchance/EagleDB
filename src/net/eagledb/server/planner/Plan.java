@@ -75,11 +75,11 @@ public class Plan {
 		return ts;
 	}
 
-	public void execute() {
+	public void execute(long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
 		tuples = new ArrayList<Tuple>();
 		for(PlanItem p : plan)
-			p.execute(tuples);
+			p.execute(tuples, transactionID);
 
 		statistics.executionTimeMillis = Calendar.getInstance().getTimeInMillis() - start;
 		hasExecuted = true;

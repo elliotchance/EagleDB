@@ -11,7 +11,7 @@ import net.eagledb.server.ResultCode;
 import net.eagledb.server.Server;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.show.databases.ShowDatabases;
+import net.sf.jsqlparser.statement.show.Show;
 import net.sf.jsqlparser.statement.create.database.CreateDatabase;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.connect.Connect;
@@ -19,6 +19,7 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.disconnect.Disconnect;
 import net.sf.jsqlparser.statement.drop.Drop;
+import net.sf.jsqlparser.statement.transaction.*;
 
 public class SQLParser {
 
@@ -41,6 +42,8 @@ public class SQLParser {
 		if(stmt instanceof Insert)
 			return true;
 		if(stmt instanceof Drop)
+			return true;
+		if(stmt instanceof Transaction)
 			return true;
 		return false;
 	}
@@ -82,8 +85,10 @@ public class SQLParser {
 				result = new SQLInsert(server, conn, (Insert) stmt).getResult();
 			else if(stmt instanceof Select)
 				result = new SQLSelect(server, conn, (Select) stmt).getResult();
-			else if(stmt instanceof ShowDatabases)
-				result = new SQLShowDatabases(server, conn, (ShowDatabases) stmt).getResult();
+			else if(stmt instanceof Show)
+				result = new SQLShowDatabases(server, conn, (Show) stmt).getResult();
+			else if(stmt instanceof Transaction)
+				result = new SQLTransaction(server, conn, (Transaction) stmt).getResult();
 			else
 				throw new SQLException("Invalid SQL: " + sql);
 
