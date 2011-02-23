@@ -62,6 +62,12 @@ public class FetchAttributes implements PlanItem {
 					tuple.set(destinations[i], page.page[tuple.tupleID % Page.TUPLES_PER_PAGE]);
 				}
 			}
+			else if(types[sources[i]] == net.eagledb.server.sql.type.DoublePrecision.class) {
+				for(Tuple tuple : tuples) {
+					DoublePage page = (DoublePage) table.getPage(sources[i], tuple.tupleID / Page.TUPLES_PER_PAGE, cost);
+					tuple.set(destinations[i], page.page[tuple.tupleID % Page.TUPLES_PER_PAGE]);
+				}
+			}
 		}
 
 		cost.realMillis = Calendar.getInstance().getTimeInMillis() - start;

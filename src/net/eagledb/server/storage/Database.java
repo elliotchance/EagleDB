@@ -24,6 +24,8 @@ public class Database {
 	 */
 	private ArrayList<Long> transactionsInProgress = new ArrayList<Long>();
 
+	private ArrayList<Index> indexes = new ArrayList<Index>();
+
 	/**
 	 * Initialise a database with a name.
 	 * @param dbName The database name.
@@ -118,6 +120,10 @@ public class Database {
 		for(int i = 0; i < r.length; ++i)
 			r[i] = transactionsInProgress.get(i);
 		return r;
+	}
+
+	public synchronized void addIndex(Index index) {
+		indexes.add(index);
 	}
 
 }

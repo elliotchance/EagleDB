@@ -37,6 +37,9 @@ import org.junit.runners.Suite;
 	// transactions
 	TestTransaction.class,
 
+	// INDEX
+	TestIndex.class,
+
 	// required
 	TestDropDatabase.class,
 	TestDisconnect.class

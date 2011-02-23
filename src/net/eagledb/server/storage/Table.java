@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import net.eagledb.server.planner.PlanItemCost;
+import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.page.Page;
 import net.eagledb.server.storage.page.RealPage;
@@ -40,14 +41,14 @@ public class Table implements java.io.Serializable {
 		return totalPages;
 	}
 
-	public void initTransient() {
+	public final void initTransient() {
 		transactionPages = new ArrayList<TransactionPage>();
 		dirtyTransactionPages = new ArrayList<TransactionPage>();
 		for(Attribute attribute : attributes)
 			attribute.initTransient();
 	}
 
-	public boolean addAttribute(Attribute f) {
+	public final boolean addAttribute(Attribute f) {
 		attributes.add(f);
 		return true;
 	}
@@ -75,6 +76,8 @@ public class Table implements java.io.Serializable {
 						p = new IntPage();
 					else if(pageType.equals(net.eagledb.server.sql.type.Real.class))
 						p = new RealPage();
+					else if(pageType.equals(net.eagledb.server.sql.type.DoublePrecision.class))
+						p = new DoublePage();
 					else
 						throw new Exception("Unknown attribute type " + pageType);
 
@@ -99,6 +102,8 @@ public class Table implements java.io.Serializable {
 				tail.addTuple((int) ((double) Double.valueOf(t.get(i).toString())));
 			else if(pageType.equals(net.eagledb.server.sql.type.Real.class))
 				tail.addTuple((float) ((double) Double.valueOf(t.get(i).toString())));
+			else if(pageType.equals(net.eagledb.server.sql.type.DoublePrecision.class))
+				tail.addTuple(Double.valueOf(t.get(i).toString()));
 			++i;
 		}
 

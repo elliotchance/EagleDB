@@ -33,4 +33,17 @@ public class Tuple implements Serializable {
 		return attributes[position];
 	}
 
+	public int size() {
+		return attributes.length;
+	}
+
+	@Override
+	public String toString() {
+		String r = "Tuple( ";
+		for(Object o : attributes) {
+			r += o + " ";
+		}
+		return r + ")";
+	}
+
 }

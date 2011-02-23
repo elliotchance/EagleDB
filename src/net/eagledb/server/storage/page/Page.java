@@ -15,6 +15,8 @@ public abstract class Page {
 
 	public abstract boolean addTuple(float value);
 
+	public abstract boolean addTuple(double value);
+
 	public static String sqlName() {
 		return null;
 	}

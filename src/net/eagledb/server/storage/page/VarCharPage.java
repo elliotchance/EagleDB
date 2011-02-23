@@ -21,6 +21,11 @@ public class VarCharPage extends Page {
 		return true;
 	}
 
+	public boolean addTuple(double value) {
+		page[tuples++] = String.valueOf(value);
+		return true;
+	}
+
 	public boolean addTuple(String value) {
 		page[tuples++] = value;
 		return true;

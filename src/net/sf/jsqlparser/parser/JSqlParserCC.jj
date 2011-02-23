@@ -132,6 +132,7 @@ import net.sf.jsqlparser.statement.show.ShowObject;
 import net.sf.jsqlparser.statement.disconnect.Disconnect;
 import net.sf.jsqlparser.statement.transaction.Transaction;
 import net.sf.jsqlparser.statement.transaction.TransactionCommand;
+import net.sf.jsqlparser.statement.create.index.CreateIndex;
 import net.eagledb.server.sql.SQLParser;
 
 /**
@@ -229,6 +230,7 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_COMMIT:"COMMIT">
 |   <K_ROLLBACK:"ROLLBACK">
 |   <K_TRANSACTION:"TRANSACTION">
+|   <K_UNIQUE:"UNIQUE">
 }
 
 
@@ -267,9 +269,9 @@ Statement Statement() :
 { Statement stm; }
 
 {
-	(
-	stm = Transaction()
-	|
+    (
+    stm = Transaction()
+    |
     stm = Select()
     |
     stm = Update()
@@ -280,11 +282,11 @@ Statement Statement() :
     |
     stm = Replace()
     |
-    ( LOOKAHEAD(2)
-    	stm = CreateTable()
-    	|
-    	stm = CreateDatabase()
-    )
+    LOOKAHEAD(2) stm = CreateTable()
+    |
+    LOOKAHEAD(2) stm = CreateDatabase()
+    |
+    LOOKAHEAD(2) stm = CreateIndex()
     |
     stm = Show()
     |
@@ -299,6 +301,40 @@ Statement Statement() :
     [";"]
     <EOF>
     { return stm; }
+}
+
+
+CreateIndex CreateIndex():
+{
+	CreateIndex index = new CreateIndex();
+	Column indexName = null;
+        Table table = null;
+        ArrayList<String> columns = new ArrayList<String>();
+        Column column;
+}
+{
+	<K_CREATE>
+        [ <K_UNIQUE> ] { index.setUnique(true); }
+        <K_INDEX>
+	[<K_IF> <K_NOT> <K_EXISTS>] { index.setIfNotExists(true); }
+	indexName=Column()
+	{
+		index.setIndex(SQLParser.getRawName(index.toString()));
+	}
+        <K_ON>
+	table=Table()
+	{
+		index.setTable(SQLParser.getRawName(table.toString()));
+	}
+        "("
+        (
+            column=Column() { columns.add(SQLParser.getRawName(column)); }
+            [","]
+        )+
+        ")"
+        {
+            return index;
+        }
 }
 
 

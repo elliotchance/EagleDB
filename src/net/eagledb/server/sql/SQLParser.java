@@ -15,11 +15,12 @@ import net.sf.jsqlparser.statement.show.Show;
 import net.sf.jsqlparser.statement.create.database.CreateDatabase;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.connect.Connect;
+import net.sf.jsqlparser.statement.create.index.CreateIndex;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.disconnect.Disconnect;
 import net.sf.jsqlparser.statement.drop.Drop;
-import net.sf.jsqlparser.statement.transaction.*;
+import net.sf.jsqlparser.statement.transaction.Transaction;
 
 public class SQLParser {
 
@@ -36,6 +37,8 @@ public class SQLParser {
 
 	public static boolean requiresUpdate(Statement stmt) {
 		if(stmt instanceof CreateDatabase)
+			return true;
+		if(stmt instanceof CreateIndex)
 			return true;
 		if(stmt instanceof CreateTable)
 			return true;
@@ -70,6 +73,8 @@ public class SQLParser {
 				result = new SQLConnect(server, conn, (Connect) stmt).getResult();
 			else if(stmt instanceof CreateDatabase)
 				result = new SQLCreateDatabase(server, conn, (CreateDatabase) stmt).getResult();
+			else if(stmt instanceof CreateIndex)
+				result = new SQLCreateIndex(server, conn, (CreateIndex) stmt).getResult();
 			else if(stmt instanceof CreateTable)
 				result = new SQLCreateTable(server, conn, (CreateTable) stmt).getResult();
 			else if(stmt instanceof Drop) {

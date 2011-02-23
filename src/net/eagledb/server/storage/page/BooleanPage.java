@@ -21,6 +21,11 @@ public class BooleanPage extends Page {
 		return true;
 	}
 
+	public boolean addTuple(double value) {
+		page[tuples++] = (value != 0.0);
+		return true;
+	}
+
 	@Override
 	public synchronized void write(RandomAccessFile os) throws IOException {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)

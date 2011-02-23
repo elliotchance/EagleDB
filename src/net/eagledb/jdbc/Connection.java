@@ -134,16 +134,22 @@ public class Connection<T> implements java.sql.Connection {
 	}
 
 	public final Result sendSingularQuery(Request request) throws SQLException {
+		if(request == null)
+			throw new SQLException("Cannot send null request.");
+
 		try {
 			out.writeObject(request);
 			out.flush();
 			Result result = (Result) in.readObject();
 
+			if(result == null)
+				throw new SQLException("Invalid response from server.");
+
 			if(result.sqlException != null && !result.sqlException.equals(""))
-				throw new SQLException(result.sqlException + "\nSQL " + request.sql);
+				throw new SQLException(result.sqlException);
 
 			if(result.code != ResultCode.SUCCESS)
-				throw new SQLException("Failed with code: " + result.code + "\nSQL " + request.sql);
+				throw new SQLException("Failed with code: " + result.code);
 
 			return result;
 		}
