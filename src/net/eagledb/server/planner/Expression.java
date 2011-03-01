@@ -88,12 +88,12 @@ public class Expression {
 			if(lhs < Expression.MAXIMUM_BUFFERS)
 				lhsClass = buffers.get(lhs).getClass();
 			else
-				lhsClass = table.getAttributes().get(lhs - Expression.MAXIMUM_BUFFERS).pages.get(0).getClass();
+				lhsClass = table.getAttributes()[lhs - Expression.MAXIMUM_BUFFERS].pages.get(0).getClass();
 
 			if(rhs < Expression.MAXIMUM_BUFFERS)
 				rhsClass = buffers.get(rhs).getClass();
 			else
-				rhsClass = table.getAttributes().get(rhs - Expression.MAXIMUM_BUFFERS).pages.get(0).getClass();
+				rhsClass = table.getAttributes()[rhs - Expression.MAXIMUM_BUFFERS].pages.get(0).getClass();
 			
 			Method operator = Operator.getMethodForOperator(lhsClass, action, rhsClass);
 			if(operator == null)
@@ -101,7 +101,7 @@ public class Expression {
 
 			// look for an index
 			if(lhs >= MAXIMUM_BUFFERS) {
-				String indexDef = table.getName() + "(" + table.getAttributes().get(lhs - MAXIMUM_BUFFERS).getName() +
+				String indexDef = table.getName() + "(" + table.getAttributes()[lhs - MAXIMUM_BUFFERS].getName() +
 					")";
 				for(Index index : database.getIndexes()) {
 					if(index.getDefinition().equals(indexDef)) {

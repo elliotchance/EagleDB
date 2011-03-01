@@ -8,15 +8,15 @@ public class FullTableScan implements PlanItem {
 
 	public Table table;
 
-	private Database selectedDatabase;
+	protected Database selectedDatabase;
 
 	public PageOperation[] operations;
 
-	private ArrayList<Tuple> tuples;
+	protected ArrayList<Tuple> tuples;
 
-	private int tupleSize;
+	protected int tupleSize;
 
-	private String clause;
+	protected String clause;
 
 	public PlanItemCost cost = new PlanItemCost();
 

@@ -10,6 +10,7 @@ import net.eagledb.server.planner.ExpressionException;
 import net.eagledb.server.planner.FetchAttributes;
 import net.eagledb.server.planner.FullTableScan;
 import net.eagledb.server.planner.IndexLookup;
+import net.eagledb.server.planner.IndexScan;
 import net.eagledb.server.planner.PageOperation;
 import net.eagledb.server.planner.Plan;
 import net.eagledb.server.storage.Attribute;
@@ -91,7 +92,7 @@ public class SQLSelect extends SQLAction {
 
 				faSources[i] = position;
 				faDestinations[i] = i;
-				faTypes[i] = table.getAttributes().get(position).getPageType();
+				faTypes[i] = table.getAttributes()[position].getPageType();
 				++i;
 			}
 
@@ -99,11 +100,16 @@ public class SQLSelect extends SQLAction {
 			Plan p = new Plan();
 
 			// if we have an index we can use that
-			if(bestIndex != null)
-				p.addPlanItem(new IndexLookup(bestIndex));
-			
-			p.addPlanItem(new FullTableScan(conn.getSelectedDatabase(), table, selectItems.size(),
-				whereClause.toString(), op, ex.buffers));
+			if(bestIndex != null) {
+				IndexLookup lookup = new IndexLookup(table, bestIndex);
+				p.addPlanItem(lookup);
+				p.addPlanItem(new IndexScan(conn.getSelectedDatabase(), lookup.virtualTable, selectItems.size(),
+					whereClause.toString(), op, ex.buffers));
+			}
+			else {
+				p.addPlanItem(new FullTableScan(conn.getSelectedDatabase(), table, selectItems.size(),
+					whereClause.toString(), op, ex.buffers));
+			}
 
 			// fetch attribute projection
 			p.addPlanItem(new FetchAttributes(table, faSources, faDestinations, faTypes));

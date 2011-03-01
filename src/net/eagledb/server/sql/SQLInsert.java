@@ -52,7 +52,7 @@ public class SQLInsert extends SQLAction {
 		}
 
 		// create the tuple
-		Tuple tuple = new Tuple(table.getAttributes().size());
+		Tuple tuple = new Tuple(table.getAttributes().length);
 
 		// convert the data into a tuple
 		List<net.sf.jsqlparser.schema.Column> columns = sql.getColumns();

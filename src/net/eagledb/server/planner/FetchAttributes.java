@@ -40,7 +40,7 @@ public class FetchAttributes implements PlanItem {
 		for(int i = 0; i < destinations.length; ++i) {
 			if(i > 0)
 				line += ", ";
-			line += table.getAttributes().get(sources[i]).getName() + /* types[i].getSimpleName() + */ " => " +
+			line += table.getAttributes()[sources[i]].getName() + /* types[i].getSimpleName() + */ " => " +
 				destinations[i];
 		}
 		return line + " )";

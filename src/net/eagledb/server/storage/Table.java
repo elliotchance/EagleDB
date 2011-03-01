@@ -12,25 +12,45 @@ import net.eagledb.server.storage.page.TransactionPage;
 
 public class Table implements java.io.Serializable {
 
-	private String name;
+	protected String name;
 
-	private transient ArrayList<TransactionPage> transactionPages = null;
+	protected transient ArrayList<TransactionPage> transactionPages = null;
 	
 	public transient ArrayList<TransactionPage> dirtyTransactionPages = null;
 
 	public transient RandomAccessFile transactionPageHandle = null;
 
-	private ArrayList<Attribute> attributes;
+	protected ArrayList<Attribute> attributes;
 
-	private int totalPages = 0;
+	protected int totalPages = 0;
+
+	protected Table() {
+		// do nothing, this is for duplication
+	}
 
 	public Table(String tableName, Attribute[] attrs) {
 		name = tableName;
 		attributes = new ArrayList<Attribute>();
 		initTransient();
 
-		for(Attribute attr : attrs)
-			addAttribute(attr);
+		if(attrs != null) {
+			for(Attribute attr : attrs)
+				addAttribute(attr);
+		}
+	}
+
+	public void createVirtualTable(Table r, int pageID) {
+		r.name = name;
+		r.transactionPages = new ArrayList<TransactionPage>();
+		r.dirtyTransactionPages = new ArrayList<TransactionPage>();
+		r.attributes = attributes;
+		r.totalPages = 1;
+
+		int i = 0;
+		r.transactionPages.add(transactionPages.get(pageID));
+		for(Attribute attr : r.attributes) {
+			attr.pages.add(attributes.get(i++).pages.get(pageID));
+		}
 	}
 
 	public synchronized void setTotalPages(int totalPages) {
@@ -53,8 +73,12 @@ public class Table implements java.io.Serializable {
 		return true;
 	}
 
-	public ArrayList<Attribute> getAttributes() {
-		return attributes;
+	public Attribute[] getAttributes() {
+		Attribute[] r = new Attribute[attributes.size()];
+		int i = 0;
+		for(Attribute a : attributes)
+			r[i++] = a;
+		return r;
 	}
 
 	public void addTuple(Tuple t, long transactionID) {
