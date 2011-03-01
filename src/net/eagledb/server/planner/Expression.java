@@ -34,7 +34,9 @@ public class Expression {
 
 	public ArrayList<Page> buffers = new ArrayList<Page>();
 
-	private Index bestIndex = null;
+	protected Index bestIndex = null;
+
+	protected Object bestIndexValue = null;
 
 	public Expression(Table table, Database database, net.sf.jsqlparser.expression.Expression expression) {
 		operations = new ArrayList<PageOperation>();
@@ -45,6 +47,10 @@ public class Expression {
 
 	public Index getBestIndex() {
 		return bestIndex;
+	}
+
+	public Object getBestIndexValue() {
+		return bestIndexValue;
 	}
 
 	private int subparse(net.sf.jsqlparser.expression.Expression ex) throws ExpressionException {
@@ -100,12 +106,14 @@ public class Expression {
 				throw new OperatorException(lhsClass, action, rhsClass, ex);
 
 			// look for an index
-			if(lhs >= MAXIMUM_BUFFERS) {
+			// index lookups only work when the expression is in the form of "ATTRIBUTE OPERATOR VALUE"
+			if(lhs >= MAXIMUM_BUFFERS && current.getRightExpression() instanceof LongValue) {
 				String indexDef = table.getName() + "(" + table.getAttributes()[lhs - MAXIMUM_BUFFERS].getName() +
 					")";
 				for(Index index : database.getIndexes()) {
 					if(index.getDefinition().equals(indexDef)) {
 						bestIndex = index;
+						bestIndexValue = Integer.valueOf(current.getRightExpression().toString());
 						break;
 					}
 				}

@@ -10,6 +10,7 @@ import net.eagledb.server.planner.ExpressionException;
 import net.eagledb.server.planner.FetchAttributes;
 import net.eagledb.server.planner.FullTableScan;
 import net.eagledb.server.planner.IndexLookup;
+import net.eagledb.server.planner.IndexLookupOperation;
 import net.eagledb.server.planner.IndexScan;
 import net.eagledb.server.planner.PageOperation;
 import net.eagledb.server.planner.Plan;
@@ -101,7 +102,7 @@ public class SQLSelect extends SQLAction {
 
 			// if we have an index we can use that
 			if(bestIndex != null) {
-				IndexLookup lookup = new IndexLookup(table, bestIndex);
+				IndexLookup lookup = new IndexLookup(table, bestIndex, IndexLookupOperation.EQUAL, ex.getBestIndexValue());
 				p.addPlanItem(lookup);
 				p.addPlanItem(new IndexScan(conn.getSelectedDatabase(), lookup.virtualTable, selectItems.size(),
 					whereClause.toString(), op, ex.buffers));

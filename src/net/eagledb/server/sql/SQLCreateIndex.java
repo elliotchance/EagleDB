@@ -144,8 +144,6 @@ public class SQLCreateIndex extends SQLAction {
 			e.printStackTrace();
 		}
 
-		System.out.println(page);
-
 		// add the index
 		selectedDatabase.addIndex(index);
 
