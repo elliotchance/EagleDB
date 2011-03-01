@@ -1,13 +1,18 @@
 package net.eagledb.server.sql;
 
+import java.io.EOFException;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import net.eagledb.server.ClientConnection;
+import net.eagledb.server.Request;
 import net.eagledb.server.Result;
 import net.eagledb.server.ResultCode;
 import net.eagledb.server.Server;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Index;
+import net.eagledb.server.storage.Schema;
+import net.eagledb.server.storage.TemporaryTable;
+import net.eagledb.server.storage.Tuple;
 import net.eagledb.server.storage.index.IntIndexPage;
 import net.sf.jsqlparser.statement.create.index.CreateIndex;
 
@@ -113,19 +118,30 @@ public class SQLCreateIndex extends SQLAction {
 		index.table = sql.getTable();
 		index.columns = sql.getColumns();
 
+		// handle TEMPORARY table
+		Schema schema = selectedDatabase.getSchema("public");
+		if(schema.getTable(sql.getTable()) == null) {
+			TemporaryTable tt = conn.getTemporaryTable(sql.getTable());
+			if(tt != null)
+				index.table = schema.getTable(tt.internalName).getName();
+		}
+
+		// generate a SQL statement
+		String sqlStmt = "select " + sql.getColumns().get(0) + " from " + sql.getTable();
+
 		// build the index
 		IntIndexPage page = new IntIndexPage();
-
-		// 1. get all the data we wish to index
-		int[] data = new int[10];
-		for(int i = 0; i < data.length; ++i) {
-			data[i] = (int) (Math.random() * 256 * 256);
-			System.out.print(data[i] + " ");
+		try {
+			Result result = conn.pingPong(new Request(sqlStmt));
+			for(Tuple tuple : result.tuples)
+				page.insertObj(tuple.tupleID, Integer.valueOf(tuple.get(0).toString()));
+			index.page = page;
 		}
-		System.out.println();
-
-		for(int i = 0; i < data.length; ++i) {
-			page.insertObj(data[i], i);
+		catch(EOFException e) {
+			// do nothing
+		}
+		catch(IOException e) {
+			e.printStackTrace();
 		}
 
 		System.out.println(page);

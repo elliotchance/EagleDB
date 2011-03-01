@@ -112,8 +112,8 @@ public class TestSuiteEmbeddedDatabase {
 		ArrayList<String[]> tuples = new ArrayList<String[]>();
 		while(rs.next()) {
 			String[] tuple = new String[columns];
-			for(int i = 0; i < columns; ++i)
-				tuple[i] = rs.getString(i);
+			for(int i = 1; i <= columns; ++i)
+				tuple[i - 1] = rs.getString(i);
 			tuples.add(tuple);
 		}
 		rs.close();
@@ -121,8 +121,8 @@ public class TestSuiteEmbeddedDatabase {
 
 		String[][] r = new String[tuples.size()][columns];
 		for(int i = 0; i < tuples.size(); ++i) {
-			for(int j = 0; j < columns; ++j)
-				r[i][j] = tuples.get(i)[j];
+			for(int j = 1; j <= columns; ++j)
+				r[i][j - 1] = tuples.get(i)[j - 1];
 		}
 		return r;
 	}

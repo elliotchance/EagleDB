@@ -9,10 +9,12 @@ import net.eagledb.server.Server;
 import net.eagledb.server.planner.ExpressionException;
 import net.eagledb.server.planner.FetchAttributes;
 import net.eagledb.server.planner.FullTableScan;
+import net.eagledb.server.planner.IndexLookup;
 import net.eagledb.server.planner.PageOperation;
 import net.eagledb.server.planner.Plan;
 import net.eagledb.server.storage.Attribute;
 import net.eagledb.server.storage.Database;
+import net.eagledb.server.storage.Index;
 import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
 import net.eagledb.server.storage.TemporaryTable;
@@ -62,12 +64,18 @@ public class SQLSelect extends SQLAction {
 
 		// parse expression operations
 		try {
+			// extract WHERE clause, making sure it is not empty
 			Expression whereClause = select.getWhere();
 			if(whereClause == null)
 				whereClause = new LongValue("1");
 
-			net.eagledb.server.planner.Expression ex = new net.eagledb.server.planner.Expression(table, whereClause);
+			// parse the expression
+			net.eagledb.server.planner.Expression ex = new net.eagledb.server.planner.Expression(table,
+				selectedDatabase, whereClause);
 			PageOperation[] op = ex.parse();
+
+			// see if we discovered an index
+			Index bestIndex = ex.getBestIndex();
 
 			// do we need to fetch attributes?
 			List<SelectItem> selectItems = select.getSelectItems();
@@ -89,10 +97,15 @@ public class SQLSelect extends SQLAction {
 
 			// create the executation plan
 			Plan p = new Plan();
+
+			// if we have an index we can use that
+			if(bestIndex != null)
+				p.addPlanItem(new IndexLookup(bestIndex));
+			
 			p.addPlanItem(new FullTableScan(conn.getSelectedDatabase(), table, selectItems.size(),
 				whereClause.toString(), op, ex.buffers));
 
-			// add plan
+			// fetch attribute projection
 			p.addPlanItem(new FetchAttributes(table, faSources, faDestinations, faTypes));
 
 			// execute plan

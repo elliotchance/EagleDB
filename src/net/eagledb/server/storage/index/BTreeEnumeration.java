@@ -96,7 +96,6 @@ public class BTreeEnumeration implements Enumeration {
 	}
 
 	public Object nextElementold() {
-
 		Object element = null;
 		if (currentItem < currentNode.nKey) {
 			if (enumKeys == true) {

@@ -2,6 +2,8 @@ package net.eagledb.server.planner;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import net.eagledb.server.storage.Database;
+import net.eagledb.server.storage.Index;
 import net.eagledb.server.storage.Table;
 import net.eagledb.server.storage.page.BooleanPage;
 import net.eagledb.server.storage.page.DoublePage;
@@ -28,12 +30,21 @@ public class Expression {
 	 */
 	private Table table;
 
+	private Database database;
+
 	public ArrayList<Page> buffers = new ArrayList<Page>();
 
-	public Expression(Table table, net.sf.jsqlparser.expression.Expression expression) {
+	private Index bestIndex = null;
+
+	public Expression(Table table, Database database, net.sf.jsqlparser.expression.Expression expression) {
 		operations = new ArrayList<PageOperation>();
 		this.expression = expression;
+		this.database = database;
 		this.table = table;
+	}
+
+	public Index getBestIndex() {
+		return bestIndex;
 	}
 
 	private int subparse(net.sf.jsqlparser.expression.Expression ex) throws ExpressionException {
@@ -87,6 +98,18 @@ public class Expression {
 			Method operator = Operator.getMethodForOperator(lhsClass, action, rhsClass);
 			if(operator == null)
 				throw new OperatorException(lhsClass, action, rhsClass, ex);
+
+			// look for an index
+			if(lhs >= MAXIMUM_BUFFERS) {
+				String indexDef = table.getName() + "(" + table.getAttributes().get(lhs - MAXIMUM_BUFFERS).getName() +
+					")";
+				for(Index index : database.getIndexes()) {
+					if(index.getDefinition().equals(indexDef)) {
+						bestIndex = index;
+						break;
+					}
+				}
+			}
 
 			int dest = -1;
 			try {

@@ -126,4 +126,8 @@ public class Database {
 		indexes.add(index);
 	}
 
+	public ArrayList<Index> getIndexes() {
+		return indexes;
+	}
+
 }

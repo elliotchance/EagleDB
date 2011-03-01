@@ -228,4 +228,14 @@ public class BTNode {
 		else
 			return null;
 	}
+
+	@Override
+	public String toString() {
+		String r = "BTNode(\n";
+		for(KeyNode kn : kArray)
+			r += "  " + kn + "\n";
+		r += ")";
+		return r;
+	}
+
 }

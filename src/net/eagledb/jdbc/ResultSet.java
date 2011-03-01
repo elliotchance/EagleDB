@@ -351,7 +351,7 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public String getString(int columnIndex) throws SQLException {
-		return tuples[cursorPosition - 1].get(columnIndex).toString();
+		return tuples[cursorPosition - 1].get(columnIndex - 1).toString();
 	}
 
 	public String getString(String columnLabel) throws SQLException {

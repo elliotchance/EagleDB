@@ -186,7 +186,7 @@ public class CCJSqlParser implements CCJSqlParserConstants {
         CreateIndex index = new CreateIndex();
         Column indexName = null;
         Table table = null;
-        ArrayList<Column> columns = new ArrayList<Column>();
+        ArrayList<String> columns = new ArrayList<String>();
         Column column;
     jj_consume_token(K_CREATE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -219,7 +219,7 @@ public class CCJSqlParser implements CCJSqlParserConstants {
     label_1:
     while (true) {
       column = Column();
-                              columns.add(column);
+                              columns.add(SQLParser.getRawName(column.getWholeColumnName()));
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 93:
         jj_consume_token(93);
@@ -239,6 +239,7 @@ public class CCJSqlParser implements CCJSqlParserConstants {
       }
     }
     jj_consume_token(94);
+            index.setColumns(columns);
             {if (true) return index;}
     throw new Error("Missing return statement in function");
   }
@@ -3975,17 +3976,17 @@ public class CCJSqlParser implements CCJSqlParserConstants {
     return false;
   }
 
+  private boolean jj_3R_58() {
+    if (jj_scan_token(97)) return true;
+    return false;
+  }
+
   private boolean jj_3R_37() {
     if (jj_scan_token(K_CREATE)) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(79)) jj_scanpos = xsp;
     if (jj_scan_token(K_INDEX)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_58() {
-    if (jj_scan_token(97)) return true;
     return false;
   }
 
@@ -4180,11 +4181,6 @@ public class CCJSqlParser implements CCJSqlParserConstants {
     return false;
   }
 
-  private boolean jj_3_3() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
   private boolean jj_3R_92() {
     Token xsp;
     xsp = jj_scanpos;
@@ -4192,6 +4188,11 @@ public class CCJSqlParser implements CCJSqlParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_139()) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3_3() {
+    if (jj_3R_37()) return true;
     return false;
   }
 

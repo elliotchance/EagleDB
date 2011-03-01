@@ -18,4 +18,9 @@ public class KeyNode {
 		return data;
 	}
 
+	@Override
+	public String toString() {
+		return "KeyNode(key = " + key + ", data = " + data + ")";
+	}
+
 }

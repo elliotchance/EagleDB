@@ -328,11 +328,12 @@ CreateIndex CreateIndex():
 	}
         "("
         (
-            column=Column() { columns.add(SQLParser.getRawName(column)); }
+            column=Column() { columns.add(SQLParser.getRawName(column.getWholeColumnName())); }
             [","]
         )+
         ")"
         {
+            index.setColumns(columns);
             return index;
         }
 }

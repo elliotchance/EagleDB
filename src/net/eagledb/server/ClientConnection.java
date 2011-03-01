@@ -45,30 +45,20 @@ public class ClientConnection extends Thread {
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-			boolean closeConnection = false;
-			while(true) {
-				// get input
-				Request request = (Request) in.readObject();
-
-				// process
-				Result result = new Result(ResultCode.UNKNOWN);
+			boolean stayConnected = true;
+			while(stayConnected) {
+				Result result = null;
 				try {
-					result = parser.parse(request.sql, request.action);
+					result = pingPong((Request) in.readObject());
 				}
 				catch(DisconnectClient e) {
-					closeConnection = true;
-					result.code = ResultCode.SUCCESS;
-				}
-				catch(SQLException e) {
-					result.sqlException = e.getMessage();
+					result = new Result(ResultCode.SUCCESS);
+					stayConnected = false;
 				}
 
 				// send result
 				out.writeObject(result);
 				out.flush();
-
-				if(closeConnection)
-					break;
 			}
 
 			// clean up
@@ -85,6 +75,22 @@ public class ClientConnection extends Thread {
 		catch(ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Result pingPong(Request request) throws EOFException, IOException, DisconnectClient {
+		// process
+		Result result = new Result(ResultCode.UNKNOWN);
+		try {
+			result = parser.parse(request.sql, request.action);
+		}
+		catch(DisconnectClient e) {
+			throw e;
+		}
+		catch(SQLException e) {
+			result.sqlException = e.getMessage();
+		}
+
+		return result;
 	}
 
 	public User getUser() {
