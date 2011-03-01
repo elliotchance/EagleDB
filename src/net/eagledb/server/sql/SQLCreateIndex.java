@@ -134,7 +134,7 @@ public class SQLCreateIndex extends SQLAction {
 		try {
 			Result result = conn.pingPong(new Request(sqlStmt));
 			for(Tuple tuple : result.tuples)
-				page.insertObj(tuple.tupleID, Integer.valueOf(tuple.get(0).toString()));
+				page.insertObj(Integer.valueOf(tuple.get(0).toString()), tuple.tupleID);
 			index.page = page;
 		}
 		catch(EOFException e) {

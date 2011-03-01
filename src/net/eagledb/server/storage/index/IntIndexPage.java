@@ -1,6 +1,9 @@
 package net.eagledb.server.storage.index;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
+import net.eagledb.server.planner.IndexLookupOperation;
+import net.eagledb.server.storage.Tuple;
 
 // http://www.koders.com/java/fidDD507AA710FB8CFA6B60DD4D21C20DD94DB821E2.aspx?s=btree
 public class IntIndexPage extends IndexPage {
@@ -52,16 +55,17 @@ public class IntIndexPage extends IndexPage {
 		return r;
 	}
 
-	public SearchResult searchObj(int key) {
-		return searchObj(root, key);
+	public ArrayList<Integer> lookup(IndexLookupOperation op, int key) {
+		return lookup(root, key);
 	}
 
 	/*
 	 * returns null in the btnode part and -1 in the keyIndex
 	 * if the specified key doesn't exist
 	 */
-	public SearchResult searchObj(BTNode btnode, int key) {
-		SearchResult resultObj = new SearchResult(null, -1);
+	public ArrayList<Integer> lookup(BTNode btnode, int key) {
+		//SearchResult resultObj = new SearchResult(null, -1);
+		ArrayList<Integer> resultObj = new ArrayList<Integer>();
 		int i = 0;
 		boolean keyNotInNode = false;
 		boolean keyFound = false;
@@ -69,19 +73,24 @@ public class IntIndexPage extends IndexPage {
 		while (!keyNotInNode && !keyFound) {
 			if (btnode.getKeyNode(i) != null && key < btnode.getKeyNode(i).getKey()) {
 				keyNotInNode = true;
-				if (!btnode.isLeaf)
-					resultObj = searchObj(btnode.getBTNode(i), key);
+				if(!btnode.isLeaf)
+					resultObj = lookup(btnode.getBTNode(i), key);
 			}
 			else if (btnode.getKeyNode(i) != null && key == btnode.getKeyNode(i).getKey()) {
 				keyFound = true;
-				resultObj = new SearchResult(btnode, i); //key found
+				for(KeyNode kn : btnode.kArray) {
+					if(kn == null)
+						break;
+					if(kn.getKey() == key)
+						resultObj.add(kn.getObj());
+				}
 			}
 			else if (i < (btnode.nKey - 1))
 				i++;
 			else if (btnode.getKeyNode(i) != null && key > btnode.getKeyNode(i).getKey()) {
 				keyNotInNode = true;
-				if (!btnode.isLeaf)
-					resultObj = searchObj(btnode.getBTNode(i + 1), key);
+				if(!btnode.isLeaf)
+					resultObj = lookup(btnode.getBTNode(i + 1), key);
 			}
 			else
 				keyNotInNode = true;

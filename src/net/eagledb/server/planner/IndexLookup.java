@@ -3,7 +3,6 @@ package net.eagledb.server.planner;
 import java.util.ArrayList;
 import net.eagledb.server.storage.Index;
 import net.eagledb.server.storage.Tuple;
-import net.eagledb.server.storage.index.SearchResult;
 
 public class IndexLookup implements PlanItem {
 
@@ -20,8 +19,14 @@ public class IndexLookup implements PlanItem {
 
 	public void execute(ArrayList<Tuple> tuples, long transactionID) {
 		// perform the lookup
-		SearchResult result = index.page.searchObj(2);
-		System.out.println(result);
+		ArrayList<Integer> tupleIDs = index.page.lookup(IndexLookupOperation.EQUAL, 16);
+
+		// translate the tuple ID into a virtual table
+
+		System.out.print("$$$ ");
+		for(int tupleID : tupleIDs)
+			System.out.print(tupleID + " ");
+		System.out.println();
 	}
 
 	public PlanItemCost getPlanItemCost() {

@@ -1,7 +1,7 @@
 package net.eagledb.server.planner;
 
-public class IndexLookupOperation {
+public enum IndexLookupOperation {
 
-
+	EQUAL
 
 }
