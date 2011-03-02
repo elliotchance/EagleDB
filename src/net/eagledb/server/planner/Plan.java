@@ -5,13 +5,13 @@ import net.eagledb.server.storage.*;
 
 public class Plan {
 
-	private ArrayList<PlanItem> plan;
+	protected ArrayList<PlanItem> plan;
 
-	private ArrayList<Tuple> tuples;
+	protected ArrayList<Tuple> tuples;
 
-	private PlanStatistics statistics = null;
+	protected PlanStatistics statistics = null;
 
-	private boolean hasExecuted = false;
+	protected boolean hasExecuted = false;
 
 	public Plan() {
 		plan = new ArrayList<PlanItem>();

@@ -8,8 +8,8 @@ import net.eagledb.server.storage.page.Page;
 public class IndexScan extends FullTableScan {
 
 	public IndexScan(Database selectedDatabase, Table table, int tupleSize, String clause, PageOperation[] operations,
-		ArrayList<Page> buffers) {
-		super(selectedDatabase, table, tupleSize, clause, operations, buffers);
+		ArrayList<Page> buffers, int limitOffset, int limit) {
+		super(selectedDatabase, table, tupleSize, clause, operations, buffers, limitOffset, limit);
 	}
 
 	@Override

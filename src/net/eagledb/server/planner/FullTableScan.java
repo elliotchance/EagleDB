@@ -30,14 +30,18 @@ public class FullTableScan implements PlanItem {
 	 */
 	private long[] transactionIDs;
 
+	protected int limit, limitOffset, skipped = 0;
+
 	public FullTableScan(Database selectedDatabase, Table table, int tupleSize, String clause,
-		PageOperation[] operations, ArrayList<Page> buffers) {
+		PageOperation[] operations, ArrayList<Page> buffers, int limitOffset, int limit) {
 		this.selectedDatabase = selectedDatabase;
 		this.table = table;
 		this.operations = operations;
 		this.tupleSize = tupleSize;
 		this.clause = clause;
 		this.buffers = buffers;
+		this.limitOffset = limitOffset;
+		this.limit = limit;
 		estimateCost();
 	}
 
@@ -68,10 +72,6 @@ public class FullTableScan implements PlanItem {
 	public void execute(ArrayList<Tuple> tuples, long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
 
-		// show buffers
-		//for(int i = 0; i < buffers.size(); ++i)
-		//	System.out.println("buffer[" + i + "] = " + buffers.get(i));
-
 		// run operations
 		for(pageID = 0; pageID < table.getTotalPages(); ++pageID) {
 			for(PageOperation operation : operations)
@@ -98,8 +98,17 @@ public class FullTableScan implements PlanItem {
 						tp.expireTransactionID[i] == TransactionPage.EXPIRE_NEVER ||
 						inTransactionIDs(tp.expireTransactionID[i])
 					)
-				)
-						tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, tupleSize));
+				) {
+					// handle the limit
+					if(skipped < limitOffset) {
+						++skipped;
+						continue;
+					}
+					if(tuples.size() >= limit)
+						break;
+					
+					tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, tupleSize));
+				}
 			}
 		}
 

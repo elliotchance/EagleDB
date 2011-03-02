@@ -100,16 +100,23 @@ public class SQLSelect extends SQLAction {
 			// create the executation plan
 			Plan p = new Plan();
 
+			// find limits
+			int limitOffset = 0, limit = Integer.MAX_VALUE;
+			if(select.getLimit() != null) {
+				limitOffset = (int) select.getLimit().getOffset();
+				limit = (int) select.getLimit().getRowCount();
+			}
+
 			// if we have an index we can use that
 			if(bestIndex != null) {
 				IndexLookup lookup = new IndexLookup(table, bestIndex, IndexLookupOperation.EQUAL, ex.getBestIndexValue());
 				p.addPlanItem(lookup);
 				p.addPlanItem(new IndexScan(conn.getSelectedDatabase(), lookup.virtualTable, selectItems.size(),
-					whereClause.toString(), op, ex.buffers));
+					whereClause.toString(), op, ex.buffers, limitOffset, limit));
 			}
 			else {
 				p.addPlanItem(new FullTableScan(conn.getSelectedDatabase(), table, selectItems.size(),
-					whereClause.toString(), op, ex.buffers));
+					whereClause.toString(), op, ex.buffers, limitOffset, limit));
 			}
 
 			// fetch attribute projection

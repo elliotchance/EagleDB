@@ -36,6 +36,29 @@ public class TestSelect {
     }
 
     @Test
+	public void selectLimit() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 limit 2", 2);
+		assertArrayEquals(new String[][] {
+			{ "1", "1.0" },
+			{ "2", "2.5" },
+		}, set);
+	}
+
+    @Test
+	public void selectLimitOffset() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 limit 2, 1", 2);
+		assertArrayEquals(new String[][] {
+			{ "3", "8.7" },
+		}, set);
+
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 limit 2 offset 1", 2);
+		assertArrayEquals(new String[][] {
+			{ "2", "2.5" },
+			{ "3", "8.7" },
+		}, set);
+	}
+
+    @Test
 	public void selectAll() throws Exception {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1", 2);
 		assertArrayEquals(new String[][] {
