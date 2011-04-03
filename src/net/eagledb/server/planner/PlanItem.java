@@ -10,6 +10,8 @@ public interface PlanItem {
 
 	public void execute(ArrayList<Tuple> tuples, long transactionID);
 
+	public void executeDelete(long transactionID);
+
 	public PlanItemCost getPlanItemCost();
 
 }

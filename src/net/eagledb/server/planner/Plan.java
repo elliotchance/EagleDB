@@ -75,6 +75,15 @@ public class Plan {
 		return ts;
 	}
 
+	public void executeDelete(long transactionID) {
+		long start = Calendar.getInstance().getTimeInMillis();
+		for(PlanItem p : plan)
+			p.executeDelete(transactionID);
+
+		statistics.executionTimeMillis = Calendar.getInstance().getTimeInMillis() - start;
+		hasExecuted = true;
+	}
+
 	public void execute(long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
 		tuples = new ArrayList<Tuple>();

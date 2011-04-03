@@ -62,6 +62,9 @@ public class FullTableScan implements PlanItem {
 	}
 
 	private boolean inTransactionIDs(long XID) {
+		if(transactionIDs == null)
+			return false;
+		
 		for(int i = 0; i < transactionIDs.length; ++i) {
 			if(transactionIDs[i] == XID)
 				return true;
@@ -118,6 +121,55 @@ public class FullTableScan implements PlanItem {
 	@Override
 	public PlanItemCost getPlanItemCost() {
 		return cost;
+	}
+
+	public void executeDelete(long transactionID) {
+		long start = Calendar.getInstance().getTimeInMillis(), matched = 0;
+
+		// run operations
+		for(pageID = 0; pageID < table.getTotalPages(); ++pageID) {
+			for(PageOperation operation : operations)
+				operation.run(this);
+
+			TransactionPage tp = table.getTransactionPage(pageID, cost);
+			BooleanPage result = (BooleanPage) buffers.get(buffers.size() - 1);
+			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
+				// Display all the row versions that match the following criteria:
+				if(
+					// * The WHERE clause evaluates to true
+					result.page[i] &&
+
+					// * The row's creation transaction ID is a committed transaction and is less than the current
+					//   transaction counter.
+					(
+						selectedDatabase.transactionIsCommitted(tp.createTransactionID[i]) &&
+						tp.createTransactionID[i] < transactionID
+					) &&
+
+					// * The row lacks an expiration transaction ID or its expiration transaction ID was in process at
+					//   query start.
+					(
+						tp.expireTransactionID[i] == TransactionPage.EXPIRE_NEVER ||
+						inTransactionIDs(tp.expireTransactionID[i])
+					)
+				) {
+					// handle the limit
+					if(skipped < limitOffset) {
+						++skipped;
+						continue;
+					}
+					if(matched >= limit)
+						break;
+
+					System.out.println("MATCH " + i);
+					++matched;
+					tp.expireTransactionID[i] = transactionID;
+					//tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, tupleSize));
+				}
+			}
+		}
+
+		cost.realMillis = Calendar.getInstance().getTimeInMillis() - start;
 	}
 
 }

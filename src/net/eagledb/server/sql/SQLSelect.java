@@ -150,10 +150,10 @@ public class SQLSelect extends SQLAction {
 					aliases[faDestinations[j]].setName(aliasName);
 				else
 					aliases[faDestinations[j]].setName(table.getAttributes()[faSources[j]].getName());
-				System.out.println("&& " + aliases[faDestinations[j]].getName());
+				//System.out.println("&& " + aliases[faDestinations[j]].getName());
 			}
 
-			System.out.println(select + ": " + aliases[0]);
+			//System.out.println(select + ": " + aliases[0]);
 			return new Result(ResultCode.SUCCESS, aliases, p.getTuples());
 		}
 		catch(ExpressionException e) {

@@ -16,6 +16,7 @@ import net.sf.jsqlparser.statement.create.database.CreateDatabase;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.connect.Connect;
 import net.sf.jsqlparser.statement.create.index.CreateIndex;
+import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.disconnect.Disconnect;
@@ -47,6 +48,8 @@ public class SQLParser {
 		if(stmt instanceof Drop)
 			return true;
 		if(stmt instanceof Transaction)
+			return true;
+		if(stmt instanceof Delete)
 			return true;
 		return false;
 	}
@@ -94,6 +97,8 @@ public class SQLParser {
 				result = new SQLShowDatabases(server, conn, (Show) stmt).getResult();
 			else if(stmt instanceof Transaction)
 				result = new SQLTransaction(server, conn, (Transaction) stmt).getResult();
+			else if(stmt instanceof Delete)
+				result = new SQLDelete(server, conn, (Delete) stmt).getResult();
 			else
 				throw new SQLException("Invalid SQL: " + sql);
 

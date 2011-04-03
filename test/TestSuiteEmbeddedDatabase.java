@@ -1,5 +1,3 @@
-
-
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.sql.Connection;
@@ -31,6 +29,9 @@ import org.junit.runners.Suite;
 	
 	// INSERT
 	TestInsert.class,
+
+	// DELETE
+	TestDelete.class,
 
 	// SELECT
 	TestExplain.class,

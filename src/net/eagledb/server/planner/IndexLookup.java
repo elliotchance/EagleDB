@@ -43,4 +43,8 @@ public class IndexLookup implements PlanItem {
 		return new PlanItemCost();
 	}
 
+	public void executeDelete(long transactionID) {
+		// do nothing
+	}
+
 }

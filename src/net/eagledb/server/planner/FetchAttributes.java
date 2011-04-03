@@ -78,4 +78,8 @@ public class FetchAttributes implements PlanItem {
 		return cost;
 	}
 
+	public void executeDelete(long transactionID) {
+		// do nothing
+	}
+
 }
