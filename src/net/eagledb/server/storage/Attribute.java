@@ -11,11 +11,11 @@ import net.eagledb.server.storage.page.Page;
 
 public class Attribute implements Serializable {
 
-	private String name;
+	protected String name;
 
-	private Class<? extends SQLType> pageType;
+	protected Class<? extends SQLType> pageType;
 
-	private transient RandomAccessFile dataHandle;
+	protected transient RandomAccessFile dataHandle;
 
 	public transient ArrayList<Page> pages = null;
 
@@ -35,6 +35,10 @@ public class Attribute implements Serializable {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -75,7 +79,7 @@ public class Attribute implements Serializable {
 		return dataHandle;
 	}
 
-	public void initTransient() {
+	public final void initTransient() {
 		pages = new ArrayList<Page>();
 	}
 

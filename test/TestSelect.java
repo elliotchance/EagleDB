@@ -1,3 +1,7 @@
+
+
+import java.sql.ResultSet;
+import java.sql.Statement;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -162,6 +166,14 @@ public class TestSelect {
 		assertArrayEquals(new String[][] {
 			{ "2", "2.5" },
 		}, set);
+	}
+
+    @Test
+	public void selectAlias() throws Exception {
+		Statement s = TestSuiteEmbeddedDatabase.connection.createStatement();
+		ResultSet rs = s.executeQuery("select id as f1, number from test1 limit 1");
+		rs.getString("f1");
+		rs.getString("number");
 	}
 
 }

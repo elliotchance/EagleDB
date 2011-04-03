@@ -97,13 +97,15 @@ public class ResultSet implements java.sql.ResultSet {
 
 	public int findColumn(String columnLabel) throws SQLException {
 		int i = 0;
+		String s = "";
 		for(Attribute f : fields) {
 			if(f.getName().equals(columnLabel))
 				return i;
 			++i;
+			s += f.getName() + " ";
 		}
 
-		throw new SQLException("No such field '" + columnLabel + "'");
+		throw new SQLException("No such field '" + columnLabel + "' in " + s);
 	}
 
 	public boolean first() throws SQLException {
@@ -175,11 +177,11 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public byte[] getBytes(int columnIndex) throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		return getString(columnIndex).getBytes();
 	}
 
 	public byte[] getBytes(String columnLabel) throws SQLException {
-		throw new SQLFeatureNotSupportedException();
+		return getString(columnLabel).getBytes();
 	}
 
 	public Reader getCharacterStream(int columnIndex) throws SQLException {
@@ -351,11 +353,13 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public String getString(int columnIndex) throws SQLException {
+		validateColumnIndex(columnIndex);
 		return tuples[cursorPosition - 1].get(columnIndex - 1).toString();
 	}
 
 	public String getString(String columnLabel) throws SQLException {
-		return tuples[cursorPosition - 1].get(findColumn(columnLabel)).toString();
+		int columnIndex = findColumn(columnLabel);
+		return tuples[cursorPosition - 1].get(columnIndex).toString();
 	}
 
 	public Time getTime(int columnIndex) throws SQLException {
@@ -832,6 +836,16 @@ public class ResultSet implements java.sql.ResultSet {
 
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
 		throw new SQLFeatureNotSupportedException();
+	}
+
+	/**
+	 * Make sure columnIndex is in an appropriate range.
+	 * @param columnIndex The column to test.
+	 * @throws SQLException If the columnIndex is out of range.
+	 */
+	protected void validateColumnIndex(int columnIndex) throws SQLException {
+		if(columnIndex < 1 || columnIndex > tuples[cursorPosition - 1].size())
+			throw new SQLException("columnIndex out of bounds: " + columnIndex);
 	}
 
 }

@@ -24,6 +24,7 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItem;
 
 public class SQLSelect extends SQLAction {
@@ -85,11 +86,16 @@ public class SQLSelect extends SQLAction {
 			int[] faDestinations = new int[selectItems.size()];
 			Class[] faTypes = new Class[selectItems.size()];
 			int i = 0;
-			for(SelectItem item : selectItems) {
+			for(SelectItem theItem : selectItems) {
+				SelectExpressionItem item = (SelectExpressionItem) theItem;
+				String field = item.getExpression().toString();
+				if(field == null)
+					field = theItem.toString();
+
 				// try to locate the field
-				int position = table.getAttributeLocation(item.toString());
+				int position = table.getAttributeLocation(field);
 				if(position < 0)
-					throw new Exception("Column '" + item.toString() + "' not found");
+					throw new Exception("Column '" + field + "' not found");
 
 				faSources[i] = position;
 				faDestinations[i] = i;
@@ -136,8 +142,19 @@ public class SQLSelect extends SQLAction {
 			else
 				p.execute(conn.transactionID);
 
-			// report
-			return new Result(ResultCode.SUCCESS, table.getAttributes(), p.getTuples());
+			// map the aliases
+			Attribute[] aliases = table.getAttributes(); //new Attribute[selectItems.size()];
+			for(int j = 0; j < faSources.length; ++j) {
+				String aliasName = ((SelectExpressionItem) selectItems.get(j)).getAlias();
+				if(aliasName != null)
+					aliases[faDestinations[j]].setName(aliasName);
+				else
+					aliases[faDestinations[j]].setName(table.getAttributes()[faSources[j]].getName());
+				System.out.println("&& " + aliases[faDestinations[j]].getName());
+			}
+
+			System.out.println(select + ": " + aliases[0]);
+			return new Result(ResultCode.SUCCESS, aliases, p.getTuples());
 		}
 		catch(ExpressionException e) {
 			e.printStackTrace();
