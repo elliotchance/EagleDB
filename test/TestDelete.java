@@ -26,8 +26,9 @@ public class TestDelete {
 
 	@Before
 	public void setUp() throws SQLException {
-		// create the temporary table used for these tests
+		// create the temporary tables used for these tests
 		TestSuiteEmbeddedDatabase.executeUpdate("create temp table delete1 (id int, number real)");
+		TestSuiteEmbeddedDatabase.executeUpdate("create temp table delete2 (id int, number real)");
 	}
 
 	@After
@@ -55,4 +56,27 @@ public class TestDelete {
 
 		st.close();
 	}
+
+	@Test
+	public void deleteLimit() throws Exception {
+		Statement st = TestSuiteEmbeddedDatabase.connection.createStatement();
+
+		// insert a bunch of records
+		long start = Calendar.getInstance().getTimeInMillis();
+		int tuples = 5;
+		for (int i = 1; i <= tuples; ++i)
+			TestSuiteEmbeddedDatabase.executeUpdate("insert into delete2 (id, number) values ("
+				+ i + ", " + Math.sqrt(i) + ")");
+
+		// delete a record (autocommit is on)
+		TestSuiteEmbeddedDatabase.executeUpdate("delete from delete2 where id>0 limit 2");
+
+		// count visible rows
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id from delete2", 1);
+		assertArrayEquals(new String[][]{
+				{"3"}, {"4"}, {"5"},}, set);
+
+		st.close();
+	}
+
 }

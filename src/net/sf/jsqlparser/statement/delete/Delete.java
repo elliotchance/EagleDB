@@ -26,10 +26,12 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.StatementVisitor;
+import net.sf.jsqlparser.statement.select.Limit;
 
 public class Delete implements Statement {
 	private Table table;
 	private Expression where;
+	private Limit limit = null;
 	
 	public void accept(StatementVisitor statementVisitor) {
 		statementVisitor.visit(this);
@@ -39,19 +41,30 @@ public class Delete implements Statement {
 		return table;
 	}
 
-	public Expression getWhere() {
-		return where;
-	}
-
 	public void setTable(Table name) {
 		table = name;
+	}
+
+	public Expression getWhere() {
+		return where;
 	}
 
 	public void setWhere(Expression expression) {
 		where = expression;
 	}
 
-	public String toString() {
-		return "DELETE FROM "+table+((where!=null)?" WHERE "+where:"");
+	public Limit getLimit() {
+		return limit;
 	}
+
+	public void setLimit(Limit l) {
+		limit = l;
+	}
+
+	@Override
+	public String toString() {
+		return "DELETE FROM " + table + ((where!=null) ? " WHERE " + where : "") +
+			 ((limit != null) ? " LIMIT " + limit : "");
+	}
+
 }

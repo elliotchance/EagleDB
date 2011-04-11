@@ -561,10 +561,12 @@ Delete Delete():
 	Delete delete = new Delete();
 	Table table = null;
 	Expression where = null;
+	Limit limit = null;
 }
 {
     <K_DELETE> [<K_FROM>] table=TableWithAlias() 
     [where=WhereClause() { delete.setWhere(where); } ]
+    [limit = Limit() { delete.setLimit(limit); } ]
     { 
     	delete.setTable(table);
     	return delete;

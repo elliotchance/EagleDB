@@ -71,27 +71,16 @@ public class SQLDelete extends SQLAction {
 
 			// find limits
 			int limitOffset = 0, limit = Integer.MAX_VALUE;
-			/*if(sql.getLimit() != null) {
-				limitOffset = (int) select.getLimit().getOffset();
-				limit = (int) select.getLimit().getRowCount();
-			}*/
+			if(sql.getLimit() != null) {
+				limitOffset = (int) sql.getLimit().getOffset();
+				limit = (int) sql.getLimit().getRowCount();
+			}
 
 			p.addPlanItem(new FullTableScan(conn.getSelectedDatabase(), table, 0,
 				whereClause.toString(), op, ex.buffers, limitOffset, limit));
 
 			// execute plan
-			/*if(((net.sf.jsqlparser.statement.delete.Delete) sql)..getExplain()) {
-				// if its ANALYZE we need to execute the query
-				if(((net.sf.jsqlparser.statement.select.Select) sql).getExplainAnalyse())
-					p.execute(conn.transactionID);
-
-				// return the EXPLAIN set
-				return new Result(ResultCode.SUCCESS, new Attribute[] {
-					new Attribute("explain", net.eagledb.server.sql.type.VarChar.class)
-				}, p.getExplainTuples());
-			}
-			else*/
-				p.executeDelete(conn.transactionID);
+			p.executeDelete(conn.transactionID);
 
 			return new Result(ResultCode.SUCCESS);
 		}
