@@ -85,12 +85,19 @@ public class SQLSelect extends SQLAction {
 			int[] faSources = new int[selectItems.size()];
 			int[] faDestinations = new int[selectItems.size()];
 			Class[] faTypes = new Class[selectItems.size()];
+			Attribute[] aliases = new Attribute[table.getAttributes().length]; //table.getAttributes().clone();
 			int i = 0;
 			for(SelectItem theItem : selectItems) {
 				SelectExpressionItem item = (SelectExpressionItem) theItem;
 				String field = item.getExpression().toString();
 				if(field == null)
 					field = theItem.toString();
+
+				// alias
+				if(item.getAlias() != null)
+					aliases[i] = new Attribute(item.getAlias(), table.getAttributes()[i].getPageType());
+				else
+					aliases[i] = new Attribute(field, table.getAttributes()[i].getPageType());
 
 				// try to locate the field
 				int position = table.getAttributeLocation(field);
@@ -142,18 +149,6 @@ public class SQLSelect extends SQLAction {
 			else
 				p.execute(conn.transactionID);
 
-			// map the aliases
-			Attribute[] aliases = table.getAttributes(); //new Attribute[selectItems.size()];
-			for(int j = 0; j < faSources.length; ++j) {
-				String aliasName = ((SelectExpressionItem) selectItems.get(j)).getAlias();
-				if(aliasName != null)
-					aliases[faDestinations[j]].setName(aliasName);
-				else
-					aliases[faDestinations[j]].setName(table.getAttributes()[faSources[j]].getName());
-				//System.out.println("&& " + aliases[faDestinations[j]].getName());
-			}
-
-			//System.out.println(select + ": " + aliases[0]);
 			return new Result(ResultCode.SUCCESS, aliases, p.getTuples());
 		}
 		catch(ExpressionException e) {

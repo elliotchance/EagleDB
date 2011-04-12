@@ -97,13 +97,16 @@ public class ResultSet implements java.sql.ResultSet {
 
 	public int findColumn(String columnLabel) throws SQLException {
 		int i = 0;
-		String s = "";
+		String s = "(";
 		for(Attribute f : fields) {
 			if(f.getName().equals(columnLabel))
 				return i;
+			if(i > 0)
+				s += ",";
+			s += f.getName();
 			++i;
-			s += f.getName() + " ";
 		}
+		s += ")";
 
 		throw new SQLException("No such field '" + columnLabel + "' in " + s);
 	}
@@ -253,11 +256,11 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public int getInt(int columnIndex) throws SQLException {
-		return Integer.valueOf(tuples[cursorPosition - 1].get(columnIndex).toString());
+		return (int) (double) Double.valueOf(tuples[cursorPosition - 1].get(columnIndex - 1).toString());
 	}
 
 	public int getInt(String columnLabel) throws SQLException {
-		return getInt(findColumn(columnLabel));
+		return getInt(findColumn(columnLabel) + 1);
 	}
 
 	public long getLong(int columnIndex) throws SQLException {
