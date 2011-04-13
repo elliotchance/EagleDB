@@ -76,7 +76,7 @@ public class Server {
 		new File(databaseLocation + "/data").mkdir();
 
 		// types
-		net.eagledb.server.sql.type.SQLType.registerAll();
+		net.eagledb.server.storage.page.Page.registerAll();
 	}
 
 	private void initDatabases() {

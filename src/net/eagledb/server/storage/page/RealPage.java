@@ -5,6 +5,10 @@ import java.io.RandomAccessFile;
 
 public class RealPage extends Page {
 
+	static {
+		Page.registerClass(new RealPage());
+	}
+
 	public float[] page;
 
 	public RealPage() {
@@ -44,6 +48,30 @@ public class RealPage extends Page {
 
 	public static String sqlName() {
 		return "REAL";
+	}
+
+	public boolean isFixedWidth() {
+		return true;
+	}
+
+	public int getFixedSize() {
+		return 4;
+	}
+
+	public int getMinimumVariableSize() {
+		return 0;
+	}
+
+	public int getMaximumVariableSize() {
+		return 0;
+	}
+
+	public String[] getNames() {
+		return new String[] { "REAL", "FLOAT" };
+	}
+
+	public Class getPageClass() {
+		return net.eagledb.server.storage.page.RealPage.class;
 	}
 
 }

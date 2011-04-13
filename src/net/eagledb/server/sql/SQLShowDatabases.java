@@ -21,7 +21,7 @@ public class SQLShowDatabases extends SQLAction {
 
 		// setup column definitions
 		Attribute[] fields = new Attribute[1];
-		fields[0] = new Attribute("database", net.eagledb.server.sql.type.VarChar.class);
+		fields[0] = new Attribute("database", net.eagledb.server.storage.page.VarCharPage.class);
 
 		// add tuples
 		Tuple[] tuples = new Tuple[server.getDatabaseNames().length];

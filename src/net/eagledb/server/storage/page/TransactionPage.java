@@ -68,4 +68,30 @@ public class TransactionPage extends Page {
 		return "TRANSACTION";
 	}
 
+	//
+
+	public boolean isFixedWidth() {
+		return true;
+	}
+
+	public int getFixedSize() {
+		return 4;
+	}
+
+	public int getMinimumVariableSize() {
+		return 4;
+	}
+
+	public int getMaximumVariableSize() {
+		return 4;
+	}
+
+	public String[] getNames() {
+		return new String[] { };
+	}
+
+	public Class getPageClass() {
+		return net.eagledb.server.storage.page.TransactionPage.class;
+	}
+
 }

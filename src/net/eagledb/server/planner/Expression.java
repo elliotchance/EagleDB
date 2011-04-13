@@ -66,9 +66,9 @@ public class Expression {
 			int location = table.getAttributeLocation(ex.toString());
 			Class type = table.getAttributes()[location].getPageType();
 
-			if(type.equals(net.eagledb.server.sql.type.Integer.class))
+			if(type.equals(net.eagledb.server.storage.page.IntPage.class))
 				buffers.add(new IntPage());
-			if(type.equals(net.eagledb.server.sql.type.DoublePrecision.class))
+			if(type.equals(net.eagledb.server.storage.page.DoublePage.class))
 				buffers.add(new DoublePage());
 
 			int dest = buffers.size() - 1;

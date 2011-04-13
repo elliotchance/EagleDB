@@ -93,14 +93,14 @@ public class Table implements java.io.Serializable {
 			try {
 				int i = 0;
 				for(Attribute f : attributes) {
-					Class<? extends net.eagledb.server.sql.type.SQLType> pageType = f.getPageType();
+					Class<? extends Page> pageType = f.getPageType();
 					Page p = null;
 
-					if(pageType.equals(net.eagledb.server.sql.type.Integer.class))
+					if(pageType.equals(net.eagledb.server.storage.page.IntPage.class))
 						p = new IntPage();
-					else if(pageType.equals(net.eagledb.server.sql.type.Real.class))
+					else if(pageType.equals(net.eagledb.server.storage.page.RealPage.class))
 						p = new RealPage();
-					else if(pageType.equals(net.eagledb.server.sql.type.DoublePrecision.class))
+					else if(pageType.equals(net.eagledb.server.storage.page.DoublePage.class))
 						p = new DoublePage();
 					else
 						throw new Exception("Unknown attribute type " + pageType);
@@ -119,14 +119,14 @@ public class Table implements java.io.Serializable {
 		int i = 0;
 		Page tail = null;
 		for(Attribute f : attributes) {
-			Class<? extends net.eagledb.server.sql.type.SQLType> pageType = f.getPageType();
+			Class<? extends Page> pageType = f.getPageType();
 
 			tail = attributes.get(i).pages.get(attributes.get(i).pages.size() - 1);
-			if(pageType.equals(net.eagledb.server.sql.type.Integer.class))
+			if(pageType.equals(net.eagledb.server.storage.page.IntPage.class))
 				tail.addTuple((int) ((double) Double.valueOf(t.get(i).toString())));
-			else if(pageType.equals(net.eagledb.server.sql.type.Real.class))
+			else if(pageType.equals(net.eagledb.server.storage.page.RealPage.class))
 				tail.addTuple((float) ((double) Double.valueOf(t.get(i).toString())));
-			else if(pageType.equals(net.eagledb.server.sql.type.DoublePrecision.class))
+			else if(pageType.equals(net.eagledb.server.storage.page.DoublePage.class))
 				tail.addTuple(Double.valueOf(t.get(i).toString()));
 			++i;
 		}

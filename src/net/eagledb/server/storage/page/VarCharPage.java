@@ -5,6 +5,10 @@ import java.io.RandomAccessFile;
 
 public class VarCharPage extends Page {
 
+	static {
+		Page.registerClass(new VarCharPage());
+	}
+
 	public String[] page;
 
 	public VarCharPage() {
@@ -43,6 +47,30 @@ public class VarCharPage extends Page {
 
 	public static String sqlName() {
 		return "VARCHAR";
+	}
+
+	public boolean isFixedWidth() {
+		return false;
+	}
+
+	public int getFixedSize() {
+		return 4;
+	}
+
+	public int getMinimumVariableSize() {
+		return 0;
+	}
+
+	public int getMaximumVariableSize() {
+		return java.lang.Integer.MAX_VALUE;
+	}
+
+	public String[] getNames() {
+		return new String[] { "VARCHAR", "CHARACTER VARYING" };
+	}
+
+	public Class getPageClass() {
+		return null;
 	}
 
 }

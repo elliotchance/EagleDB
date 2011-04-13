@@ -116,7 +116,7 @@ public class SQLSelect extends SQLAction {
 
 				//faSources[i] = position;
 				faDestinations[i] = i;
-				faTypes[i] = net.eagledb.server.sql.type.Integer.class; //table.getAttributes()[position].getPageType();
+				faTypes[i] = net.eagledb.server.storage.page.IntPage.class; //table.getAttributes()[position].getPageType();
 				++i;
 			}
 
@@ -153,7 +153,7 @@ public class SQLSelect extends SQLAction {
 
 				// return the EXPLAIN set
 				return new Result(ResultCode.SUCCESS, new Attribute[] {
-					new Attribute("explain", net.eagledb.server.sql.type.VarChar.class)
+					new Attribute("explain", net.eagledb.server.storage.page.VarCharPage.class)
 				}, p.getExplainTuples());
 			}
 			else

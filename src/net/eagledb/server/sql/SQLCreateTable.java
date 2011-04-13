@@ -4,8 +4,8 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.eagledb.server.*;
 import java.sql.*;
 import net.eagledb.server.storage.*;
-import net.eagledb.server.sql.type.*;
 import java.util.*;
+import net.eagledb.server.storage.page.Page;
 
 public class SQLCreateTable extends SQLAction {
 	
@@ -52,7 +52,7 @@ public class SQLCreateTable extends SQLAction {
 		for(net.sf.jsqlparser.statement.create.table.ColumnDefinition column : columns) {
 			// translate the SQL name into the correct internal type
 			String sqlType = column.getColDataType().getDataType().toUpperCase();
-			Class internalType = SQLType.getClassForType(sqlType);
+			Class internalType = Page.getClassForType(sqlType);
 			if(internalType == null)
 				throw new SQLException("Unknown SQL type '" + sqlType + "'");
 

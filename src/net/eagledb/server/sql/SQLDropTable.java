@@ -1,18 +1,13 @@
 package net.eagledb.server.sql;
 
 import java.sql.SQLException;
-import java.util.List;
 import net.eagledb.server.ClientConnection;
 import net.eagledb.server.Result;
 import net.eagledb.server.ResultCode;
 import net.eagledb.server.Server;
-import net.eagledb.server.sql.type.SQLType;
-import net.eagledb.server.storage.Attribute;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
-import net.eagledb.server.storage.TemporaryTable;
-import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.drop.Drop;
 
 public class SQLDropTable extends SQLAction {

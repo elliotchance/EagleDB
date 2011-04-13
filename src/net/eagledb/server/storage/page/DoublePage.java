@@ -5,6 +5,10 @@ import java.io.RandomAccessFile;
 
 public class DoublePage extends Page {
 
+	static {
+		Page.registerClass(new DoublePage());
+	}
+
 	public double[] page;
 
 	public DoublePage() {
@@ -59,6 +63,30 @@ public class DoublePage extends Page {
 
 	public static String sqlName() {
 		return "DOUBLE";
+	}
+
+	public boolean isFixedWidth() {
+		return true;
+	}
+
+	public int getFixedSize() {
+		return 8;
+	}
+
+	public int getMinimumVariableSize() {
+		return 0;
+	}
+
+	public int getMaximumVariableSize() {
+		return 0;
+	}
+
+	public String[] getNames() {
+		return new String[] { "DOUBLE", "DOUBLE PRECISION" };
+	}
+
+	public Class getPageClass() {
+		return null;
 	}
 
 }

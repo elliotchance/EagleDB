@@ -6,26 +6,25 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import net.eagledb.server.sql.type.SQLType;
 import net.eagledb.server.storage.page.Page;
 
 public class Attribute implements Serializable {
 
 	protected String name;
 
-	protected Class<? extends SQLType> pageType;
+	protected Class<? extends Page> pageType;
 
 	protected transient RandomAccessFile dataHandle;
 
 	public transient ArrayList<Page> pages = null;
 
-	public Attribute(String fieldName, Class<? extends SQLType> fieldPageType) {
+	public Attribute(String fieldName, Class<? extends Page> fieldPageType) {
 		name = fieldName;
 		pageType = fieldPageType;
 		initTransient();
 	}
 
-	public Attribute(String fieldName, Class<? extends SQLType> fieldPageType, RandomAccessFile dataHandle) {
+	public Attribute(String fieldName, Class<? extends Page> fieldPageType, RandomAccessFile dataHandle) {
 		this(fieldName, fieldPageType);
 		this.dataHandle = dataHandle;
 	}
@@ -44,7 +43,7 @@ public class Attribute implements Serializable {
 	/**
 	 * @return the pageType
 	 */
-	public Class<? extends SQLType> getPageType() {
+	public Class<? extends Page> getPageType() {
 		return pageType;
 	}
 
