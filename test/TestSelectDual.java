@@ -5,11 +5,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class TestSelectDummy {
+public class TestSelectDual {
 
 	private String[][] set;
 
-	public TestSelectDummy() {
+	public TestSelectDual() {
 	}
 
 	@BeforeClass
@@ -29,9 +29,9 @@ public class TestSelectDummy {
 	}
 
 	@Test
-	public void selectDummyAdd() throws Exception {
-		//set = TestSuiteEmbeddedDatabase.executeQuery("select 2+3", 1);
-		//assertArrayEquals(new String[][]{{"5"}}, set);
+	public void selectDualAdd() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2+3", 1);
+		assertArrayEquals(new String[][]{{"5"}}, set);
 	}
 	
 }

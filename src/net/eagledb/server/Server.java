@@ -14,6 +14,7 @@ import net.eagledb.server.storage.Attribute;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
+import net.eagledb.server.storage.Tuple;
 import net.eagledb.server.storage.page.TransactionPage;
 
 public class Server {
@@ -34,6 +35,8 @@ public class Server {
 	public String databaseLocation = ".";
 
 	private BackgroundWriter bgWriter;
+
+	public static Table dualTable = new Table("dual", new Attribute[] {});
 
 	public Server() {
 		init();
@@ -145,6 +148,9 @@ public class Server {
 				
 			databases.add(db);
 		}
+
+		// setup dual table
+		dualTable.addTuple(new Tuple(0, 0), 0);
 	}
 
 	private synchronized void saveUsers() {

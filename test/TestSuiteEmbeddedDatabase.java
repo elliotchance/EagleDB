@@ -36,7 +36,7 @@ import org.junit.runners.Suite;
 	// SELECT
 	TestExplain.class,
 	TestSelect.class,
-	TestSelectDummy.class,
+	TestSelectDual.class,
 
 	// transactions
 	TestTransaction.class,

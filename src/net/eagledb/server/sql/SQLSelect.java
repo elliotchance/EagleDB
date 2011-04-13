@@ -68,6 +68,10 @@ public class SQLSelect extends SQLAction {
 						" does not exist");
 			}
 		}
+		else {
+			// using the dual table
+			table = Server.dualTable;
+		}
 
 		// parse expression operations
 		try {
@@ -89,7 +93,7 @@ public class SQLSelect extends SQLAction {
 			ArrayList<net.eagledb.server.planner.Expression> faSources = new ArrayList<net.eagledb.server.planner.Expression>(); //[selectItems.size()];
 			int[] faDestinations = new int[selectItems.size()];
 			Class[] faTypes = new Class[selectItems.size()];
-			Attribute[] aliases = new Attribute[table.getAttributes().length];
+			Attribute[] aliases = new Attribute[selectItems.size()];
 			int i = 0;
 			for(SelectItem theItem : selectItems) {
 				SelectExpressionItem item = (SelectExpressionItem) theItem;
@@ -99,22 +103,15 @@ public class SQLSelect extends SQLAction {
 
 				// alias
 				if(item.getAlias() != null)
-					aliases[i] = new Attribute(item.getAlias(), table.getAttributes()[i].getPageType());
+					aliases[i] = new Attribute(item.getAlias(), null);
 				else
-					aliases[i] = new Attribute(field, table.getAttributes()[i].getPageType());
+					aliases[i] = new Attribute(field, null);
 
 				// try to locate the field
 				net.eagledb.server.planner.Expression fex =
 					new net.eagledb.server.planner.Expression(table, selectedDatabase, item.getExpression());
-				//PageOperation[] fop = fex.parse();
 				faSources.add(fex);
-				//System.out.println("'" + field + "': " + java.util.Arrays.toString(fop));
-			
-				//int position = table.getAttributeLocation(field);
-				//if(position < 0)
-				//	throw new Exception("Column '" + field + "' not found");
-
-				//faSources[i] = position;
+				
 				faDestinations[i] = i;
 				faTypes[i] = net.eagledb.server.storage.page.IntPage.class; //table.getAttributes()[position].getPageType();
 				++i;

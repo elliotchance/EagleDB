@@ -54,14 +54,10 @@ public class FetchAttributes implements PlanItem {
 				FullTableScan fts = new FullTableScan(null, table, table.getAttributes().length, null, ops,
 					source.buffers, 0, tuples.size());
 
-				for(PageOperation operation : ops) {
+				for(PageOperation operation : ops)
 					operation.run(fts);
-					System.out.println(operation);
-				}
 
-				System.out.println("BASE PAGE '" + source.toString() + "': " + java.util.Arrays.toString(ops));
 				Page basePage = source.buffers.get(source.buffers.size() - 1);
-
 				if(basePage instanceof IntPage) {
 					IntPage page = (IntPage) basePage;
 					for(Tuple tuple : tuples)
