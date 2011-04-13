@@ -11,8 +11,14 @@ public class Functions {
 	
 	static {
 		functions = new Function[] {
+			getFunction("abs", DoublePage.class, DoublePage.class),
+			getFunction("abs", DoublePage.class, IntPage.class),
 			getFunction("cos", DoublePage.class, DoublePage.class),
-			getFunction("cos", DoublePage.class, IntPage.class)
+			getFunction("cos", DoublePage.class, IntPage.class),
+			getFunction("sin", DoublePage.class, DoublePage.class),
+			getFunction("sin", DoublePage.class, IntPage.class),
+			getFunction("tan", DoublePage.class, DoublePage.class),
+			getFunction("tan", DoublePage.class, IntPage.class),
 		};
 	}
 
@@ -38,6 +44,16 @@ public class Functions {
 		return null;
 	}
 
+	public static void abs(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.abs(arg.page[i]);
+	}
+
+	public static void abs(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.abs(arg.page[i]);
+	}
+
 	public static void cos(DoublePage destination, DoublePage arg) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = Math.cos(arg.page[i]);
@@ -46,6 +62,26 @@ public class Functions {
 	public static void cos(DoublePage destination, IntPage arg) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = Math.cos(arg.page[i]);
+	}
+
+	public static void sin(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.sin(arg.page[i]);
+	}
+
+	public static void sin(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.sin(arg.page[i]);
+	}
+
+	public static void tan(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.tan(arg.page[i]);
+	}
+
+	public static void tan(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.tan(arg.page[i]);
 	}
 
 }
