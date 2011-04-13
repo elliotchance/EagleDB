@@ -7,10 +7,12 @@ import net.eagledb.server.storage.Index;
 import net.eagledb.server.storage.Table;
 import net.eagledb.server.storage.page.BooleanPage;
 import net.eagledb.server.storage.page.DoublePage;
+import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.page.Page;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.DoubleValue;
 import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.operators.arithmetic.Division;
 import net.sf.jsqlparser.schema.Column;
 
 public class Expression {
@@ -45,6 +47,11 @@ public class Expression {
 		this.table = table;
 	}
 
+	@Override
+	public String toString() {
+		return expression.toString();
+	}
+
 	public Index getBestIndex() {
 		return bestIndex;
 	}
@@ -53,14 +60,47 @@ public class Expression {
 		return bestIndexValue;
 	}
 
-	private int subparse(net.sf.jsqlparser.expression.Expression ex) throws ExpressionException {
-		// table column
-		if(ex instanceof Column) {
-			return MAXIMUM_BUFFERS + table.getAttributeLocation(ex.toString());
+	private int subparse(net.sf.jsqlparser.expression.Expression ex, boolean topLevel, boolean preferFloating) throws ExpressionException {
+		// a singular table column
+		if(ex instanceof Column && topLevel) {
+			int location = table.getAttributeLocation(ex.toString());
+			Class type = table.getAttributes()[location].getPageType();
+
+			if(type.equals(net.eagledb.server.sql.type.Integer.class))
+				buffers.add(new IntPage());
+			if(type.equals(net.eagledb.server.sql.type.DoublePrecision.class))
+				buffers.add(new DoublePage());
+
+			int dest = buffers.size() - 1;
+			operations.add(new PageAttribute(
+				dest,
+				MAXIMUM_BUFFERS + location
+			));
+			return dest;
 		}
 
-		// constant value
-		if(ex instanceof LongValue || ex instanceof DoubleValue) {
+		// table column
+		if(ex instanceof Column)
+			return MAXIMUM_BUFFERS + table.getAttributeLocation(ex.toString());
+
+		// integer constant value
+		if(ex instanceof LongValue) {
+			// preferFloating is to stop division between integers also returning an integer
+			if(preferFloating)
+				buffers.add(new DoublePage());
+			else
+				buffers.add(new IntPage());
+
+			int dest = buffers.size() - 1;
+			operations.add(new PageFill(
+				dest,
+				Double.valueOf(ex.toString())
+			));
+			return dest;
+		}
+
+		// floating-point constant value
+		if(ex instanceof DoubleValue) {
 			buffers.add(new DoublePage());
 			int dest = buffers.size() - 1;
 			operations.add(new PageFill(
@@ -75,8 +115,9 @@ public class Expression {
 			BinaryExpression current = (BinaryExpression) ex;
 
 			// render each side
-			int lhs = subparse(current.getLeftExpression());
-			int rhs = subparse(current.getRightExpression());
+			boolean useFloating = (ex instanceof Division);
+			int lhs = subparse(current.getLeftExpression(), false, useFloating);
+			int rhs = subparse(current.getRightExpression(), false, useFloating);
 
 			// get the PageAction
 			PageAction action = null;
@@ -136,20 +177,22 @@ public class Expression {
 		throw new ExpressionException(ex);
 	}
 
-	public PageOperation[] parse() throws ExpressionException {
+	public PageOperation[] parse(boolean castToBoolean) throws ExpressionException {
 		if(expression == null)
 			expression = new LongValue("1");
-		subparse(expression);
+		subparse(expression, true, false);
 
-		// the last Page type must be a boolean
-		if(buffers.get(buffers.size() - 1).getClass() != BooleanPage.class) {
-			buffers.add(new BooleanPage());
-			Method operator = Operator.getMethodForOperator(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST,
-				null);
-			if(operator == null)
-				throw new OperatorException(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST, null,
-					expression);
-			operations.add(new PageUnaryOperation(buffers.size() - 1, operator, buffers.size() - 2));
+		// the last Page type must be a boolean if we are using the expression in a WHERE for example
+		if(castToBoolean) {
+			if(buffers.get(buffers.size() - 1).getClass() != BooleanPage.class) {
+				buffers.add(new BooleanPage());
+				Method operator = Operator.getMethodForOperator(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST,
+					null);
+				if(operator == null)
+					throw new OperatorException(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST, null,
+						expression);
+				operations.add(new PageUnaryOperation(buffers.size() - 1, operator, buffers.size() - 2));
+			}
 		}
 
 		// convert to array

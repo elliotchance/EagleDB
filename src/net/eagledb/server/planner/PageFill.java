@@ -26,7 +26,7 @@ public class PageFill extends PageOperation {
 
 	@Override
 	public String toString() {
-		return "FillPage ( value = " + value + ", destination = " + destination + " )";
+		return "PageFill ( value = " + value + ", destination = " + destination + " )";
 	}
 
 }

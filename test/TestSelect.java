@@ -18,7 +18,7 @@ public class TestSelect {
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		// create the temporary table used for these tests
-		TestSuiteEmbeddedDatabase.executeUpdate("create temp table test1 (id int, number real)");
+		TestSuiteEmbeddedDatabase.executeUpdate("create temp table test1 (id int, number double)");
 
 		// insert some test records
 		TestSuiteEmbeddedDatabase.executeUpdate("insert into test1 (id, number) values (1, 1.0)");
@@ -158,6 +158,15 @@ public class TestSelect {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select id, number from test1 where id/2=1", 2);
 		assertArrayEquals(new String[][]{
 				{"2", "2.5"},}, set);
+	}
+
+	@Test
+	public void selectExpession() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select id + 5, number + 2.5 from test1", 2);
+		assertArrayEquals(new String[][]{
+				{"6", "3.5"},
+				{"7", "5.0"},
+				{"8", "11.2"}}, set);
 	}
 	
 }

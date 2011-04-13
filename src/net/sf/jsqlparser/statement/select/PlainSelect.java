@@ -159,6 +159,7 @@ public class PlainSelect implements SelectBody {
 		groupByColumnReferences = list;
 	}
 
+	@Override
 	public String toString() {
 		String sql = "";
 
@@ -166,7 +167,8 @@ public class PlainSelect implements SelectBody {
 		sql += ((distinct != null)?""+distinct+" ":"");
 		sql += ((top != null)?""+top+" ":"");
 		sql += getStringList(selectItems);
-		sql += " FROM " + fromItem;
+		if(fromItem != null)
+			sql += " FROM " + fromItem;
 		if (joins != null) {
 			Iterator it = joins.iterator();
 			while(it.hasNext()) {

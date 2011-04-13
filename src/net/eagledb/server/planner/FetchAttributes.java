@@ -1,9 +1,10 @@
 package net.eagledb.server.planner;
 
 import net.eagledb.server.storage.*;
-import net.eagledb.server.storage.page.*;
 import java.util.*;
-import net.eagledb.server.sql.type.*;
+import net.eagledb.server.storage.page.DoublePage;
+import net.eagledb.server.storage.page.IntPage;
+import net.eagledb.server.storage.page.Page;
 
 public class FetchAttributes implements PlanItem {
 
@@ -11,17 +12,14 @@ public class FetchAttributes implements PlanItem {
 	
 	private int[] destinations;
 
-	private int[] sources;
-
-	private Class<? extends SQLType>[] types;
+	private ArrayList<net.eagledb.server.planner.Expression> sources;
 
 	private PlanItemCost cost = new PlanItemCost();
 	
-	public FetchAttributes(Table table, int[] sources, int[] destinations, Class<? extends SQLType>[] types) {
+	public FetchAttributes(Table table, ArrayList<net.eagledb.server.planner.Expression> sources, int[] destinations) {
 		this.table = table;
 		this.sources = sources;
 		this.destinations = destinations;
-		this.types = types;
 		estimateCost();
 	}
 
@@ -40,8 +38,8 @@ public class FetchAttributes implements PlanItem {
 		for(int i = 0; i < destinations.length; ++i) {
 			if(i > 0)
 				line += ", ";
-			line += table.getAttributes()[sources[i]].getName() + /* types[i].getSimpleName() + */ " => " +
-				destinations[i];
+			//line += table.getAttributes()[sources[i]].getName() + /* types[i].getSimpleName() + */ " => " +
+			//	destinations[i];
 		}
 		return line + " )";
 	}
@@ -49,25 +47,40 @@ public class FetchAttributes implements PlanItem {
 	public void execute(ArrayList<Tuple> tuples, long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
 
-		for(int i = 0; i < destinations.length; ++i) {
-			if(types[sources[i]] == net.eagledb.server.sql.type.Integer.class) {
-				for(Tuple tuple : tuples) {
-					IntPage page = (IntPage) table.getPage(sources[i], tuple.tupleID / Page.TUPLES_PER_PAGE, cost);
-					tuple.set(destinations[i], page.page[tuple.tupleID % Page.TUPLES_PER_PAGE]);
+		try {
+			for(int i = 0; i < destinations.length; ++i) {
+				net.eagledb.server.planner.Expression source = sources.get(i);
+				PageOperation[] ops = source.parse(false);
+				FullTableScan fts = new FullTableScan(null, table, table.getAttributes().length, null, ops,
+					source.buffers, 0, tuples.size());
+
+				for(PageOperation operation : ops) {
+					operation.run(fts);
+					System.out.println(operation);
 				}
-			}
-			else if(types[sources[i]] == net.eagledb.server.sql.type.Real.class) {
-				for(Tuple tuple : tuples) {
-					RealPage page = (RealPage) table.getPage(sources[i], tuple.tupleID / Page.TUPLES_PER_PAGE, cost);
-					tuple.set(destinations[i], page.page[tuple.tupleID % Page.TUPLES_PER_PAGE]);
+
+				System.out.println("BASE PAGE '" + source.toString() + "': " + java.util.Arrays.toString(ops));
+				Page basePage = source.buffers.get(source.buffers.size() - 1);
+
+				if(basePage instanceof IntPage) {
+					IntPage page = (IntPage) basePage;
+					for(Tuple tuple : tuples)
+						tuple.set(destinations[i], page.page[tuple.tupleID]);
 				}
-			}
-			else if(types[sources[i]] == net.eagledb.server.sql.type.DoublePrecision.class) {
-				for(Tuple tuple : tuples) {
-					DoublePage page = (DoublePage) table.getPage(sources[i], tuple.tupleID / Page.TUPLES_PER_PAGE, cost);
-					tuple.set(destinations[i], page.page[tuple.tupleID % Page.TUPLES_PER_PAGE]);
+				else if(basePage instanceof DoublePage) {
+					DoublePage page = (DoublePage) basePage;
+					for(Tuple tuple : tuples)
+						tuple.set(destinations[i], page.page[tuple.tupleID]);
 				}
+				else
+					throw new Exception("Cannot cast " + basePage.getClass().getSimpleName());
 			}
+		}
+		catch(ExpressionException e) {
+			e.printStackTrace();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
 		}
 
 		cost.realMillis = Calendar.getInstance().getTimeInMillis() - start;

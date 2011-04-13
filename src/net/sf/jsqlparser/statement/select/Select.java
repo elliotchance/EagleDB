@@ -64,7 +64,7 @@ public class Select implements Statement {
 
 	@Override
 	public String toString() {
-		StringBuffer retval = new StringBuffer();
+		StringBuilder retval = new StringBuilder();
 		if (withItemsList != null && !withItemsList.isEmpty()) {
 			retval.append("WITH ");
 			for (Iterator iter = withItemsList.iterator(); iter.hasNext();) {

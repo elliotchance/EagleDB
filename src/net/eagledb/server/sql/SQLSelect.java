@@ -1,6 +1,7 @@
 package net.eagledb.server.sql;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import net.eagledb.server.ClientConnection;
 import net.eagledb.server.Result;
@@ -53,16 +54,19 @@ public class SQLSelect extends SQLAction {
 
 		// see if the table exists
 		PlainSelect select = (PlainSelect) sql.getSelectBody();
-		Table table = schema.getTable(select.getFromItem().toString());
-		if(table == null) {
-			// temporary table?
-			TemporaryTable tt = conn.getTemporaryTable(select.getFromItem().toString());
-			if(tt != null)
-				table = schema.getTable(tt.internalName);
+		Table table = null;
+		if(select.getFromItem() != null) {
+			table = schema.getTable(select.getFromItem().toString());
+			if(table == null) {
+				// temporary table?
+				TemporaryTable tt = conn.getTemporaryTable(select.getFromItem().toString());
+				if(tt != null)
+					table = schema.getTable(tt.internalName);
 
-			if(table == null)
-				throw new SQLException("Table " + schema.getName() + "." + select.getFromItem().toString() +
-					" does not exist");
+				if(table == null)
+					throw new SQLException("Table " + schema.getName() + "." + select.getFromItem().toString() +
+						" does not exist");
+			}
 		}
 
 		// parse expression operations
@@ -75,17 +79,17 @@ public class SQLSelect extends SQLAction {
 			// parse the expression
 			net.eagledb.server.planner.Expression ex = new net.eagledb.server.planner.Expression(table,
 				selectedDatabase, whereClause);
-			PageOperation[] op = ex.parse();
+			PageOperation[] op = ex.parse(true);
 
 			// see if we discovered an index
 			Index bestIndex = ex.getBestIndex();
 
 			// do we need to fetch attributes?
 			List<SelectItem> selectItems = select.getSelectItems();
-			int[] faSources = new int[selectItems.size()];
+			ArrayList<net.eagledb.server.planner.Expression> faSources = new ArrayList<net.eagledb.server.planner.Expression>(); //[selectItems.size()];
 			int[] faDestinations = new int[selectItems.size()];
 			Class[] faTypes = new Class[selectItems.size()];
-			Attribute[] aliases = new Attribute[table.getAttributes().length]; //table.getAttributes().clone();
+			Attribute[] aliases = new Attribute[table.getAttributes().length];
 			int i = 0;
 			for(SelectItem theItem : selectItems) {
 				SelectExpressionItem item = (SelectExpressionItem) theItem;
@@ -100,13 +104,19 @@ public class SQLSelect extends SQLAction {
 					aliases[i] = new Attribute(field, table.getAttributes()[i].getPageType());
 
 				// try to locate the field
-				int position = table.getAttributeLocation(field);
-				if(position < 0)
-					throw new Exception("Column '" + field + "' not found");
+				net.eagledb.server.planner.Expression fex =
+					new net.eagledb.server.planner.Expression(table, selectedDatabase, item.getExpression());
+				//PageOperation[] fop = fex.parse();
+				faSources.add(fex);
+				//System.out.println("'" + field + "': " + java.util.Arrays.toString(fop));
+			
+				//int position = table.getAttributeLocation(field);
+				//if(position < 0)
+				//	throw new Exception("Column '" + field + "' not found");
 
-				faSources[i] = position;
+				//faSources[i] = position;
 				faDestinations[i] = i;
-				faTypes[i] = table.getAttributes()[position].getPageType();
+				faTypes[i] = net.eagledb.server.sql.type.Integer.class; //table.getAttributes()[position].getPageType();
 				++i;
 			}
 
@@ -133,7 +143,7 @@ public class SQLSelect extends SQLAction {
 			}
 
 			// fetch attribute projection
-			p.addPlanItem(new FetchAttributes(table, faSources, faDestinations, faTypes));
+			p.addPlanItem(new FetchAttributes(table, faSources, faDestinations));
 
 			// execute plan
 			if(((net.sf.jsqlparser.statement.select.Select) sql).getExplain()) {

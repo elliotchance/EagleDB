@@ -1,5 +1,6 @@
 package net.eagledb.server.planner;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import net.eagledb.server.storage.page.Page;
 
@@ -41,7 +42,16 @@ public class PageBinaryOperation extends PageOperation {
 		try {
 			operation.invoke(null, fts.buffers.get(bufferDestination), lhs, rhs);
 		}
-		catch(Exception e) {
+		catch(IllegalArgumentException e) {
+			System.out.println(">>> operation = " + operation);
+			System.out.println(">>> operation.invoke(null, " + fts.buffers.get(bufferDestination) + ", " + lhs + ", " +
+				rhs + ")");
+			e.printStackTrace();
+		}
+		catch(InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		catch(IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}

@@ -26,6 +26,7 @@ public class Operator {
 				getPageMethod(IntPage.class, "operatorEqual", IntPage.class, PageAction.EQUAL, IntPage.class, BooleanPage.class),
 				getPageMethod(IntPage.class, "operatorEqual", IntPage.class, PageAction.EQUAL, DoublePage.class, BooleanPage.class),
 				getPageMethod(DoublePage.class, "operatorEqual", DoublePage.class, PageAction.EQUAL, DoublePage.class, BooleanPage.class),
+				getPageMethod(DoublePage.class, "operatorEqual", DoublePage.class, PageAction.EQUAL, IntPage.class, BooleanPage.class),
 
 				getPageMethod(IntPage.class, "operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, IntPage.class, BooleanPage.class),
 				getPageMethod(IntPage.class, "operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, DoublePage.class, BooleanPage.class),
@@ -44,6 +45,7 @@ public class Operator {
 
 				getPageMethod(IntPage.class, "operatorAdd", IntPage.class, PageAction.ADD, IntPage.class, IntPage.class),
 				getPageMethod(IntPage.class, "operatorAdd", IntPage.class, PageAction.ADD, DoublePage.class, DoublePage.class),
+				getPageMethod(IntPage.class, "operatorAdd", DoublePage.class, PageAction.ADD, DoublePage.class, DoublePage.class),
 
 				getPageMethod(IntPage.class, "operatorSubtract", IntPage.class, PageAction.SUBTRACT, IntPage.class, IntPage.class),
 				getPageMethod(IntPage.class, "operatorSubtract", IntPage.class, PageAction.SUBTRACT, DoublePage.class, DoublePage.class),

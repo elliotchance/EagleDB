@@ -711,20 +711,19 @@ PlainSelect PlainSelect():
     
      // TODO
     [IntoClause()]
-    <K_FROM>
-    fromItem=FromItem()
+    [ <K_FROM> fromItem=FromItem()
     joins=JoinsList()
     [ where=WhereClause() { plainSelect.setWhere(where); }]
     [ groupByColumnReferences=GroupByColumnReferences() { plainSelect.setGroupByColumnReferences(groupByColumnReferences); }]
     [ having=Having() { plainSelect.setHaving(having); }]
 	[ 	orderByElements = OrderByElements()	{ 		 plainSelect.setOrderByElements(orderByElements);	}   ]
     [ 	limit = Limit() { plainSelect.setLimit(limit);	} ]
-	
+    ]
 	{ 
 		plainSelect.setSelectItems(selectItems);
 		plainSelect.setFromItem(fromItem);
-		if (joins.size() > 0)
-			plainSelect.setJoins(joins);
+		if (joins != null && joins.size() > 0)
+		    plainSelect.setJoins(joins);
 		return plainSelect; 
 	}
 }

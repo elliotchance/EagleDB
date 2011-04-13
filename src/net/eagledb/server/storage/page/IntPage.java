@@ -52,6 +52,11 @@ public class IntPage extends Page {
 			destination.page[i] = (page1.page[i] + page2.page[i]);
 	}
 
+	public static void operatorAdd(DoublePage destination, DoublePage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] + page2.page[i]);
+	}
+
 	public static void operatorSubtract(IntPage destination, IntPage page1, IntPage page2) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = (page1.page[i] - page2.page[i]);

@@ -64,7 +64,7 @@ public class SQLDelete extends SQLAction {
 			// parse the expression
 			net.eagledb.server.planner.Expression ex = new net.eagledb.server.planner.Expression(table,
 				selectedDatabase, whereClause);
-			PageOperation[] op = ex.parse();
+			PageOperation[] op = ex.parse(true);
 
 			// create the executation plan
 			Plan p = new Plan();

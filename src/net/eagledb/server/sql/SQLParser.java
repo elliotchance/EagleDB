@@ -108,6 +108,7 @@ public class SQLParser {
 			throw e;
 		}
 		catch(JSQLParserException e) {
+			e.printStackTrace();
 			throw new SQLException(e.getCause().toString());
 		}
 		catch(SQLException e) {
