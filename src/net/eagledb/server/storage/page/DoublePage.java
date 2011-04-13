@@ -61,10 +61,6 @@ public class DoublePage extends Page {
 			destination.page[i] = (page.page[i] != 0.0);
 	}
 
-	public static String sqlName() {
-		return "DOUBLE";
-	}
-
 	public boolean isFixedWidth() {
 		return true;
 	}

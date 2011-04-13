@@ -60,7 +60,8 @@ public class Expression {
 		return bestIndexValue;
 	}
 
-	private int subparse(net.sf.jsqlparser.expression.Expression ex, boolean topLevel, boolean preferFloating) throws ExpressionException {
+	private int subparse(net.sf.jsqlparser.expression.Expression ex, boolean topLevel, boolean preferFloating)
+		throws ExpressionException {
 		// a singular table column
 		if(ex instanceof Column && topLevel) {
 			int location = table.getAttributeLocation(ex.toString());
@@ -171,6 +172,37 @@ public class Expression {
 				e.printStackTrace();
 			}
 			
+			return dest;
+		}
+
+		// functions
+		if(ex instanceof net.sf.jsqlparser.expression.Function) {
+			net.sf.jsqlparser.expression.Function current = (net.sf.jsqlparser.expression.Function) ex;
+			
+			// deal with the argument
+			net.sf.jsqlparser.expression.Expression arg1 =
+				(net.sf.jsqlparser.expression.Expression) current.getParameters().getExpressions().get(0);
+			int argument = subparse(arg1, false, false);
+
+			// try and find the function
+			Class argType = buffers.get(argument).getClass();
+			String functionName = current.getName().toUpperCase();
+			Function function = Functions.findFunction(functionName, argType);
+
+			// cannot find the function
+			if(function == null)
+				throw new FunctionException(new Function(functionName, null, null, argType), ex);
+
+			int dest = -1;
+			try {
+				buffers.add((Page) function.returnType.newInstance());
+				dest = buffers.size() - 1;
+				operations.add(new PageFunction(dest, function.method, argument));
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+
 			return dest;
 		}
 
