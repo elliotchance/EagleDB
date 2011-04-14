@@ -679,17 +679,17 @@ SelectBody SelectBody():
 
 PlainSelect PlainSelect():
 { 
-	PlainSelect plainSelect = new PlainSelect(); 
-	List selectItems = null;
-	FromItem fromItem = null;
-	List joins = null;
-	List distinctOn = null;
-	Expression where = null;
-	List orderByElements;
-	List groupByColumnReferences = null;
-	Expression having = null;
-	Limit limit = null;
-	Top top = null;
+    PlainSelect plainSelect = new PlainSelect();
+    List selectItems = null;
+    FromItem fromItem = null;
+    List joins = null;
+    List distinctOn = null;
+    Expression where = null;
+    List orderByElements;
+    List groupByColumnReferences = null;
+    Expression having = null;
+    Limit limit = null;
+    Top top = null;
 }
 {
     <K_SELECT> 
@@ -713,22 +713,28 @@ PlainSelect PlainSelect():
     selectItems=SelectItemsList()    
     
     // TODO
-    [IntoClause()]
+    [ IntoClause() ]
     [ <K_FROM> fromItem=FromItem()
     joins=JoinsList()
-    [ where=WhereClause() { plainSelect.setWhere(where); }]
-    [ groupByColumnReferences=GroupByColumnReferences() { plainSelect.setGroupByColumnReferences(groupByColumnReferences); }]
-    [ having=Having() { plainSelect.setHaving(having); }]
-	[ 	orderByElements = OrderByElements()	{ 		 plainSelect.setOrderByElements(orderByElements);	}   ]
-    [ 	limit = Limit() { plainSelect.setLimit(limit);	} ]
+    [ where=WhereClause() {
+	plainSelect.setWhere(where);
+    }]
+    [ groupByColumnReferences=GroupByColumnReferences() {
+	plainSelect.setGroupByColumnReferences(groupByColumnReferences);
+    }]
+    [ having=Having() { plainSelect.setHaving(having); } ]
+    [ orderByElements = OrderByElements() {
+	plainSelect.setOrderByElements(orderByElements);
+    }]
+    [ limit = Limit() { plainSelect.setLimit(limit); } ]
     ]
-	{ 
-		plainSelect.setSelectItems(selectItems);
-		plainSelect.setFromItem(fromItem);
-		if (joins != null && joins.size() > 0)
-		    plainSelect.setJoins(joins);
-		return plainSelect; 
-	}
+    {
+	plainSelect.setSelectItems(selectItems);
+	plainSelect.setFromItem(fromItem);
+	if(joins != null && joins.size() > 0)
+	    plainSelect.setJoins(joins);
+	return plainSelect;
+    }
 }
 
 
@@ -1015,17 +1021,17 @@ List OrderByElements():
 
 OrderByElement OrderByElement():
 {
-	OrderByElement orderByElement = new OrderByElement(); 
-	List retval = new ArrayList();
-	ColumnReference columnReference = null;
+    OrderByElement orderByElement = new OrderByElement();
+    List retval = new ArrayList();
+    Expression expr = null;
 }
 {
-	columnReference = ColumnReference()
-    [<K_ASC> | (<K_DESC> { orderByElement.setAsc(false); } )  ]
-	{
-    	orderByElement.setColumnReference(columnReference);
-		return orderByElement;
-	}
+    expr=Expression()
+    [ <K_ASC> | (<K_DESC> { orderByElement.setAsc(false); } ) ]
+    {
+	orderByElement.setExpression(expr);
+	return orderByElement;
+    }
 }
 
 Limit Limit():

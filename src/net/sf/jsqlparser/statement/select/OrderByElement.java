@@ -19,19 +19,17 @@
  * library; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307, USA.
  */
- 
 package net.sf.jsqlparser.statement.select;
 
 import net.sf.jsqlparser.expression.Expression;
-
 
 /**
  * An element (column reference) in an "ORDER BY" clause.
  */
 public class OrderByElement {
-	private ColumnReference columnReference;
-	private boolean asc = true; 
-	
+
+	private Expression expr;
+	private boolean asc = true;
 
 	public boolean isAsc() {
 		return asc;
@@ -41,20 +39,21 @@ public class OrderByElement {
 		asc = b;
 	}
 
-
-	public void accept(OrderByVisitor orderByVisitor){
+	public void accept(OrderByVisitor orderByVisitor) {
 		orderByVisitor.visit(this);
 	}
 
-	public ColumnReference getColumnReference() {
-		return columnReference;
+	public Expression getExpression() {
+		return expr;
 	}
 
-	public void setColumnReference(ColumnReference columnReference) {
-		this.columnReference = columnReference;
+	public void setExpression(Expression expr) {
+		this.expr = expr;
 	}
 
+	@Override
 	public String toString() {
-		return ""+columnReference+((asc)?"":" DESC");
+		return "" + expr + ((asc) ? "" : " DESC");
 	}
+
 }

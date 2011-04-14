@@ -35,12 +35,11 @@ public class FetchAttributes implements PlanItem {
 
 	@Override
 	public String toString() {
-		String line = "FetchAttributes ( ";
-		for(int i = 0; i < destinations.length; ++i) {
+		String line = "Fetch Attributes ( ";
+		for(int i = 0; i < sources.size(); ++i) {
 			if(i > 0)
 				line += ", ";
-			//line += table.getAttributes()[sources[i]].getName() + /* types[i].getSimpleName() + */ " => " +
-			//	destinations[i];
+			line += sources.get(i) + " -> " + destinations[i];
 		}
 		return line + " )";
 	}

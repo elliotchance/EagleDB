@@ -11,6 +11,8 @@ public class TestOrderBy {
 
 	private String[][] set;
 
+	private static double ALLOWED_DELTA = 0.0000001;
+
 	public TestOrderBy() {
 	}
 
@@ -41,7 +43,7 @@ public class TestOrderBy {
 	public void orderByExplain() throws Exception {
 		Statement st = TestSuiteEmbeddedDatabase.connection.createStatement();
 
-		String sql = "select number from test_order order by number desc";
+		String sql = "select number from test_order order by 10-number desc";
 		ResultSet rs = st.executeQuery("explain " + sql);
 		System.out.println("EXPLAIN " + sql);
 		while(rs.next())
@@ -62,6 +64,18 @@ public class TestOrderBy {
 	public void orderByDoubleDesc() throws Exception {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select number from test_order order by number desc", 1);
 		assertArrayEquals(new String[][]{{"8.7"},{"2.5"},{"1.0"}}, set);
+	}
+
+	@Test
+	public void orderByExpression() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select number from test_order order by 10-number", 1);
+		assertEquals(8.7, Double.valueOf(set[0][0]), ALLOWED_DELTA);
+		assertEquals(2.5, Double.valueOf(set[1][0]), ALLOWED_DELTA);
+		assertEquals(1.0, Double.valueOf(set[2][0]), ALLOWED_DELTA);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select number from test_order order by 10-number desc", 1);
+		assertEquals(1.0, Double.valueOf(set[0][0]), ALLOWED_DELTA);
+		assertEquals(2.5, Double.valueOf(set[1][0]), ALLOWED_DELTA);
+		assertEquals(8.7, Double.valueOf(set[2][0]), ALLOWED_DELTA);
 	}
 	
 }

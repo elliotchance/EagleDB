@@ -11,14 +11,13 @@ public class OrderBy implements PlanItem {
 
 	protected Table table;
 
-	protected ArrayList<OrderByElement> expressions = new ArrayList<OrderByElement>();
+	protected ArrayList<OrderByAttribute> columns = new ArrayList<OrderByAttribute>();
 
 	public PlanItemCost cost = new PlanItemCost();
 
-	public OrderBy(Table table, List expressions) {
+	public OrderBy(Table table, ArrayList<OrderByAttribute> columns) {
 		this.table = table;
-		for(Object ex : expressions)
-			this.expressions.add((OrderByElement) ex);
+		this.columns = columns;
 		estimateCost();
 	}
 
@@ -35,8 +34,8 @@ public class OrderBy implements PlanItem {
 
 	@Override
 	public String toString() {
-		String r = "OrderBy (";
-		for(OrderByElement ex : expressions)
+		String r = "Sort (";
+		for(OrderByAttribute ex : columns)
 			r += " " + ex.toString();
 		return r + " )";
 	}
@@ -46,12 +45,12 @@ public class OrderBy implements PlanItem {
 
 		// extract the attribute
 		OrderByDouble ob = new OrderByDouble(tuples.size());
-		int location = 0; //table.getAttributeLocation(expressions.get(0).getColumnReference().toString());
+		int location = columns.get(0).position;
 		for(Tuple tuple : tuples)
 			ob.push(tuple.tupleID, Double.valueOf(tuple.get(location).toString()));
 
 		// perform the sort
-		if(expressions.get(0).isAsc())
+		if(columns.get(0).isAsc)
 			ob.sortAscending();
 		else
 			ob.sortDescending();

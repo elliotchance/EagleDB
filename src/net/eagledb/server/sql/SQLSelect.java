@@ -14,6 +14,7 @@ import net.eagledb.server.planner.IndexLookup;
 import net.eagledb.server.planner.IndexLookupOperation;
 import net.eagledb.server.planner.IndexScan;
 import net.eagledb.server.planner.OrderBy;
+import net.eagledb.server.planner.OrderByAttribute;
 import net.eagledb.server.planner.PageOperation;
 import net.eagledb.server.planner.Plan;
 import net.eagledb.server.storage.Attribute;
@@ -90,12 +91,17 @@ public class SQLSelect extends SQLAction {
 			// see if we discovered an index
 			Index bestIndex = ex.getBestIndex();
 
-			// do we need to fetch attributes?
+			// the attributes may also contain ORDER BY
 			List<SelectItem> selectItems = select.getSelectItems();
-			ArrayList<net.eagledb.server.planner.Expression> faSources = new ArrayList<net.eagledb.server.planner.Expression>(); //[selectItems.size()];
-			int[] faDestinations = new int[selectItems.size()];
-			Class[] faTypes = new Class[selectItems.size()];
-			Attribute[] aliases = new Attribute[selectItems.size()];
+			int totalAttributes = selectItems.size();
+			if(select.getOrderByElements() != null)
+				totalAttributes += select.getOrderByElements().size();
+
+			// do we need to fetch attributes?
+			ArrayList<net.eagledb.server.planner.Expression> faSources =
+				new ArrayList<net.eagledb.server.planner.Expression>();
+			int[] faDestinations = new int[totalAttributes];
+			Attribute[] aliases = new Attribute[totalAttributes];
 			int i = 0;
 			for(SelectItem theItem : selectItems) {
 				SelectExpressionItem item = (SelectExpressionItem) theItem;
@@ -115,7 +121,6 @@ public class SQLSelect extends SQLAction {
 				faSources.add(fex);
 				
 				faDestinations[i] = i;
-				faTypes[i] = net.eagledb.server.storage.page.IntPage.class; //table.getAttributes()[position].getPageType();
 				++i;
 			}
 
@@ -131,14 +136,15 @@ public class SQLSelect extends SQLAction {
 
 			// if we have an index we can use that
 			if(bestIndex != null) {
-				IndexLookup lookup = new IndexLookup(table, bestIndex, IndexLookupOperation.EQUAL, ex.getBestIndexValue());
+				IndexLookup lookup = new IndexLookup(table, bestIndex, IndexLookupOperation.EQUAL,
+					ex.getBestIndexValue());
 				p.addPlanItem(lookup);
-				p.addPlanItem(new IndexScan(conn.getSelectedDatabase(), lookup.virtualTable, selectItems.size(),
-					whereClause.toString(), op, ex.buffers, limitOffset, limit));
+				p.addPlanItem(new IndexScan(conn, lookup.virtualTable, totalAttributes, whereClause.toString(), op,
+					ex.buffers, limitOffset, limit));
 			}
 			else {
-				p.addPlanItem(new FullTableScan(conn.getSelectedDatabase(), table, selectItems.size(),
-					whereClause.toString(), op, ex.buffers, limitOffset, limit));
+				p.addPlanItem(new FullTableScan(conn, table, totalAttributes, whereClause.toString(), op, ex.buffers,
+					limitOffset, limit));
 			}
 
 			// fetch attribute projection
@@ -150,9 +156,15 @@ public class SQLSelect extends SQLAction {
 				if(select.getOrderByElements().size() > 1)
 					throw new SQLException("ORDER BY with multiple attributes is not supported.");
 
+				// compile the ORDER BY expression
 				OrderByElement expr = (OrderByElement) select.getOrderByElements().get(0);
-				ArrayList<OrderByElement> exprs = new ArrayList<OrderByElement>();
-				exprs.add(expr);
+				net.eagledb.server.planner.Expression fex = new net.eagledb.server.planner.Expression(table,
+					selectedDatabase, expr.getExpression());
+				faSources.add(fex);
+				faDestinations[selectItems.size()] = selectItems.size();
+
+				ArrayList<OrderByAttribute> exprs = new ArrayList<OrderByAttribute>();
+				exprs.add(new OrderByAttribute(faDestinations[selectItems.size()], expr.isAsc(), expr.toString()));
 				p.addPlanItem(new OrderBy(table, exprs));
 			}
 

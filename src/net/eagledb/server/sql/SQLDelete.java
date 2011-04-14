@@ -76,8 +76,8 @@ public class SQLDelete extends SQLAction {
 				limit = (int) sql.getLimit().getRowCount();
 			}
 
-			p.addPlanItem(new FullTableScan(conn.getSelectedDatabase(), table, 0,
-				whereClause.toString(), op, ex.buffers, limitOffset, limit));
+			p.addPlanItem(new FullTableScan(conn, table, 0, whereClause.toString(), op, ex.buffers, limitOffset,
+				limit));
 
 			// execute plan
 			p.executeDelete(conn.transactionID);

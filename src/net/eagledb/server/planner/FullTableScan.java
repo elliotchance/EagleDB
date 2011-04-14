@@ -3,12 +3,13 @@ package net.eagledb.server.planner;
 import net.eagledb.server.storage.*;
 import net.eagledb.server.storage.page.*;
 import java.util.*;
+import net.eagledb.server.ClientConnection;
 
 public class FullTableScan implements PlanItem {
 
 	public Table table;
 
-	protected Database selectedDatabase;
+	protected ClientConnection conn;
 
 	public PageOperation[] operations;
 
@@ -32,9 +33,8 @@ public class FullTableScan implements PlanItem {
 
 	protected int limit, limitOffset, skipped = 0;
 
-	public FullTableScan(Database selectedDatabase, Table table, int tupleSize, String clause,
-		PageOperation[] operations, ArrayList<Page> buffers, int limitOffset, int limit) {
-		this.selectedDatabase = selectedDatabase;
+	public FullTableScan(ClientConnection conn, Table table, int tupleSize, String clause, PageOperation[] operations,
+		ArrayList<Page> buffers, int limitOffset, int limit) {
 		this.table = table;
 		this.operations = operations;
 		this.tupleSize = tupleSize;
@@ -42,6 +42,7 @@ public class FullTableScan implements PlanItem {
 		this.buffers = buffers;
 		this.limitOffset = limitOffset;
 		this.limit = limit;
+		this.conn = conn;
 		estimateCost();
 	}
 
@@ -58,7 +59,12 @@ public class FullTableScan implements PlanItem {
 
 	@Override
 	public String toString() {
-		return "FullTableScan ( " + table.getName() + ": " + clause + " )";
+		// resolve table name
+		String tableName = table.getName();
+		if(conn.getTemporaryTableByInternalName(tableName) != null)
+			tableName = conn.getTemporaryTableByInternalName(tableName).name;
+		
+		return "Full Table Scan \"" + tableName + "\" WHERE (" + clause + ")";
 	}
 
 	private boolean inTransactionIDs(long XID) {
@@ -78,7 +84,7 @@ public class FullTableScan implements PlanItem {
 			// * The row's creation transaction ID is a committed transaction and is less than the current
 			//   transaction counter.
 			(
-				selectedDatabase.transactionIsCommitted(tp.createTransactionID[i]) &&
+				conn.getSelectedDatabase().transactionIsCommitted(tp.createTransactionID[i]) &&
 				tp.createTransactionID[i] < transactionID
 			) &&
 

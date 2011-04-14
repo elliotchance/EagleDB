@@ -146,7 +146,7 @@ public class SelectDeParser implements SelectVisitor, OrderByVisitor, SelectItem
 	}
 
 	public void visit(OrderByElement orderBy) {
-		orderBy.getColumnReference().accept(this);
+		//orderBy.getExpression().accept(this);
 		if (orderBy.isAsc())
 			buffer.append(" ASC");
 		else     
