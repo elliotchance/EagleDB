@@ -94,4 +94,9 @@ public class TransactionPage extends Page {
 		return net.eagledb.server.storage.page.TransactionPage.class;
 	}
 
+	public boolean addTuple(String value) {
+		// do nothing
+		return true;
+	}
+
 }

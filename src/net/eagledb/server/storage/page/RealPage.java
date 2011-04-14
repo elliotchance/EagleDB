@@ -74,4 +74,9 @@ public class RealPage extends Page {
 		return net.eagledb.server.storage.page.RealPage.class;
 	}
 
+	public boolean addTuple(String value) {
+		page[tuples++] = Float.valueOf(value);
+		return true;
+	}
+
 }

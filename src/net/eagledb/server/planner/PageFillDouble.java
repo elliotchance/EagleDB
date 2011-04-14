@@ -2,13 +2,13 @@ package net.eagledb.server.planner;
 
 import net.eagledb.server.storage.page.Page;
 
-public class PageFill extends PageOperation {
+public class PageFillDouble extends PageOperation {
 	
 	public int destination;
 
-	public Object value;
+	public double value;
 	
-	public PageFill(int destination, Object value) {
+	public PageFillDouble(int destination, double value) {
 		this.destination = destination;
 		this.value = value;
 	}
@@ -21,12 +21,12 @@ public class PageFill extends PageOperation {
 			page = fts.buffers.get(destination);
 		
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
-			page.addTuple(Float.valueOf(value.toString()));
+			page.addTuple(value);
 	}
 
 	@Override
 	public String toString() {
-		return "PageFill ( value = " + value + ", destination = " + destination + " )";
+		return "PageFillDouble ( value = " + value + ", destination = " + destination + " )";
 	}
 
 }

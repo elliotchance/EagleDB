@@ -184,4 +184,9 @@ public class IntPage extends Page {
 		return "INTEGER";
 	}
 
+	public boolean addTuple(String value) {
+		page[tuples++] = Integer.valueOf(value);
+		return true;
+	}
+
 }

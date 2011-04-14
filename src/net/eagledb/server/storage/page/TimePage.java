@@ -69,4 +69,9 @@ public class TimePage extends Page {
 		return 4 * Page.TUPLES_PER_PAGE;
 	}
 
+	public boolean addTuple(String value) {
+		page[tuples++] = 0;
+		return true;
+	}
+
 }

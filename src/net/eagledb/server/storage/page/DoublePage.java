@@ -85,4 +85,9 @@ public class DoublePage extends Page {
 		return null;
 	}
 
+	public boolean addTuple(String value) {
+		page[tuples++] = Double.valueOf(value);
+		return true;
+	}
+
 }

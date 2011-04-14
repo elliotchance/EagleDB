@@ -10,9 +10,11 @@ import net.eagledb.server.storage.page.BooleanPage;
 import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.page.Page;
+import net.eagledb.server.storage.page.VarCharPage;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.DoubleValue;
 import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.arithmetic.Division;
 import net.sf.jsqlparser.schema.Column;
 
@@ -94,7 +96,7 @@ public class Expression {
 				buffers.add(new IntPage());
 
 			int dest = buffers.size() - 1;
-			operations.add(new PageFill(
+			operations.add(new PageFillDouble(
 				dest,
 				Double.valueOf(ex.toString())
 			));
@@ -105,9 +107,21 @@ public class Expression {
 		if(ex instanceof DoubleValue) {
 			buffers.add(new DoublePage());
 			int dest = buffers.size() - 1;
-			operations.add(new PageFill(
+			operations.add(new PageFillDouble(
 				dest,
 				Double.valueOf(ex.toString())
+			));
+			return dest;
+		}
+
+		// string constant value
+		if(ex instanceof StringValue) {
+			buffers.add(new VarCharPage());
+			int dest = buffers.size() - 1;
+			String s = ex.toString();
+			operations.add(new PageFillString(
+				dest,
+				s.substring(1, s.length() - 1)
 			));
 			return dest;
 		}

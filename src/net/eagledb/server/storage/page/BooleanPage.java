@@ -74,4 +74,9 @@ public class BooleanPage extends Page {
 		return null;
 	}
 
+	public boolean addTuple(String value) {
+		page[tuples++] = (value.length() > 0);
+		return true;
+	}
+
 }

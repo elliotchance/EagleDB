@@ -69,4 +69,9 @@ public class CharPage extends Page {
 		return 1 * Page.TUPLES_PER_PAGE;
 	}
 
+	public boolean addTuple(String value) {
+		page[tuples++] = (byte) value.charAt(0);
+		return true;
+	}
+
 }

@@ -25,6 +25,10 @@ public class Tuple implements Serializable {
 		attributes[position] = value;
 	}
 
+	public void set(int position, String value) {
+		attributes[position] = value;
+	}
+
 	public void set(int position, Object value) {
 		attributes[position] = value;
 	}

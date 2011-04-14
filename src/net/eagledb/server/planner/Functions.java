@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.page.Page;
+import net.eagledb.server.storage.page.VarCharPage;
 
 public class Functions {
 
@@ -11,6 +12,8 @@ public class Functions {
 	
 	static {
 		functions = new Function[] {
+			getFunction("abs", DoublePage.class, DoublePage.class),
+			getFunction("abs", DoublePage.class, IntPage.class),
 			getFunction("acos", DoublePage.class, DoublePage.class),
 			getFunction("acos", DoublePage.class, IntPage.class),
 			getFunction("asin", DoublePage.class, DoublePage.class),
@@ -19,8 +22,7 @@ public class Functions {
 			getFunction("atan", DoublePage.class, IntPage.class),
 			getFunction("atan2", DoublePage.class, new Class[] { DoublePage.class, DoublePage.class }),
 			getFunction("atan2", DoublePage.class, new Class[] { IntPage.class, IntPage.class }),
-			getFunction("abs", DoublePage.class, DoublePage.class),
-			getFunction("abs", DoublePage.class, IntPage.class),
+			getFunction("length", IntPage.class, VarCharPage.class),
 			getFunction("cos", DoublePage.class, DoublePage.class),
 			getFunction("cos", DoublePage.class, IntPage.class),
 			getFunction("sin", DoublePage.class, DoublePage.class),
@@ -138,6 +140,11 @@ public class Functions {
 	public static void atan2(DoublePage destination, IntPage arg1, IntPage arg2) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = Math.atan2(arg1.page[i], arg2.page[i]);
+	}
+
+	public static void length(IntPage destination, VarCharPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = arg.page[i].length();
 	}
 
 }

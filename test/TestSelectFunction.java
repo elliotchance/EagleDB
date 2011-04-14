@@ -85,5 +85,11 @@ public class TestSelectFunction {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select tan(45.0)", 1);
 		assertEquals(Double.valueOf(set[0][0]), Math.tan(45.0), ALLOWED_DELTA);
 	}
+
+	@Test
+	public void selectFunctionLength() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select length('hello')", 1);
+		assertEquals(5, (int) Integer.valueOf(set[0][0]));
+	}
 	
 }

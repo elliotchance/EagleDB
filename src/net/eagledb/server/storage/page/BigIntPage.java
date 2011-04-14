@@ -49,6 +49,11 @@ public class BigIntPage extends Page {
 		return true;
 	}
 
+	public boolean addTuple(String value) {
+		page[tuples++] = Long.valueOf(value);
+		return true;
+	}
+
 	@Override
 	public synchronized void write(RandomAccessFile os) throws IOException {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)

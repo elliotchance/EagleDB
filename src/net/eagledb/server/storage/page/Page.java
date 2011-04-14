@@ -18,6 +18,8 @@ public abstract class Page {
 
 	public abstract boolean addTuple(double value);
 
+	public abstract boolean addTuple(String value);
+
 	public static String sqlName() {
 		return null;
 	}
