@@ -36,7 +36,7 @@ import org.junit.runners.Suite;
 	// SELECT
 	TestExplain.class,
 	TestSelect.class,
-	TestSelectDual.class,
+	TestOperators.class,
 	TestSelectFunction.class,
 	TestOrderBy.class,
 

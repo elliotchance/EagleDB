@@ -46,21 +46,6 @@ public class DoublePage extends Page {
 		return 4 * Page.TUPLES_PER_PAGE;
 	}
 
-	public static void operatorEqual(BooleanPage destination, DoublePage page1, DoublePage page2) {
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
-			destination.page[i] = (page1.page[i] == page2.page[i]);
-	}
-
-	public static void operatorEqual(BooleanPage destination, DoublePage page1, IntPage page2) {
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
-			destination.page[i] = (page1.page[i] == page2.page[i]);
-	}
-
-	public static void operatorCast(BooleanPage destination, DoublePage page) {
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
-			destination.page[i] = (page.page[i] != 0.0);
-	}
-
 	public boolean isFixedWidth() {
 		return true;
 	}

@@ -17,44 +17,53 @@ public class Operator {
 	
 	public static Operator[] operators;
 
+	protected static Class o = Operators.class;
+
 	static {
 		try {
 			operators = new Operator[] {
-				getPageMethod(IntPage.class, "operatorCast", IntPage.class, PageAction.CAST, BooleanPage.class),
-				getPageMethod(DoublePage.class, "operatorCast", DoublePage.class, PageAction.CAST, BooleanPage.class),
+				getPageMethod("operatorCast", IntPage.class, PageAction.CAST, BooleanPage.class),
+				getPageMethod("operatorCast", DoublePage.class, PageAction.CAST, BooleanPage.class),
 
-				getPageMethod(IntPage.class, "operatorEqual", IntPage.class, PageAction.EQUAL, IntPage.class, BooleanPage.class),
-				getPageMethod(IntPage.class, "operatorEqual", IntPage.class, PageAction.EQUAL, DoublePage.class, BooleanPage.class),
-				getPageMethod(DoublePage.class, "operatorEqual", DoublePage.class, PageAction.EQUAL, DoublePage.class, BooleanPage.class),
-				getPageMethod(DoublePage.class, "operatorEqual", DoublePage.class, PageAction.EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorEqual", IntPage.class, PageAction.EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorEqual", IntPage.class, PageAction.EQUAL, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorEqual", DoublePage.class, PageAction.EQUAL, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorEqual", DoublePage.class, PageAction.EQUAL, IntPage.class, BooleanPage.class),
 
-				getPageMethod(IntPage.class, "operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, IntPage.class, BooleanPage.class),
-				getPageMethod(IntPage.class, "operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, DoublePage.class, BooleanPage.class),
 
-				getPageMethod(IntPage.class, "operatorGreater", IntPage.class, PageAction.GREATER_THAN, IntPage.class, BooleanPage.class),
-				getPageMethod(IntPage.class, "operatorGreater", IntPage.class, PageAction.GREATER_THAN, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorGreater", IntPage.class, PageAction.GREATER_THAN, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorGreater", IntPage.class, PageAction.GREATER_THAN, DoublePage.class, BooleanPage.class),
 
-				getPageMethod(IntPage.class, "operatorGreaterEqual", IntPage.class, PageAction.GREATER_THAN_EQUAL, IntPage.class, BooleanPage.class),
-				getPageMethod(IntPage.class, "operatorGreaterEqual", IntPage.class, PageAction.GREATER_THAN_EQUAL, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorGreaterEqual", IntPage.class, PageAction.GREATER_THAN_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorGreaterEqual", IntPage.class, PageAction.GREATER_THAN_EQUAL, DoublePage.class, BooleanPage.class),
 
-				getPageMethod(IntPage.class, "operatorLess", IntPage.class, PageAction.LESS_THAN, IntPage.class, BooleanPage.class),
-				getPageMethod(IntPage.class, "operatorLess", IntPage.class, PageAction.LESS_THAN, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorLess", IntPage.class, PageAction.LESS_THAN, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorLess", IntPage.class, PageAction.LESS_THAN, DoublePage.class, BooleanPage.class),
 
-				getPageMethod(IntPage.class, "operatorLessEqual", IntPage.class, PageAction.LESS_THAN_EQUAL, IntPage.class, BooleanPage.class),
-				getPageMethod(IntPage.class, "operatorLessEqual", IntPage.class, PageAction.LESS_THAN_EQUAL, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorLessEqual", IntPage.class, PageAction.LESS_THAN_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorLessEqual", IntPage.class, PageAction.LESS_THAN_EQUAL, DoublePage.class, BooleanPage.class),
 
-				getPageMethod(IntPage.class, "operatorAdd", IntPage.class, PageAction.ADD, IntPage.class, IntPage.class),
-				getPageMethod(IntPage.class, "operatorAdd", IntPage.class, PageAction.ADD, DoublePage.class, DoublePage.class),
-				getPageMethod(IntPage.class, "operatorAdd", DoublePage.class, PageAction.ADD, DoublePage.class, DoublePage.class),
+				getPageMethod("operatorAdd", IntPage.class, PageAction.ADD, IntPage.class, IntPage.class),
+				getPageMethod("operatorAdd", DoublePage.class, PageAction.ADD, DoublePage.class, DoublePage.class),
+				getPageMethod("operatorAdd", DoublePage.class, PageAction.ADD, IntPage.class, DoublePage.class),
+				getPageMethod("operatorAdd", IntPage.class, PageAction.ADD, DoublePage.class, DoublePage.class),
 
-				getPageMethod(IntPage.class, "operatorSubtract", IntPage.class, PageAction.SUBTRACT, IntPage.class, IntPage.class),
-				getPageMethod(IntPage.class, "operatorSubtract", IntPage.class, PageAction.SUBTRACT, DoublePage.class, DoublePage.class),
+				getPageMethod("operatorSubtract", IntPage.class, PageAction.SUBTRACT, IntPage.class, IntPage.class),
+				getPageMethod("operatorSubtract", IntPage.class, PageAction.SUBTRACT, DoublePage.class, DoublePage.class),
+				getPageMethod("operatorSubtract", DoublePage.class, PageAction.SUBTRACT, IntPage.class, DoublePage.class),
+				getPageMethod("operatorSubtract", DoublePage.class, PageAction.SUBTRACT, DoublePage.class, DoublePage.class),
 
-				getPageMethod(IntPage.class, "operatorMultiply", IntPage.class, PageAction.MULTIPLY, IntPage.class, IntPage.class),
-				getPageMethod(IntPage.class, "operatorMultiply", IntPage.class, PageAction.MULTIPLY, DoublePage.class, DoublePage.class),
+				getPageMethod("operatorMultiply", IntPage.class, PageAction.MULTIPLY, IntPage.class, IntPage.class),
+				getPageMethod("operatorMultiply", IntPage.class, PageAction.MULTIPLY, DoublePage.class, DoublePage.class),
+				getPageMethod("operatorMultiply", DoublePage.class, PageAction.MULTIPLY, IntPage.class, DoublePage.class),
+				getPageMethod("operatorMultiply", DoublePage.class, PageAction.MULTIPLY, DoublePage.class, DoublePage.class),
 
-				getPageMethod(IntPage.class, "operatorDivide", IntPage.class, PageAction.DIVIDE, IntPage.class, IntPage.class),
-				getPageMethod(IntPage.class, "operatorDivide", IntPage.class, PageAction.DIVIDE, DoublePage.class, DoublePage.class),
+				getPageMethod("operatorDivide", IntPage.class, PageAction.DIVIDE, IntPage.class, DoublePage.class),
+				getPageMethod("operatorDivide", IntPage.class, PageAction.DIVIDE, DoublePage.class, DoublePage.class),
+				getPageMethod("operatorDivide", DoublePage.class, PageAction.DIVIDE, IntPage.class, DoublePage.class),
+				getPageMethod("operatorDivide", DoublePage.class, PageAction.DIVIDE, DoublePage.class, DoublePage.class),
 			};
 		}
 		catch(NoSuchMethodException e) {
@@ -69,12 +78,14 @@ public class Operator {
 		this.method = method;
 	}
 
-	public static Operator getPageMethod(Class c, String name, Class lhs, PageAction action, Class dest) throws NoSuchMethodException {
-		return new Operator(lhs, action, null, c.getMethod(name, dest, lhs));
+	public static Operator getPageMethod(String name, Class lhs, PageAction action, Class dest)
+		throws NoSuchMethodException {
+		return new Operator(lhs, action, null, o.getMethod(name, dest, lhs));
 	}
 
-	public static Operator getPageMethod(Class c, String name, Class lhs, PageAction action, Class rhs, Class dest) throws NoSuchMethodException {
-		return new Operator(lhs, action, rhs, c.getMethod(name, dest, lhs, rhs));
+	public static Operator getPageMethod(String name, Class lhs, PageAction action, Class rhs, Class dest)
+		throws NoSuchMethodException {
+		return new Operator(lhs, action, rhs, o.getMethod(name, dest, lhs, rhs));
 	}
 
 	public static Method getMethodForOperator(Class lhs, PageAction op, Class rhs) {
