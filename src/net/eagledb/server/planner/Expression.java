@@ -2,6 +2,7 @@ package net.eagledb.server.planner;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Index;
 import net.eagledb.server.storage.Table;
@@ -179,25 +180,29 @@ public class Expression {
 		if(ex instanceof net.sf.jsqlparser.expression.Function) {
 			net.sf.jsqlparser.expression.Function current = (net.sf.jsqlparser.expression.Function) ex;
 			
-			// deal with the argument
-			net.sf.jsqlparser.expression.Expression arg1 =
-				(net.sf.jsqlparser.expression.Expression) current.getParameters().getExpressions().get(0);
-			int argument = subparse(arg1, false, false);
+			// deal with the arguments
+			List exprs = current.getParameters().getExpressions();
+			int[] arguments = new int[exprs.size()];
+			Class[] argTypes = new Class[exprs.size()];
+			for(int i = 0; i < exprs.size(); ++i) {
+				net.sf.jsqlparser.expression.Expression arg = (net.sf.jsqlparser.expression.Expression) exprs.get(i);
+				arguments[i] = subparse(arg, false, false);
+				argTypes[i] = buffers.get(arguments[i]).getClass();
+			}
 
 			// try and find the function
-			Class argType = buffers.get(argument).getClass();
 			String functionName = current.getName().toUpperCase();
-			Function function = Functions.findFunction(functionName, argType);
+			Function function = Functions.findFunction(functionName, argTypes);
 
 			// cannot find the function
 			if(function == null)
-				throw new FunctionException(new Function(functionName, null, null, argType), ex);
+				throw new FunctionException(new Function(functionName, null, null, argTypes), ex);
 
 			int dest = -1;
 			try {
 				buffers.add((Page) function.returnType.newInstance());
 				dest = buffers.size() - 1;
-				operations.add(new PageFunction(dest, function.method, argument));
+				operations.add(new PageFunction(dest, function.method, arguments));
 			}
 			catch(Exception e) {
 				e.printStackTrace();

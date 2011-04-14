@@ -49,6 +49,12 @@ public class TestSelectFunction {
 	}
 
 	@Test
+	public void selectFunctionAtan2() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select atan2(0.45, 0.55)", 1);
+		assertEquals(Double.valueOf(set[0][0]), Math.atan2(0.45, 0.55), ALLOWED_DELTA);
+	}
+
+	@Test
 	public void selectFunctionAbs() throws Exception {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select abs(-45)", 1);
 		assertEquals(Double.valueOf(set[0][0]), Math.abs(-45), ALLOWED_DELTA);

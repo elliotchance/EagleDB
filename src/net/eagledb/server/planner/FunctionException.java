@@ -16,14 +16,18 @@ public class FunctionException extends ExpressionException {
 
 	@Override
 	public String toString() {
-		String argType = "UNKNOWN";
+		String argTypes = "";
 		try {
-			argType = ((Page) function.argumentType.newInstance()).getNames()[0];
+			for(int i = 0; i < function.argumentTypes.length; ++i) {
+				if(i > 0)
+					argTypes += ",";
+				argTypes += ((Page) function.argumentTypes[i].newInstance()).getNames()[0];
+			}
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-		return "No such function " + function.name + "(" + argType + ")";
+		return "No such function " + function.name + "(" + argTypes + ")";
 	}
 
 }

@@ -10,13 +10,13 @@ public class Function {
 
 	public Class returnType;
 
-	public Class argumentType;
+	public Class[] argumentTypes;
 
-	public Function(String name, Method method, Class returnType, Class argumentType) {
+	public Function(String name, Method method, Class returnType, Class[] argumentTypes) {
 		this.name = name;
 		this.method = method;
 		this.returnType = returnType;
-		this.argumentType = argumentType;
+		this.argumentTypes = argumentTypes;
 	}
 
 }

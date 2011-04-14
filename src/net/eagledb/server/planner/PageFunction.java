@@ -5,15 +5,15 @@ import net.eagledb.server.storage.page.Page;
 
 public class PageFunction extends PageOperation {
 
-	public int arg1;
+	public int[] args;
 
 	public int bufferDestination;
 
 	private Method function;
 
-	public PageFunction(int bufferDestination, Method function, int arg1) {
+	public PageFunction(int bufferDestination, Method function, int[] args) {
 		this.bufferDestination = bufferDestination;
-		this.arg1 = arg1;
+		this.args = args;
 		this.function = function;
 	}
 
@@ -23,15 +23,18 @@ public class PageFunction extends PageOperation {
 	}
 
 	public void run(FullTableScan fts) {
-		Page arg = null;
+		Page[] arg = new Page[1 + args.length];
+		arg[0] = fts.buffers.get(bufferDestination);
 
-		if(arg1 >= Expression.MAXIMUM_BUFFERS)
-			arg = fts.table.getPage(arg1 - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
-		else
-			arg = fts.buffers.get(arg1);
+		for(int i = 0; i < args.length; ++i) {
+			if(args[i] >= Expression.MAXIMUM_BUFFERS)
+				arg[i + 1] = fts.table.getPage(args[i] - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
+			else
+				arg[i + 1] = fts.buffers.get(args[i]);
+		}
 
 		try {
-			function.invoke(null, fts.buffers.get(bufferDestination), arg);
+			function.invoke(null, (Object[]) arg);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
