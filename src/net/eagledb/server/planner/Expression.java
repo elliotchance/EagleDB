@@ -237,8 +237,8 @@ public class Expression {
 		if(castToBoolean) {
 			if(buffers.get(buffers.size() - 1).getClass() != BooleanPage.class) {
 				buffers.add(new BooleanPage());
-				Method operator = Operator.getMethodForOperator(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST,
-					null);
+				Method operator = Operator.getMethodForOperator(buffers.get(buffers.size() - 2).getClass(),
+					PageAction.CAST, null);
 				if(operator == null)
 					throw new OperatorException(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST, null,
 						expression);

@@ -23,8 +23,16 @@ public class Functions {
 			getFunction("atan2", DoublePage.class, new Class[] { DoublePage.class, DoublePage.class }),
 			getFunction("atan2", DoublePage.class, new Class[] { IntPage.class, IntPage.class }),
 			getFunction("length", IntPage.class, VarCharPage.class),
+			getFunction("cbrt", DoublePage.class, DoublePage.class),
+			getFunction("cbrt", DoublePage.class, IntPage.class),
+			getFunction("ceil", DoublePage.class, DoublePage.class),
+			getFunction("ceil", DoublePage.class, IntPage.class),
+			getFunction("ceiling", DoublePage.class, DoublePage.class),
+			getFunction("ceiling", DoublePage.class, IntPage.class),
 			getFunction("cos", DoublePage.class, DoublePage.class),
 			getFunction("cos", DoublePage.class, IntPage.class),
+			getFunction("degrees", DoublePage.class, DoublePage.class),
+			getFunction("radians", DoublePage.class, DoublePage.class),
 			getFunction("sin", DoublePage.class, DoublePage.class),
 			getFunction("sin", DoublePage.class, IntPage.class),
 			getFunction("tan", DoublePage.class, DoublePage.class),
@@ -145,6 +153,46 @@ public class Functions {
 	public static void length(IntPage destination, VarCharPage arg) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = arg.page[i].length();
+	}
+
+	public static void cbrt(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.cbrt(arg.page[i]);
+	}
+
+	public static void cbrt(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.cbrt(arg.page[i]);
+	}
+
+	public static void ceil(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.ceil(arg.page[i]);
+	}
+
+	public static void ceil(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.ceil(arg.page[i]);
+	}
+
+	public static void ceiling(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.ceil(arg.page[i]);
+	}
+
+	public static void ceiling(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.ceil(arg.page[i]);
+	}
+
+	public static void radians(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.toRadians(arg.page[i]);
+	}
+
+	public static void degrees(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.toDegrees(arg.page[i]);
 	}
 
 }
