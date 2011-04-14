@@ -32,6 +32,16 @@ public class Functions {
 			getFunction("cos", DoublePage.class, DoublePage.class),
 			getFunction("cos", DoublePage.class, IntPage.class),
 			getFunction("degrees", DoublePage.class, DoublePage.class),
+			getFunction("div", IntPage.class, new Class[] { DoublePage.class, DoublePage.class }),
+			getFunction("div", IntPage.class, new Class[] { IntPage.class, IntPage.class }),
+			getFunction("exp", DoublePage.class, DoublePage.class),
+			getFunction("exp", DoublePage.class, IntPage.class),
+			getFunction("floor", DoublePage.class, DoublePage.class),
+			getFunction("floor", DoublePage.class, IntPage.class),
+			getFunction("ln", DoublePage.class, DoublePage.class),
+			getFunction("ln", DoublePage.class, IntPage.class),
+			getFunction("log", DoublePage.class, DoublePage.class),
+			getFunction("log", DoublePage.class, IntPage.class),
 			getFunction("radians", DoublePage.class, DoublePage.class),
 			getFunction("sin", DoublePage.class, DoublePage.class),
 			getFunction("sin", DoublePage.class, IntPage.class),
@@ -193,6 +203,56 @@ public class Functions {
 	public static void degrees(DoublePage destination, DoublePage arg) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = Math.toDegrees(arg.page[i]);
+	}
+
+	public static void div(IntPage destination, DoublePage arg1, DoublePage arg2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (int) (arg1.page[i] / arg2.page[i]);
+	}
+
+	public static void div(IntPage destination, IntPage arg1, IntPage arg2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (int) ((double) arg1.page[i] / (double) arg2.page[i]);
+	}
+
+	public static void ln(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.log(arg.page[i]);
+	}
+
+	public static void ln(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.log(arg.page[i]);
+	}
+
+	public static void log(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.log10(arg.page[i]);
+	}
+
+	public static void log(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.log10(arg.page[i]);
+	}
+
+	public static void exp(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.exp(arg.page[i]);
+	}
+
+	public static void exp(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.exp(arg.page[i]);
+	}
+
+	public static void floor(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.floor(arg.page[i]);
+	}
+
+	public static void floor(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.floor(arg.page[i]);
 	}
 
 }

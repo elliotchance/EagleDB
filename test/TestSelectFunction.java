@@ -127,5 +127,45 @@ public class TestSelectFunction {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select ceiling(45.3)", 1);
 		assertEquals(Double.valueOf(set[0][0]), Math.ceil(45.3), ALLOWED_DELTA);
 	}
+
+	@Test
+	public void selectFunctionDiv() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select div(9, 4)", 1);
+		assertEquals(Double.valueOf(set[0][0]), 2.0, ALLOWED_DELTA);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select div(9.0, 4.0)", 1);
+		assertEquals(Double.valueOf(set[0][0]), 2.0, ALLOWED_DELTA);
+	}
+
+	@Test
+	public void selectFunctionExp() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select exp(45)", 1);
+		assertEquals(Double.valueOf(set[0][0]), Math.exp(45), ALLOWED_DELTA);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select exp(45.3)", 1);
+		assertEquals(Double.valueOf(set[0][0]), Math.exp(45.3), ALLOWED_DELTA);
+	}
+
+	@Test
+	public void selectFunctionFloor() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select floor(45)", 1);
+		assertEquals(Double.valueOf(set[0][0]), Math.floor(45), ALLOWED_DELTA);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select floor(45.3)", 1);
+		assertEquals(Double.valueOf(set[0][0]), Math.floor(45.3), ALLOWED_DELTA);
+	}
+
+	@Test
+	public void selectFunctionLn() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select ln(45)", 1);
+		assertEquals(Double.valueOf(set[0][0]), Math.log(45), ALLOWED_DELTA);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select ln(45.3)", 1);
+		assertEquals(Double.valueOf(set[0][0]), Math.log(45.3), ALLOWED_DELTA);
+	}
+
+	@Test
+	public void selectFunctionLog() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select log(45)", 1);
+		assertEquals(Double.valueOf(set[0][0]), Math.log10(45), ALLOWED_DELTA);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select log(45.3)", 1);
+		assertEquals(Double.valueOf(set[0][0]), Math.log10(45.3), ALLOWED_DELTA);
+	}
 	
 }
