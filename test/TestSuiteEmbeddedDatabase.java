@@ -38,6 +38,7 @@ import org.junit.runners.Suite;
 	TestSelect.class,
 	TestSelectDual.class,
 	TestSelectFunction.class,
+	TestOrderBy.class,
 
 	// transactions
 	TestTransaction.class,

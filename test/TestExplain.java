@@ -1,5 +1,3 @@
-
-
 import java.sql.Statement;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,7 +30,7 @@ public class TestExplain {
 	public void explain() throws Exception {
 		Statement st = TestSuiteEmbeddedDatabase.connection.createStatement();
 
-		/*ResultSet rs = st.executeQuery("explain " + Select.selectSQL);
+		/*ResultSet rs = st.executeQuery("explain ");
 		System.out.println("EXPLAIN " + Select.selectSQL);
 		while(rs.next())
 			System.out.println("  " + rs.getString(0));
@@ -51,9 +49,9 @@ public class TestExplain {
 		while(rs.next())
 			System.out.println("  " + rs.getString(0));
 		System.out.println();
-		rs.close();*/
+		rs.close();
 
-		st.close();
+		st.close();*/
 	}
 
 }

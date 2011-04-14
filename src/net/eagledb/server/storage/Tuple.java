@@ -39,7 +39,7 @@ public class Tuple implements Serializable {
 
 	@Override
 	public String toString() {
-		String r = "Tuple( ";
+		String r = "Tuple[" + tupleID + "]( ";
 		for(Object o : attributes) {
 			r += o + " ";
 		}

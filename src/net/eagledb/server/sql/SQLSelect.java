@@ -13,6 +13,7 @@ import net.eagledb.server.planner.FullTableScan;
 import net.eagledb.server.planner.IndexLookup;
 import net.eagledb.server.planner.IndexLookupOperation;
 import net.eagledb.server.planner.IndexScan;
+import net.eagledb.server.planner.OrderBy;
 import net.eagledb.server.planner.PageOperation;
 import net.eagledb.server.planner.Plan;
 import net.eagledb.server.storage.Attribute;
@@ -23,6 +24,7 @@ import net.eagledb.server.storage.Table;
 import net.eagledb.server.storage.TemporaryTable;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
@@ -141,6 +143,18 @@ public class SQLSelect extends SQLAction {
 
 			// fetch attribute projection
 			p.addPlanItem(new FetchAttributes(table, faSources, faDestinations));
+
+			// add order by
+			if(select.getOrderByElements() != null && select.getOrderByElements().size() > 0) {
+				// we don't support nested ordering
+				if(select.getOrderByElements().size() > 1)
+					throw new SQLException("ORDER BY with multiple attributes is not supported.");
+
+				OrderByElement expr = (OrderByElement) select.getOrderByElements().get(0);
+				ArrayList<OrderByElement> exprs = new ArrayList<OrderByElement>();
+				exprs.add(expr);
+				p.addPlanItem(new OrderBy(table, exprs));
+			}
 
 			// execute plan
 			if(((net.sf.jsqlparser.statement.select.Select) sql).getExplain()) {
