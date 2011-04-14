@@ -11,6 +11,12 @@ public class Functions {
 	
 	static {
 		functions = new Function[] {
+			getFunction("acos", DoublePage.class, DoublePage.class),
+			getFunction("acos", DoublePage.class, IntPage.class),
+			getFunction("asin", DoublePage.class, DoublePage.class),
+			getFunction("asin", DoublePage.class, IntPage.class),
+			getFunction("atan", DoublePage.class, DoublePage.class),
+			getFunction("atan", DoublePage.class, IntPage.class),
 			getFunction("abs", DoublePage.class, DoublePage.class),
 			getFunction("abs", DoublePage.class, IntPage.class),
 			getFunction("cos", DoublePage.class, DoublePage.class),
@@ -82,6 +88,36 @@ public class Functions {
 	public static void tan(DoublePage destination, IntPage arg) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = Math.tan(arg.page[i]);
+	}
+
+	public static void acos(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.acos(arg.page[i]);
+	}
+
+	public static void acos(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.acos(arg.page[i]);
+	}
+
+	public static void asin(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.asin(arg.page[i]);
+	}
+
+	public static void asin(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.asin(arg.page[i]);
+	}
+
+	public static void atan(DoublePage destination, DoublePage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.atan(arg.page[i]);
+	}
+
+	public static void atan(DoublePage destination, IntPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = Math.atan(arg.page[i]);
 	}
 
 }
