@@ -2,6 +2,7 @@ package net.eagledb.server.planner;
 
 import net.eagledb.server.storage.*;
 import java.util.*;
+import net.eagledb.server.storage.page.BooleanPage;
 import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.page.Page;
@@ -65,6 +66,11 @@ public class FetchAttributes implements PlanItem {
 				}
 				else if(basePage instanceof DoublePage) {
 					DoublePage page = (DoublePage) basePage;
+					for(Tuple tuple : tuples)
+						tuple.set(destinations[i], page.page[tuple.tupleID]);
+				}
+				else if(basePage instanceof BooleanPage) {
+					BooleanPage page = (BooleanPage) basePage;
 					for(Tuple tuple : tuples)
 						tuple.set(destinations[i], page.page[tuple.tupleID]);
 				}

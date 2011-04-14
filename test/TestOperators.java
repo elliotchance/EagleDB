@@ -77,5 +77,125 @@ public class TestOperators {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.1/3.2", 1);
 		assertEquals(0.65625, Double.valueOf(set[0][0]), ALLOWED_DELTA);
 	}
+
+	@Test
+	public void operatorEqual() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2=3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3=3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0=3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0=3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2=3.0", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3=3.0", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0=3.0", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0=3.0", 1);
+		assertEquals("true", set[0][0]);
+	}
+
+	@Test
+	public void operatorNotEqual() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2!=3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3!=3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0!=3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0!=3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2!=3.0", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3!=3.0", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0!=3.0", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0!=3.0", 1);
+		assertEquals("false", set[0][0]);
+	}
+
+	@Test
+	public void operatorGreater() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2>3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3>3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0>3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0>3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2>3.0", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3>3.0", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0>3.0", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0>3.0", 1);
+		assertEquals("false", set[0][0]);
+	}
+
+	@Test
+	public void operatorGreaterEqual() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2>=3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3>=3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0>=3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0>=3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2>=3.0", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3>=3.0", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0>=3.0", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0>=3.0", 1);
+		assertEquals("true", set[0][0]);
+	}
+
+	@Test
+	public void operatorLess() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2<3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3<3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0<3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0<3", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2<3.0", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3<3.0", 1);
+		assertEquals("false", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0<3.0", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0<3.0", 1);
+		assertEquals("false", set[0][0]);
+	}
+
+	@Test
+	public void operatorLessEqual() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2<=3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3<=3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0<=3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0<=3", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2<=3.0", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3<=3.0", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 2.0<=3.0", 1);
+		assertEquals("true", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0<=3.0", 1);
+		assertEquals("true", set[0][0]);
+	}
 	
 }

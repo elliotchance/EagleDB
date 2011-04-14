@@ -693,23 +693,26 @@ PlainSelect PlainSelect():
 }
 {
     <K_SELECT> 
+    [
+	LOOKAHEAD(2) (
+	    <K_ALL>
+	    |
+	    (
+		<K_DISTINCT> {
+		    Distinct distinct = new Distinct();
+		    plainSelect.setDistinct(distinct);
+		}
+		[ "ON" "(" distinctOn=SelectItemsList() {
+		    plainSelect.getDistinct().setOnSelectItems(distinctOn);
+		} ")" ]
+	    )
+	)
+    ]
+    [ top = Top() { plainSelect.setTop(top); } ]
 
-    [ 
-    	<K_ALL> 
-    	| 
-    		(
-    			<K_DISTINCT> { Distinct distinct = new Distinct(); plainSelect.setDistinct(distinct); } 
-    				[ "ON" "(" distinctOn=SelectItemsList()  { plainSelect.getDistinct().setOnSelectItems(distinctOn); } ")" ]
-    		)
-    ] 
+    selectItems=SelectItemsList()    
     
-    [ 	top = Top() { plainSelect.setTop(top);	} ]
-
-    
-    selectItems=SelectItemsList()
-    
-    
-     // TODO
+    // TODO
     [IntoClause()]
     [ <K_FROM> fromItem=FromItem()
     joins=JoinsList()
@@ -817,19 +820,29 @@ SelectItem SelectItem():
 	SubSelect subSelect = null;
 }
 {
-	
-
-    ("*" { selectItem = new AllColumns(); }
-    |
+    (
+	"*" {
+	    selectItem = new AllColumns();
+	}
+	|
 	LOOKAHEAD(AllTableColumns()) selectItem=AllTableColumns()
 	|
-	 expression=SimpleExpression() { selectExpressionItem = new SelectExpressionItem(); selectExpressionItem.setExpression(expression); }
-			 [alias=Alias() { selectExpressionItem.setAlias(alias); }] { selectItem = selectExpressionItem; }
-	)
-	{
-		return selectItem;
+	expression=Expression() {
+	    selectExpressionItem = new SelectExpressionItem();
+	    selectExpressionItem.setExpression(expression);
 	}
-	
+	[
+	alias=Alias() {
+	    selectExpressionItem.setAlias(alias);
+	}
+	] {
+	    selectItem = selectExpressionItem;
+	}
+    )
+    {
+	return selectItem;
+    }
+
 }
 
 AllTableColumns AllTableColumns():

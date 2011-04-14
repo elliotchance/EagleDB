@@ -32,18 +32,28 @@ public class Operator {
 
 				getPageMethod("operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, IntPage.class, BooleanPage.class),
 				getPageMethod("operatorNotEqual", IntPage.class, PageAction.NOT_EQUAL, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorNotEqual", DoublePage.class, PageAction.NOT_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorNotEqual", DoublePage.class, PageAction.NOT_EQUAL, DoublePage.class, BooleanPage.class),
 
 				getPageMethod("operatorGreater", IntPage.class, PageAction.GREATER_THAN, IntPage.class, BooleanPage.class),
 				getPageMethod("operatorGreater", IntPage.class, PageAction.GREATER_THAN, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorGreater", DoublePage.class, PageAction.GREATER_THAN, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorGreater", DoublePage.class, PageAction.GREATER_THAN, DoublePage.class, BooleanPage.class),
 
 				getPageMethod("operatorGreaterEqual", IntPage.class, PageAction.GREATER_THAN_EQUAL, IntPage.class, BooleanPage.class),
 				getPageMethod("operatorGreaterEqual", IntPage.class, PageAction.GREATER_THAN_EQUAL, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorGreaterEqual", DoublePage.class, PageAction.GREATER_THAN_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorGreaterEqual", DoublePage.class, PageAction.GREATER_THAN_EQUAL, DoublePage.class, BooleanPage.class),
 
 				getPageMethod("operatorLess", IntPage.class, PageAction.LESS_THAN, IntPage.class, BooleanPage.class),
 				getPageMethod("operatorLess", IntPage.class, PageAction.LESS_THAN, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorLess", DoublePage.class, PageAction.LESS_THAN, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorLess", DoublePage.class, PageAction.LESS_THAN, DoublePage.class, BooleanPage.class),
 
 				getPageMethod("operatorLessEqual", IntPage.class, PageAction.LESS_THAN_EQUAL, IntPage.class, BooleanPage.class),
 				getPageMethod("operatorLessEqual", IntPage.class, PageAction.LESS_THAN_EQUAL, DoublePage.class, BooleanPage.class),
+				getPageMethod("operatorLessEqual", DoublePage.class, PageAction.LESS_THAN_EQUAL, IntPage.class, BooleanPage.class),
+				getPageMethod("operatorLessEqual", DoublePage.class, PageAction.LESS_THAN_EQUAL, DoublePage.class, BooleanPage.class),
 
 				getPageMethod("operatorAdd", IntPage.class, PageAction.ADD, IntPage.class, IntPage.class),
 				getPageMethod("operatorAdd", DoublePage.class, PageAction.ADD, DoublePage.class, DoublePage.class),

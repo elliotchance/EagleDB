@@ -127,6 +127,16 @@ public class Operators {
 			destination.page[i] = (page1.page[i] != page2.page[i]);
 	}
 
+	public static void operatorNotEqual(BooleanPage destination, DoublePage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] != page2.page[i]);
+	}
+
+	public static void operatorNotEqual(BooleanPage destination, DoublePage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] != page2.page[i]);
+	}
+
 	// ---
 
 	public static void operatorGreater(BooleanPage destination, IntPage page1, IntPage page2) {
@@ -135,6 +145,16 @@ public class Operators {
 	}
 
 	public static void operatorGreater(BooleanPage destination, IntPage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] > page2.page[i]);
+	}
+
+	public static void operatorGreater(BooleanPage destination, DoublePage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] > page2.page[i]);
+	}
+
+	public static void operatorGreater(BooleanPage destination, DoublePage page1, DoublePage page2) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = (page1.page[i] > page2.page[i]);
 	}
@@ -151,6 +171,16 @@ public class Operators {
 			destination.page[i] = (page1.page[i] < page2.page[i]);
 	}
 
+	public static void operatorLess(BooleanPage destination, DoublePage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] < page2.page[i]);
+	}
+
+	public static void operatorLess(BooleanPage destination, DoublePage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] < page2.page[i]);
+	}
+
 	// ---
 
 	public static void operatorGreaterEqual(BooleanPage destination, IntPage page1, IntPage page2) {
@@ -163,6 +193,16 @@ public class Operators {
 			destination.page[i] = (page1.page[i] >= page2.page[i]);
 	}
 
+	public static void operatorGreaterEqual(BooleanPage destination, DoublePage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] >= page2.page[i]);
+	}
+
+	public static void operatorGreaterEqual(BooleanPage destination, DoublePage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] >= page2.page[i]);
+	}
+
 	// ---
 
 	public static void operatorLessEqual(BooleanPage destination, IntPage page1, IntPage page2) {
@@ -171,6 +211,16 @@ public class Operators {
 	}
 
 	public static void operatorLessEqual(BooleanPage destination, IntPage page1, DoublePage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] <= page2.page[i]);
+	}
+
+	public static void operatorLessEqual(BooleanPage destination, DoublePage page1, IntPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = (page1.page[i] <= page2.page[i]);
+	}
+
+	public static void operatorLessEqual(BooleanPage destination, DoublePage page1, DoublePage page2) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = (page1.page[i] <= page2.page[i]);
 	}
