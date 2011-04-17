@@ -47,6 +47,7 @@ public class Functions {
 			getFunction("sin", DoublePage.class, IntPage.class),
 			getFunction("tan", DoublePage.class, DoublePage.class),
 			getFunction("tan", DoublePage.class, IntPage.class),
+			getFunction("xmlcomment", VarCharPage.class, VarCharPage.class),
 			getFunction("xmlroot", VarCharPage.class, VarCharPage.class),
 			getFunction("xmlroot", VarCharPage.class, new Class[] { VarCharPage.class, VarCharPage.class }),
 			getFunction("xmlroot", VarCharPage.class, new Class[] { VarCharPage.class, VarCharPage.class, VarCharPage.class }),
@@ -272,6 +273,11 @@ public class Functions {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = "<?xml version=\"" + version.page[i] + "\" standalone=\"" + standalone.page[i] +
 				"\"?>\n" + arg.page[i];
+	}
+
+	public static void xmlcomment(VarCharPage destination, VarCharPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = "<!--" + arg.page[i] + "-->";
 	}
 
 }

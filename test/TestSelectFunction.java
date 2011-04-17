@@ -179,5 +179,11 @@ public class TestSelectFunction {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1', standalone no)", 1);
 		assertEquals("<?xml version=\"1.1\" standalone=\"no\"?>\n<abc/>", set[0][0]);
 	}
+
+	@Test
+	public void selectFunctionXMLComment() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT xmlcomment('hello')", 1);
+		assertEquals("<!--hello-->", set[0][0]);
+	}
 	
 }
