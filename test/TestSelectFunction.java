@@ -185,5 +185,13 @@ public class TestSelectFunction {
 		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT xmlcomment('hello')", 1);
 		assertEquals("<!--hello-->", set[0][0]);
 	}
+
+	@Test
+	public void selectFunctionXMLConcat() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT xmlconcat('<abc/>', '<bar>foo</bar>')", 1);
+		assertEquals("<abc/><bar>foo</bar>", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT xmlconcat('<?xml version=\"1.1\"?><foo/>', '<?xml version=\"1.1\" standalone=\"no\"?><bar/>')", 1);
+		assertEquals("<?xml version=\"1.1\"?><foo/><bar/>", set[0][0]);
+	}
 	
 }

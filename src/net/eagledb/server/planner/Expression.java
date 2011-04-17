@@ -208,6 +208,10 @@ public class Expression {
 			String functionName = current.getName().toUpperCase();
 			Function function = Functions.findFunction(functionName, argTypes);
 
+			// if we can't find the definition see if there is a VarArgs to fall back on
+			if(function == null)
+				function = Functions.findVarArgsFunction(functionName);
+
 			// cannot find the function
 			if(function == null)
 				throw new FunctionException(new Function(functionName, null, null, argTypes), ex);

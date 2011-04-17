@@ -34,7 +34,11 @@ public class PageFunction extends PageOperation {
 		}
 
 		try {
-			function.invoke(null, (Object[]) arg);
+			// varargs
+			if(function.getParameterTypes()[0].equals(Page[].class))
+				function.invoke(null, (Object) arg);
+			else
+				function.invoke(null, (Object[]) arg);
 		}
 		catch(Exception e) {
 			e.printStackTrace();

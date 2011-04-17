@@ -1,10 +1,28 @@
 package net.eagledb.server.planner;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.page.Page;
 import net.eagledb.server.storage.page.VarCharPage;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class Functions {
 
@@ -48,6 +66,7 @@ public class Functions {
 			getFunction("tan", DoublePage.class, DoublePage.class),
 			getFunction("tan", DoublePage.class, IntPage.class),
 			getFunction("xmlcomment", VarCharPage.class, VarCharPage.class),
+			getVarArgsFunction("xmlconcat", VarCharPage.class),
 			getFunction("xmlroot", VarCharPage.class, VarCharPage.class),
 			getFunction("xmlroot", VarCharPage.class, new Class[] { VarCharPage.class, VarCharPage.class }),
 			getFunction("xmlroot", VarCharPage.class, new Class[] { VarCharPage.class, VarCharPage.class, VarCharPage.class }),
@@ -62,12 +81,33 @@ public class Functions {
 		return null;
 	}
 
+	public static Function findVarArgsFunction(String name) {
+		for(Function function : functions) {
+			if(function.name.equals(name) &&
+				java.util.Arrays.equals(function.argumentTypes, new Class[] { Page[].class }))
+				return function;
+		}
+		return null;
+	}
+
+	public static Function getVarArgsFunction(String name, Class returnType) {
+		try {
+		return new Function(name.toUpperCase(), Functions.class.getMethod(name, new Class[] { Page[].class }),
+			returnType, new Class[] { Page[].class } );
+		}
+		catch(NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static Function getFunction(String name, Class returnType, Class argumentType) {
 		return getFunction(name, returnType, new Class[] { argumentType });
 	}
 
 	public static Function getFunction(String name, Class returnType, Class[] argumentTypes) {
-		return new Function(name.toUpperCase(), getFunctionMethod(name, returnType, argumentTypes), returnType, argumentTypes);
+		return new Function(name.toUpperCase(), getFunctionMethod(name, returnType, argumentTypes), returnType,
+			argumentTypes);
 	}
 
 	public static Method getFunctionMethod(String name, Class returnType, Class[] argumentTypes) {
@@ -278,6 +318,71 @@ public class Functions {
 	public static void xmlcomment(VarCharPage destination, VarCharPage arg) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = "<!--" + arg.page[i] + "-->";
+	}
+
+	public static void xmlconcat(Page[] args) {
+		VarCharPage dest = (VarCharPage) args[0];
+		DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
+
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
+			try {
+				// prepare
+				DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
+				Document doc = docBuilder.newDocument();
+
+				// new virtual root
+				Element root = doc.createElement("root");
+
+				// build
+				String xmlDec = "";
+				for(int j = 1; j < args.length; ++j) {
+					// we use the XML declaration from the first argument (if one exists)
+					VarCharPage p = (VarCharPage) args[j];
+					if(xmlDec.equals("") && p.page[i].startsWith("<?xml"))
+						xmlDec = p.page[i].substring(0, p.page[i].indexOf("?>") + 2);
+					
+					Document merge = docBuilder.parse(new InputSource(new StringReader(p.page[i])));
+					root.appendChild(doc.importNode(merge.getDocumentElement(), true));
+				}
+
+				// set up a transformer
+				TransformerFactory transfac = TransformerFactory.newInstance();
+				Transformer trans = transfac.newTransformer();
+				trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+				//trans.setOutputProperty(OutputKeys.INDENT, "yes");
+
+				// create string from xml tree
+				StringWriter sw = new StringWriter();
+				StreamResult result = new StreamResult(sw);
+				NodeList childNodes = root.getChildNodes();
+				for(int j = 0; j < childNodes.getLength(); ++j) {
+					DOMSource source = new DOMSource(childNodes.item(j));
+					trans.transform(source, result);
+				}
+
+				dest.page[i] = xmlDec + sw.toString();
+			}
+			catch(ParserConfigurationException ex) {
+				ex.printStackTrace();
+				dest.page[i] = ex.getMessage();
+			}
+			catch (TransformerConfigurationException ex) {
+				ex.printStackTrace();
+				dest.page[i] = ex.getMessage();
+			}
+			catch (TransformerException ex) {
+				ex.printStackTrace();
+				dest.page[i] = ex.getMessage();
+			}
+			catch (SAXException ex) {
+				ex.printStackTrace();
+				dest.page[i] = ex.getMessage();
+			}
+			catch (IOException ex) {
+				ex.printStackTrace();
+				dest.page[i] = ex.getMessage();
+			}
+		}
 	}
 
 }
