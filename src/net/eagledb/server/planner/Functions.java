@@ -60,6 +60,7 @@ public class Functions {
 			getFunction("ln", DoublePage.class, IntPage.class),
 			getFunction("log", DoublePage.class, DoublePage.class),
 			getFunction("log", DoublePage.class, IntPage.class),
+			getFunction("position", IntPage.class, new Class[] { VarCharPage.class, VarCharPage.class }),
 			getFunction("radians", DoublePage.class, DoublePage.class),
 			getFunction("sin", DoublePage.class, DoublePage.class),
 			getFunction("sin", DoublePage.class, IntPage.class),
@@ -383,6 +384,11 @@ public class Functions {
 				dest.page[i] = ex.getMessage();
 			}
 		}
+	}
+
+	public static void position(IntPage destination, VarCharPage substring, VarCharPage string) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = string.page[i].indexOf(substring.page[i]) + 1;
 	}
 
 }

@@ -193,5 +193,11 @@ public class TestSelectFunction {
 		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT xmlconcat('<?xml version=\"1.1\"?><foo/>', '<?xml version=\"1.1\" standalone=\"no\"?><bar/>')", 1);
 		assertEquals("<?xml version=\"1.1\"?><foo/><bar/>", set[0][0]);
 	}
+
+	@Test
+	public void selectFunctionPosition() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT position('om' in 'Thomas')", 1);
+		assertEquals(3, (int) Integer.valueOf(set[0][0]));
+	}
 	
 }

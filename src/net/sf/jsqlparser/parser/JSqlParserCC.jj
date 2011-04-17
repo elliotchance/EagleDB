@@ -236,6 +236,7 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_STANDALONE:"STANDALONE">
 |   <K_YES:"YES">
 |   <K_NO:"NO">
+|   <K_POSITION:"POSITION">
 }
 
 
@@ -1602,6 +1603,31 @@ WhenClause WhenThenValue():
 }
 
 
+Function FunctionPosition():
+{
+    Function retval = new Function();
+    String funcName = null;
+    Expression exp = null;
+    List expressions = new ArrayList();
+    String strTemp = null;
+}
+{
+    <K_POSITION> { funcName = "POSITION"; }
+    "("
+    exp=Expression() { expressions.add(exp); }
+    <K_IN>
+    exp=Expression() { expressions.add(exp); }
+    ")"
+    {
+	ExpressionList tmp = new ExpressionList();
+	tmp.setExpressions(expressions);
+	retval.setParameters(tmp);
+	retval.setName(funcName);
+	return retval;
+    }
+}
+
+
 Function FunctionXMLRoot():
 {
     Function retval = new Function();
@@ -1663,6 +1689,8 @@ Function Function():
 }
 {
     (
+	retval=FunctionPosition()
+	|
 	retval=FunctionXMLRoot()
 	|
 	retval=FunctionGeneric()
@@ -1673,10 +1701,9 @@ Function Function():
 }
 
 
-
 SubSelect SubSelect():
 {
-	SelectBody selectBody = null;
+    SelectBody selectBody = null;
 }
 {
     selectBody=SelectBody()
@@ -1686,6 +1713,7 @@ SubSelect SubSelect():
     	return subSelect;
     }
 }
+
 
 CreateTable CreateTable():
 {
