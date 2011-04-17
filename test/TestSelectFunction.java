@@ -167,5 +167,17 @@ public class TestSelectFunction {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select log(45.3)", 1);
 		assertEquals(Double.valueOf(set[0][0]), Math.log10(45.3), ALLOWED_DELTA);
 	}
+
+	@Test
+	public void selectFunctionXMLRoot() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>')", 1);
+		assertEquals("<?xml version=\"1.0\"?>\n<abc/>", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1')", 1);
+		assertEquals("<?xml version=\"1.1\"?>\n<abc/>", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1', standalone yes)", 1);
+		assertEquals("<?xml version=\"1.1\" standalone=\"yes\"?>\n<abc/>", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1', standalone no)", 1);
+		assertEquals("<?xml version=\"1.1\" standalone=\"no\"?>\n<abc/>", set[0][0]);
+	}
 	
 }

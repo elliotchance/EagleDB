@@ -6,6 +6,7 @@ import net.eagledb.server.storage.page.BooleanPage;
 import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.page.Page;
+import net.eagledb.server.storage.page.VarCharPage;
 
 public class FetchAttributes implements PlanItem {
 
@@ -70,6 +71,11 @@ public class FetchAttributes implements PlanItem {
 				}
 				else if(basePage instanceof BooleanPage) {
 					BooleanPage page = (BooleanPage) basePage;
+					for(Tuple tuple : tuples)
+						tuple.set(destinations[i], page.page[tuple.tupleID]);
+				}
+				else if(basePage instanceof VarCharPage) {
+					VarCharPage page = (VarCharPage) basePage;
 					for(Tuple tuple : tuples)
 						tuple.set(destinations[i], page.page[tuple.tupleID]);
 				}

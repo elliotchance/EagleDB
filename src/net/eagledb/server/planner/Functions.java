@@ -47,6 +47,9 @@ public class Functions {
 			getFunction("sin", DoublePage.class, IntPage.class),
 			getFunction("tan", DoublePage.class, DoublePage.class),
 			getFunction("tan", DoublePage.class, IntPage.class),
+			getFunction("xmlroot", VarCharPage.class, VarCharPage.class),
+			getFunction("xmlroot", VarCharPage.class, new Class[] { VarCharPage.class, VarCharPage.class }),
+			getFunction("xmlroot", VarCharPage.class, new Class[] { VarCharPage.class, VarCharPage.class, VarCharPage.class }),
 		};
 	}
 
@@ -253,6 +256,22 @@ public class Functions {
 	public static void floor(DoublePage destination, IntPage arg) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = Math.floor(arg.page[i]);
+	}
+
+	public static void xmlroot(VarCharPage destination, VarCharPage arg) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = "<?xml version=\"1.0\"?>\n" + arg.page[i];
+	}
+
+	public static void xmlroot(VarCharPage destination, VarCharPage arg, VarCharPage version) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = "<?xml version=\"" + version.page[i] + "\"?>\n" + arg.page[i];
+	}
+
+	public static void xmlroot(VarCharPage destination, VarCharPage arg, VarCharPage version, VarCharPage standalone) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = "<?xml version=\"" + version.page[i] + "\" standalone=\"" + standalone.page[i] +
+				"\"?>\n" + arg.page[i];
 	}
 
 }

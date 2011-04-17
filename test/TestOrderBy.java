@@ -72,6 +72,10 @@ public class TestOrderBy {
 		assertEquals(8.7, Double.valueOf(set[0][0]), ALLOWED_DELTA);
 		assertEquals(2.5, Double.valueOf(set[1][0]), ALLOWED_DELTA);
 		assertEquals(1.0, Double.valueOf(set[2][0]), ALLOWED_DELTA);
+	}
+
+	@Test
+	public void orderByExpressionDesc() throws Exception {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select number from test_order order by 10-number desc", 1);
 		assertEquals(1.0, Double.valueOf(set[0][0]), ALLOWED_DELTA);
 		assertEquals(2.5, Double.valueOf(set[1][0]), ALLOWED_DELTA);
