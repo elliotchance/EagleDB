@@ -1,9 +1,13 @@
 package net.eagledb.server.planner;
 
-import net.eagledb.server.storage.*;
-import net.eagledb.server.storage.page.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
 import net.eagledb.server.ClientConnection;
+import net.eagledb.server.storage.Table;
+import net.eagledb.server.storage.Tuple;
+import net.eagledb.server.storage.page.BooleanPage;
+import net.eagledb.server.storage.page.Page;
+import net.eagledb.server.storage.page.TransactionPage;
 
 public class FullTableScan implements PlanItem {
 
@@ -96,17 +100,17 @@ public class FullTableScan implements PlanItem {
 			);
 	}
 
-	public void execute(ArrayList<Tuple> tuples, long transactionID) {
+	public void execute(int pageTuples, ArrayList<Tuple> tuples, long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
 
 		// run operations
 		for(pageID = 0; pageID < table.getTotalPages(); ++pageID) {
 			for(PageOperation operation : operations)
-				operation.run(this);
+				operation.run(pageTuples, this);
 
 			TransactionPage tp = table.getTransactionPage(pageID, cost);
 			BooleanPage result = (BooleanPage) buffers.get(buffers.size() - 1);
-			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
+			for(int i = 0; i < pageTuples; ++i) {
 				if(result.page[i] && rowIsVisible(transactionID, tp, i)) {
 					// handle the limit
 					if(skipped < limitOffset) {
@@ -135,7 +139,7 @@ public class FullTableScan implements PlanItem {
 		// run operations
 		for(pageID = 0; pageID < table.getTotalPages(); ++pageID) {
 			for(PageOperation operation : operations)
-				operation.run(this);
+				operation.run(Page.TUPLES_PER_PAGE, this);
 
 			TransactionPage tp = table.getTransactionPage(pageID, cost);
 			BooleanPage result = (BooleanPage) buffers.get(buffers.size() - 1);

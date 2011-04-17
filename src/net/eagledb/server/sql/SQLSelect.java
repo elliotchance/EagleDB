@@ -23,6 +23,7 @@ import net.eagledb.server.storage.Index;
 import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
 import net.eagledb.server.storage.TemporaryTable;
+import net.eagledb.server.storage.page.Page;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.statement.select.OrderByElement;
@@ -55,6 +56,9 @@ public class SQLSelect extends SQLAction {
 		if(schema == null)
 			throw new SQLException("No such schema " + schema.getName());
 
+		// create the executation plan
+		Plan p = new Plan();
+
 		// see if the table exists
 		PlainSelect select = (PlainSelect) sql.getSelectBody();
 		Table table = null;
@@ -74,6 +78,7 @@ public class SQLSelect extends SQLAction {
 		else {
 			// using the dual table
 			table = Server.dualTable;
+			p.pageTuples = 1;
 		}
 
 		// parse expression operations
@@ -124,9 +129,6 @@ public class SQLSelect extends SQLAction {
 				++i;
 			}
 
-			// create the executation plan
-			Plan p = new Plan();
-
 			// find limits
 			int limitOffset = 0, limit = Integer.MAX_VALUE;
 			if(select.getLimit() != null) {
@@ -143,8 +145,9 @@ public class SQLSelect extends SQLAction {
 					ex.buffers, limitOffset, limit));
 			}
 			else {
-				p.addPlanItem(new FullTableScan(conn, table, totalAttributes, whereClause.toString(), op, ex.buffers,
-					limitOffset, limit));
+				FullTableScan fts = new FullTableScan(conn, table, totalAttributes, whereClause.toString(), op,
+					ex.buffers, limitOffset, limit);
+				p.addPlanItem(fts);
 			}
 
 			// fetch attribute projection

@@ -10,13 +10,13 @@ import net.eagledb.server.storage.page.VarCharPage;
 
 public class FetchAttributes implements PlanItem {
 
-	private Table table;
+	protected Table table;
 	
-	private int[] destinations;
+	protected int[] destinations;
 
-	private ArrayList<net.eagledb.server.planner.Expression> sources;
+	protected ArrayList<net.eagledb.server.planner.Expression> sources;
 
-	private PlanItemCost cost = new PlanItemCost();
+	protected PlanItemCost cost = new PlanItemCost();
 	
 	public FetchAttributes(Table table, ArrayList<net.eagledb.server.planner.Expression> sources, int[] destinations) {
 		this.table = table;
@@ -45,7 +45,7 @@ public class FetchAttributes implements PlanItem {
 		return line + " )";
 	}
 
-	public void execute(ArrayList<Tuple> tuples, long transactionID) {
+	public void execute(int pageTuples, ArrayList<Tuple> tuples, long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
 
 		try {
@@ -56,7 +56,7 @@ public class FetchAttributes implements PlanItem {
 					source.buffers, 0, tuples.size());
 
 				for(PageOperation operation : ops)
-					operation.run(fts);
+					operation.run(pageTuples, fts);
 
 				Page basePage = source.buffers.get(source.buffers.size() - 1);
 				if(basePage instanceof IntPage) {

@@ -6,7 +6,7 @@ public abstract class PageOperation {
 
 	public PageAction action;
 
-	public abstract void run(FullTableScan fts);
+	public abstract void run(int tuples, FullTableScan fts);
 
 	@Override
 	public abstract String toString();

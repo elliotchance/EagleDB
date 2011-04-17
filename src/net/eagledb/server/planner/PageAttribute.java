@@ -15,7 +15,7 @@ public class PageAttribute extends PageOperation {
 		this.source = source;
 	}
 
-	public void run(FullTableScan fts) {
+	public void run(int tuples, FullTableScan fts) {
 		Page pageDest = null;
 		if(destination >= Expression.MAXIMUM_BUFFERS)
 			pageDest = fts.table.getPage(destination - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
@@ -30,12 +30,12 @@ public class PageAttribute extends PageOperation {
 
 		if(pageSource instanceof DoublePage) {
 			DoublePage page = (DoublePage) pageSource;
-			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			for(int i = 0; i < tuples; ++i)
 				pageDest.addTuple(page.page[i]);
 		}
 		else if(pageSource instanceof IntPage) {
 			IntPage page = (IntPage) pageSource;
-			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			for(int i = 0; i < tuples; ++i)
 				pageDest.addTuple(page.page[i]);
 		}
 	}

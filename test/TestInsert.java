@@ -29,18 +29,18 @@ public class TestInsert {
 
     @Test
     public void insert() throws Exception {
-	Statement st = TestSuiteEmbeddedDatabase.connection.createStatement();
+		Statement st = TestSuiteEmbeddedDatabase.connection.createStatement();
 
-	// insert a bunch of records
-	long start = Calendar.getInstance().getTimeInMillis();
-	int tuples = 1500;
-	for (int i = 0; i < tuples; ++i)
-	    TestSuiteEmbeddedDatabase.executeUpdate("insert into mytable (id, number) values (" + i + ", "
-		+ Math.sqrt(i) + ")");
-	long time = Calendar.getInstance().getTimeInMillis() - start;
-	//System.out.println("INSERT: " + (int) (tuples / (time / 1000.0)) + " per second");
+		// insert a bunch of records
+		long start = Calendar.getInstance().getTimeInMillis();
+		int tuples = 10;
+		for (int i = 0; i < tuples; ++i)
+			TestSuiteEmbeddedDatabase.executeUpdate("insert into mytable (id, number) values (" + i + ", "
+			+ Math.sqrt(i) + ")");
+		long time = Calendar.getInstance().getTimeInMillis() - start;
+		//System.out.println("INSERT: " + (int) (tuples / (time / 1000.0)) + " per second");
 
-	st.close();
+		st.close();
     }
     
 }

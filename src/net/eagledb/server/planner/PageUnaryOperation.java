@@ -22,7 +22,7 @@ public class PageUnaryOperation extends PageOperation {
 		return "PageUnaryOperation ( #" + buffer1 + " " + action + " ) => " + bufferDestination;
 	}
 
-	public void run(FullTableScan fts) {
+	public void run(int tuples, FullTableScan fts) {
 		Page lhs = null;
 
 		if(buffer1 >= Expression.MAXIMUM_BUFFERS)

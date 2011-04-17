@@ -1,7 +1,6 @@
 package net.eagledb.server.planner;
 
 import java.util.ArrayList;
-import net.eagledb.server.storage.Attribute;
 import net.eagledb.server.storage.Index;
 import net.eagledb.server.storage.Table;
 import net.eagledb.server.storage.Tuple;
@@ -30,7 +29,7 @@ public class IndexLookup implements PlanItem {
 		return "IndexLookup ( " + index.getDefinition() + " )";
 	}
 
-	public void execute(ArrayList<Tuple> tuples, long transactionID) {
+	public void execute(int pageTuples, ArrayList<Tuple> tuples, long transactionID) {
 		// perform the lookup
 		ArrayList<Integer> tupleIDs = index.page.lookup(op, Integer.valueOf(value.toString()));
 

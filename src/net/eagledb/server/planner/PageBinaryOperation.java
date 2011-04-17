@@ -26,7 +26,7 @@ public class PageBinaryOperation extends PageOperation {
 		return "PageBinaryOperation ( #" + buffer1 + " " + action + " #" + buffer2 + " ) => " + bufferDestination;
 	}
 
-	public void run(FullTableScan fts) {
+	public void run(int tuples, FullTableScan fts) {
 		Page lhs = null, rhs = null;
 
 		if(buffer1 >= Expression.MAXIMUM_BUFFERS)
@@ -43,9 +43,6 @@ public class PageBinaryOperation extends PageOperation {
 			operation.invoke(null, fts.buffers.get(bufferDestination), lhs, rhs);
 		}
 		catch(IllegalArgumentException e) {
-			System.out.println(">>> operation = " + operation);
-			System.out.println(">>> operation.invoke(null, " + fts.buffers.get(bufferDestination) + ", " + lhs + ", " +
-				rhs + ")");
 			e.printStackTrace();
 		}
 		catch(InvocationTargetException e) {

@@ -1,7 +1,9 @@
 package net.eagledb.server.planner;
 
-import java.util.*;
-import net.eagledb.server.storage.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import net.eagledb.server.storage.Tuple;
+import net.eagledb.server.storage.page.Page;
 
 public class Plan {
 
@@ -12,6 +14,8 @@ public class Plan {
 	protected PlanStatistics statistics = null;
 
 	protected boolean hasExecuted = false;
+
+	public int pageTuples = Page.TUPLES_PER_PAGE;
 
 	public Plan() {
 		plan = new ArrayList<PlanItem>();
@@ -88,7 +92,7 @@ public class Plan {
 		long start = Calendar.getInstance().getTimeInMillis();
 		tuples = new ArrayList<Tuple>();
 		for(PlanItem p : plan)
-			p.execute(tuples, transactionID);
+			p.execute(pageTuples, tuples, transactionID);
 
 		statistics.executionTimeMillis = Calendar.getInstance().getTimeInMillis() - start;
 		hasExecuted = true;

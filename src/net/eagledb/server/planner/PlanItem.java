@@ -1,14 +1,14 @@
 package net.eagledb.server.planner;
 
-import java.util.*;
-import net.eagledb.server.storage.*;
+import java.util.ArrayList;
+import net.eagledb.server.storage.Tuple;
 
 public interface PlanItem {
 
 	@Override
 	public String toString();
 
-	public void execute(ArrayList<Tuple> tuples, long transactionID);
+	public void execute(int pageTuples, ArrayList<Tuple> tuples, long transactionID);
 
 	public void executeDelete(long transactionID);
 

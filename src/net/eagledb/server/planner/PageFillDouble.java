@@ -13,14 +13,14 @@ public class PageFillDouble extends PageOperation {
 		this.value = value;
 	}
 
-	public void run(FullTableScan fts) {
+	public void run(int tuples, FullTableScan fts) {
 		Page page = null;
 		if(destination >= Expression.MAXIMUM_BUFFERS)
 			page = fts.table.getPage(destination - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
 		else
 			page = fts.buffers.get(destination);
 		
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+		for(int i = 0; i < tuples; ++i)
 			page.addTuple(value);
 	}
 
