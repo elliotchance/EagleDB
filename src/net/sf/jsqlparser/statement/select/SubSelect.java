@@ -31,7 +31,7 @@ import net.sf.jsqlparser.expression.operators.relational.ItemsListVisitor;
 /**
  * A subselect followed by an optional alias.
  */
-public class SubSelect implements FromItem, Expression, ItemsList {
+public class SubSelect extends Expression implements FromItem, ItemsList {
 	private SelectBody selectBody;
 	private String alias;
 

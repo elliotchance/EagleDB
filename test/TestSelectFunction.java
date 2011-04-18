@@ -169,15 +169,19 @@ public class TestSelectFunction {
 	}
 
 	@Test
-	public void selectFunctionXMLRoot() throws Exception {
-		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>')", 1);
-		assertEquals("<?xml version=\"1.0\"?>\n<abc/>", set[0][0]);
-		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1')", 1);
-		assertEquals("<?xml version=\"1.1\"?>\n<abc/>", set[0][0]);
-		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1', standalone yes)", 1);
-		assertEquals("<?xml version=\"1.1\" standalone=\"yes\"?>\n<abc/>", set[0][0]);
-		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1', standalone no)", 1);
-		assertEquals("<?xml version=\"1.1\" standalone=\"no\"?>\n<abc/>", set[0][0]);
+	public void selectFunctionPosition() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT position('om' in 'Thomas')", 1);
+		assertEquals(3, (int) Integer.valueOf(set[0][0]));
+	}
+
+	@Test
+	public void selectFunctionSubstring() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT substring('Thomas' from 2)", 1);
+		assertEquals("homas", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT substring('Thomas' for 5)", 1);
+		assertEquals("Thoma", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT substring('Thomas' from 2 for 3)", 1);
+		assertEquals("hom", set[0][0]);
 	}
 
 	@Test
@@ -195,9 +199,15 @@ public class TestSelectFunction {
 	}
 
 	@Test
-	public void selectFunctionPosition() throws Exception {
-		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT position('om' in 'Thomas')", 1);
-		assertEquals(3, (int) Integer.valueOf(set[0][0]));
+	public void selectFunctionXMLRoot() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>')", 1);
+		assertEquals("<?xml version=\"1.0\"?>\n<abc/>", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1')", 1);
+		assertEquals("<?xml version=\"1.1\"?>\n<abc/>", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1', standalone yes)", 1);
+		assertEquals("<?xml version=\"1.1\" standalone=\"yes\"?>\n<abc/>", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1', standalone no)", 1);
+		assertEquals("<?xml version=\"1.1\" standalone=\"no\"?>\n<abc/>", set[0][0]);
 	}
 	
 }

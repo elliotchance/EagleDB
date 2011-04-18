@@ -26,7 +26,8 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.ExpressionVisitor;
 
 
-public class ExistsExpression implements Expression {
+public class ExistsExpression extends Expression {
+	
 	private Expression rightExpression;
 	private boolean not = false;
 

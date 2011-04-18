@@ -29,7 +29,8 @@ import net.sf.jsqlparser.expression.ExpressionVisitor;
 /**
  * A "BETWEEN" expr1 expr2 statement
  */
-public class Between implements Expression {
+public class Between extends Expression {
+	
 	private Expression leftExpression;
 	private boolean not = false;
 	private Expression betweenExpressionStart;

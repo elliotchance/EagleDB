@@ -57,7 +57,7 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
  *  
  * @author Havard Rast Blok
  */
-public class CaseExpression implements Expression {
+public class CaseExpression extends Expression {
 
 	private Expression switchExpression;
 	

@@ -23,6 +23,10 @@
  package net.sf.jsqlparser.expression;
 
 
-public interface Expression {
-	public void accept(ExpressionVisitor expressionVisitor);
+public abstract class Expression {
+	
+	public String key = null;
+
+	public abstract void accept(ExpressionVisitor expressionVisitor);
+
 }

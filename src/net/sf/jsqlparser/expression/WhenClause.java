@@ -29,7 +29,7 @@ package net.sf.jsqlparser.expression;
  * 
  * @author Havard Rast Blok
  */
-public class WhenClause implements Expression {
+public class WhenClause extends Expression {
 
 	private Expression whenExpression;
 	private Expression thenExpression;

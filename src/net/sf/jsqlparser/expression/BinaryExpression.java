@@ -27,7 +27,8 @@ package net.sf.jsqlparser.expression;
  * A basic class for binary expressions, that is expressions having a left member and a right member
  * wich are in turn expressions. 
  */
-public abstract class BinaryExpression implements Expression {
+public abstract class BinaryExpression extends Expression {
+	
 	private Expression leftExpression;
 	private Expression rightExpression;
 	private boolean not = false;

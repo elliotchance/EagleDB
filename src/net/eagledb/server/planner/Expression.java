@@ -200,6 +200,11 @@ public class Expression {
 			Class[] argTypes = new Class[exprs.size()];
 			for(int i = 0; i < exprs.size(); ++i) {
 				net.sf.jsqlparser.expression.Expression arg = (net.sf.jsqlparser.expression.Expression) exprs.get(i);
+
+				// fill in keys
+				if(arg.key == null)
+					arg.key = String.valueOf(i);
+				
 				arguments[i] = subparse(arg, false, false);
 				argTypes[i] = buffers.get(arguments[i]).getClass();
 			}

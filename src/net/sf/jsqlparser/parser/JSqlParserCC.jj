@@ -237,6 +237,8 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_YES:"YES">
 |   <K_NO:"NO">
 |   <K_POSITION:"POSITION">
+|   <K_SUBSTRING:"SUBSTRING">
+|   <K_FOR:"FOR">
 }
 
 
@@ -1616,7 +1618,40 @@ Function FunctionPosition():
     "("
     exp=Expression() { expressions.add(exp); }
     <K_IN>
+    exp=Expression() { exp.key = "in"; expressions.add(exp); }
+    ")"
+    {
+	ExpressionList tmp = new ExpressionList();
+	tmp.setExpressions(expressions);
+	retval.setParameters(tmp);
+	retval.setName(funcName);
+	return retval;
+    }
+}
+
+
+Function FunctionSubstring():
+{
+    Function retval = new Function();
+    String funcName = null;
+    Expression exp = null;
+    List expressions = new ArrayList();
+    String strTemp = null;
+}
+{
+    <K_SUBSTRING> { funcName = "SUBSTRING"; }
+    "("
     exp=Expression() { expressions.add(exp); }
+    [ <K_FROM> exp=Expression() {
+	funcName += "_FROM";
+	exp.key = "from";
+	expressions.add(exp);
+    } ]
+    [ <K_FOR> exp=Expression() {
+	funcName += "_FOR";
+	exp.key = "for";
+	expressions.add(exp);
+    } ]
     ")"
     {
 	ExpressionList tmp = new ExpressionList();
@@ -1641,11 +1676,11 @@ Function FunctionXMLRoot():
     "("
     exp=Expression() { expressions.add(exp); }
     [
-	"," <K_VERSION> exp=Expression() { expressions.add(exp); }
+	"," <K_VERSION> exp=Expression() { exp.key = "version"; expressions.add(exp); }
 	[ "," <K_STANDALONE> (
-	    <K_YES> { expressions.add(new StringValue("'yes'")); }
+	    <K_YES> { exp = new StringValue("'yes'"); exp.key = "standalone"; expressions.add(exp); }
 	    |
-	    <K_NO> { expressions.add(new StringValue("'no'")); }
+	    <K_NO> { exp = new StringValue("'no'"); exp.key = "standalone"; expressions.add(exp); }
 	) ]
     ]
     ")"
@@ -1690,6 +1725,8 @@ Function Function():
 {
     (
 	retval=FunctionPosition()
+	|
+	retval=FunctionSubstring()
 	|
 	retval=FunctionXMLRoot()
 	|

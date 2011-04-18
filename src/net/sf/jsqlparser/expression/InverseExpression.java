@@ -25,7 +25,8 @@ package net.sf.jsqlparser.expression;
 /**
  * It represents a "-" before an expression 
  */
-public class InverseExpression implements Expression {
+public class InverseExpression extends Expression {
+	
 	private Expression expression;
 	
 	public InverseExpression() {

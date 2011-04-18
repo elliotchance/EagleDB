@@ -25,7 +25,8 @@ package net.sf.jsqlparser.expression;
 /**
  * A string as in 'example_string'
  */
-public class StringValue implements Expression {
+public class StringValue extends Expression {
+
 	private String value = "";
 	
 	public StringValue(String escapedValue) {

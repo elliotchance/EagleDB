@@ -67,6 +67,9 @@ public class Functions {
 			getFunction("radians", DoublePage.class, DoublePage.class),
 			getFunction("sin", DoublePage.class, DoublePage.class),
 			getFunction("sin", DoublePage.class, IntPage.class),
+			getFunction("substring_from", VarCharPage.class, new Class[] { VarCharPage.class, IntPage.class }),
+			getFunction("substring_for", VarCharPage.class, new Class[] { VarCharPage.class, IntPage.class }),
+			getFunction("substring_from_for", VarCharPage.class, new Class[] { VarCharPage.class, IntPage.class, IntPage.class }),
 			getFunction("tan", DoublePage.class, DoublePage.class),
 			getFunction("tan", DoublePage.class, IntPage.class),
 			getFunction("xmlcomment", VarCharPage.class, VarCharPage.class),
@@ -330,7 +333,6 @@ public class Functions {
 		VarCharPage dest = (VarCharPage) args[1];
 
 		for(int i = 0; i < tuples; ++i) {
-			System.out.println("!!!!");
 			try {
 				// prepare
 				if(docBuilder == null)
@@ -395,6 +397,22 @@ public class Functions {
 	public static void position(int tuples, IntPage destination, VarCharPage substring, VarCharPage string) {
 		for(int i = 0; i < tuples; ++i)
 			destination.page[i] = string.page[i].indexOf(substring.page[i]) + 1;
+	}
+
+	public static void substring_from(int tuples, VarCharPage destination, VarCharPage string, IntPage from) {
+		for(int i = 0; i < tuples; ++i)
+			destination.page[i] = string.page[i].substring(from.page[i] - 1);
+	}
+
+	public static void substring_for(int tuples, VarCharPage destination, VarCharPage string, IntPage to) {
+		for(int i = 0; i < tuples; ++i)
+			destination.page[i] = string.page[i].substring(0, to.page[i]);
+	}
+
+	public static void substring_from_for(int tuples, VarCharPage destination, VarCharPage string, IntPage from,
+		IntPage to) {
+		for(int i = 0; i < tuples; ++i)
+			destination.page[i] = string.page[i].substring(from.page[i] - 1, to.page[i] + 1);
 	}
 
 }

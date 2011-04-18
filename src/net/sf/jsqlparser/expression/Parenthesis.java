@@ -25,7 +25,8 @@ package net.sf.jsqlparser.expression;
 /**
  * It represents an expression like "(" expression ")"
  */
-public class Parenthesis implements Expression {
+public class Parenthesis extends Expression {
+	
 	private Expression expression;
 	private boolean not = false;
 

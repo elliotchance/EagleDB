@@ -28,7 +28,8 @@ import java.text.SimpleDateFormat;
 /**
  * A Date in the form {d 'yyyy-mm-dd'}
  */
-public class DateValue implements Expression {
+public class DateValue extends Expression {
+	
 	private Date value;
 
 	public DateValue(String value) {

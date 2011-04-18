@@ -27,7 +27,7 @@ import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 /**
  * A function as MAX,COUNT...
  */
-public class Function implements Expression {
+public class Function extends Expression {
 
 	private String name;
 	private ExpressionList parameters;

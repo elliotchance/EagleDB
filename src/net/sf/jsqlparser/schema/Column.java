@@ -33,7 +33,8 @@ import net.sf.jsqlparser.statement.select.SelectItemVisitor;
 /**
  * A column. It can have the table name it belongs to. 
  */
-public class Column implements Expression, ColumnReference {
+public class Column extends Expression implements ColumnReference {
+	
 	private String columnName = "";
 	private Table table;
 	

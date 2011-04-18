@@ -28,7 +28,8 @@ import java.sql.Timestamp;
 /**
  * A Timestamp in the form {ts 'yyyy-mm-dd hh:mm:ss.f . . .'}
  */
-public class TimestampValue implements Expression {
+public class TimestampValue extends Expression {
+	
 	private Timestamp value;
 
 	public TimestampValue(String value) {

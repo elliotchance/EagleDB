@@ -26,7 +26,8 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.ExpressionVisitor;
 
 
-public class IsNullExpression implements Expression {
+public class IsNullExpression extends Expression {
+	
 	private Expression leftExpression;
 	private boolean not = false;
 

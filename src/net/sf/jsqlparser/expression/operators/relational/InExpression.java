@@ -29,7 +29,7 @@ import net.sf.jsqlparser.expression.ExpressionVisitor;
 
 
 
-public class InExpression implements Expression {
+public class InExpression extends Expression {
 	private Expression leftExpression;
 	private ItemsList itemsList; 
 	private boolean not = false;

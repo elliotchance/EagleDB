@@ -2,7 +2,8 @@ package net.sf.jsqlparser.expression;
 
 import net.sf.jsqlparser.statement.select.SubSelect;
 
-public class AnyComparisonExpression implements Expression {
+public class AnyComparisonExpression extends Expression {
+	
 	private SubSelect subSelect;
 	
 	public AnyComparisonExpression(SubSelect subSelect) {

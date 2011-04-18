@@ -25,8 +25,10 @@ package net.sf.jsqlparser.expression;
 /**
  * Every number with a point or a exponential format is a DoubleValue
  */
-public class DoubleValue implements Expression {
+public class DoubleValue extends Expression {
+
 	private double value;
+	
 	private String stringValue;
 
 	public DoubleValue(String value) {

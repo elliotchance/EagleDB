@@ -25,12 +25,15 @@ package net.sf.jsqlparser.expression;
 /**
  * A '?' in a statement
  */
-public class JdbcParameter implements Expression {
+public class JdbcParameter extends Expression {
+
 	public void accept(ExpressionVisitor expressionVisitor) {
 		expressionVisitor.visit(this);
 	}
 
+	@Override
 	public String toString() {
 		return "?";
 	}
+
 }
