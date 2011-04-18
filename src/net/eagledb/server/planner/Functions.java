@@ -73,6 +73,9 @@ public class Functions {
 			getFunction("substring_from_for", VarCharPage.class, new Class[] { VarCharPage.class, IntPage.class, IntPage.class }),
 			getFunction("tan", DoublePage.class, DoublePage.class),
 			getFunction("tan", DoublePage.class, IntPage.class),
+			getFunction("trim", VarCharPage.class, new Class[] { VarCharPage.class, VarCharPage.class }),
+			getFunction("trim_leading", VarCharPage.class, new Class[] { VarCharPage.class, VarCharPage.class }),
+			getFunction("trim_trailing", VarCharPage.class, new Class[] { VarCharPage.class, VarCharPage.class }),
 			getFunction("upper", VarCharPage.class, VarCharPage.class),
 			getFunction("xmlcomment", VarCharPage.class, VarCharPage.class),
 			getVarArgsFunction("xmlconcat", VarCharPage.class),
@@ -425,6 +428,53 @@ public class Functions {
 	public static void lower(int tuples, VarCharPage destination, VarCharPage arg) {
 		for(int i = 0; i < tuples; ++i)
 			destination.page[i] = arg.page[i].toLowerCase();
+	}
+
+	public static void trim(int tuples, VarCharPage destination, VarCharPage string, VarCharPage characters) {
+		for(int i = 0; i < tuples; ++i) {
+			if(characters.page[i].length() == 0) {
+				destination.page[i] = string.page[i].trim();
+				continue;
+			}
+
+			destination.page[i] = string.page[i];
+
+			// front
+			while(destination.page[i].startsWith(characters.page[i]))
+				destination.page[i] = destination.page[i].substring(characters.page[i].length());
+
+			// end
+			while(destination.page[i].endsWith(characters.page[i]))
+				destination.page[i] = destination.page[i].substring(0,
+					destination.page[i].length() - characters.page[i].length());
+		}
+	}
+
+	public static void trim_leading(int tuples, VarCharPage destination, VarCharPage string, VarCharPage characters) {
+		for(int i = 0; i < tuples; ++i) {
+			if(characters.page[i].length() == 0) {
+				destination.page[i] = string.page[i].replaceAll("^\\s+", "");
+				continue;
+			}
+
+			destination.page[i] = string.page[i];
+			while(destination.page[i].startsWith(characters.page[i]))
+				destination.page[i] = destination.page[i].substring(characters.page[i].length());
+		}
+	}
+
+	public static void trim_trailing(int tuples, VarCharPage destination, VarCharPage string, VarCharPage characters) {
+		for(int i = 0; i < tuples; ++i) {
+			if(characters.page[i].length() == 0) {
+				destination.page[i] = string.page[i].replaceAll("\\s+$", "");
+				continue;
+			}
+
+			destination.page[i] = string.page[i];
+			while(destination.page[i].endsWith(characters.page[i]))
+				destination.page[i] = destination.page[i].substring(0,
+					destination.page[i].length() - characters.page[i].length());
+		}
 	}
 
 }

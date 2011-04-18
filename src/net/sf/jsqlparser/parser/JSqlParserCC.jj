@@ -240,6 +240,10 @@ TOKEN: /* SQL Keywords. prefixed with K_ to avoid name clashes */
 |   <K_POSITION:"POSITION">
 |   <K_SUBSTRING:"SUBSTRING">
 |   <K_FOR:"FOR">
+|   <K_TRIM:"TRIM">
+|   <K_LEADING:"LEADING">
+|   <K_TRAILING:"TRAILING">
+|   <K_BOTH:"BOTH">
 }
 
 
@@ -1658,6 +1662,45 @@ Function FunctionPosition():
 }
 
 
+Function FunctionTrim():
+{
+    Function retval = new Function();
+    String funcName = null;
+    Expression exp1 = null, exp2 = null;
+    List expressions = new ArrayList();
+    String strTemp = null;
+    boolean found = false;
+}
+{
+    <K_TRIM> { funcName = "TRIM"; }
+    "("
+    [(
+	<K_LEADING> { funcName += "_LEADING"; }
+	| <K_TRAILING> { funcName += "_TRAILING"; }
+	| <K_BOTH>
+    )] {}
+    exp1=Expression()
+    [ <K_FROM> exp2=Expression() ] {}
+    ")"
+    {
+	if(exp2 == null) {
+	    expressions.add(exp1);
+	    expressions.add(new StringValue("''"));
+	}
+	else {
+	    expressions.add(exp2);
+	    expressions.add(exp1);
+	}
+
+	ExpressionList tmp = new ExpressionList();
+	tmp.setExpressions(expressions);
+	retval.setParameters(tmp);
+	retval.setName(funcName);
+	return retval;
+    }
+}
+
+
 Function FunctionSubstring():
 {
     Function retval = new Function();
@@ -1755,6 +1798,8 @@ Function Function():
 	retval=FunctionPosition()
 	|
 	retval=FunctionSubstring()
+	|
+	retval=FunctionTrim()
 	|
 	retval=FunctionXMLRoot()
 	|

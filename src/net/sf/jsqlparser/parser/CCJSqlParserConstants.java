@@ -200,27 +200,35 @@ public interface CCJSqlParserConstants {
   /** RegularExpression Id. */
   int K_FOR = 87;
   /** RegularExpression Id. */
-  int S_DOUBLE = 88;
+  int K_TRIM = 88;
   /** RegularExpression Id. */
-  int S_INTEGER = 89;
+  int K_LEADING = 89;
   /** RegularExpression Id. */
-  int DIGIT = 90;
+  int K_TRAILING = 90;
   /** RegularExpression Id. */
-  int LINE_COMMENT = 91;
+  int K_BOTH = 91;
   /** RegularExpression Id. */
-  int MULTI_LINE_COMMENT = 92;
+  int S_DOUBLE = 92;
   /** RegularExpression Id. */
-  int S_IDENTIFIER = 93;
+  int S_INTEGER = 93;
   /** RegularExpression Id. */
-  int LETTER = 94;
+  int DIGIT = 94;
   /** RegularExpression Id. */
-  int SPECIAL_CHARS = 95;
+  int LINE_COMMENT = 95;
   /** RegularExpression Id. */
-  int S_CHAR_LITERAL = 96;
+  int MULTI_LINE_COMMENT = 96;
   /** RegularExpression Id. */
-  int S_BARE_LITERAL = 97;
+  int S_IDENTIFIER = 97;
   /** RegularExpression Id. */
-  int S_QUOTED_IDENTIFIER = 98;
+  int LETTER = 98;
+  /** RegularExpression Id. */
+  int SPECIAL_CHARS = 99;
+  /** RegularExpression Id. */
+  int S_CHAR_LITERAL = 100;
+  /** RegularExpression Id. */
+  int S_BARE_LITERAL = 101;
+  /** RegularExpression Id. */
+  int S_QUOTED_IDENTIFIER = 102;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -315,6 +323,10 @@ public interface CCJSqlParserConstants {
     "\"POSITION\"",
     "\"SUBSTRING\"",
     "\"FOR\"",
+    "\"TRIM\"",
+    "\"LEADING\"",
+    "\"TRAILING\"",
+    "\"BOTH\"",
     "<S_DOUBLE>",
     "<S_INTEGER>",
     "<DIGIT>",

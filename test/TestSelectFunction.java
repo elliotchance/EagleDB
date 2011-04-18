@@ -221,5 +221,23 @@ public class TestSelectFunction {
 		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT upper('tom')", 1);
 		assertEquals("TOM", set[0][0]);
 	}
+
+	@Test
+	public void selectFunctionTrim() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT trim(leading 'x' from 'xxTomxx')", 1);
+		assertEquals("Tomxx", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT trim(trailing 'x' from 'xxTomxx')", 1);
+		assertEquals("xxTom", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT trim(both 'x' from 'xxTomxx')", 1);
+		assertEquals("Tom", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT trim('x' from 'xxTomxx')", 1);
+		assertEquals("Tom", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT trim(leading '  Tom\t')", 1);
+		assertEquals("Tom\t", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT trim(trailing '  Tom\t')", 1);
+		assertEquals("  Tom", set[0][0]);
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT trim('  Tom\t')", 1);
+		assertEquals("Tom", set[0][0]);
+	}
 	
 }
