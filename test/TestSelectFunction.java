@@ -209,5 +209,17 @@ public class TestSelectFunction {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select xmlroot('<abc/>', version '1.1', standalone no)", 1);
 		assertEquals("<?xml version=\"1.1\" standalone=\"no\"?>\n<abc/>", set[0][0]);
 	}
+
+	@Test
+	public void selectFunctionLower() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT lower('TOM')", 1);
+		assertEquals("tom", set[0][0]);
+	}
+
+	@Test
+	public void selectFunctionUpper() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("SELECT upper('tom')", 1);
+		assertEquals("TOM", set[0][0]);
+	}
 	
 }

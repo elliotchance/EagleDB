@@ -63,6 +63,7 @@ public class Functions {
 			getFunction("ln", DoublePage.class, IntPage.class),
 			getFunction("log", DoublePage.class, DoublePage.class),
 			getFunction("log", DoublePage.class, IntPage.class),
+			getFunction("lower", VarCharPage.class, VarCharPage.class),
 			getFunction("position", IntPage.class, new Class[] { VarCharPage.class, VarCharPage.class }),
 			getFunction("radians", DoublePage.class, DoublePage.class),
 			getFunction("sin", DoublePage.class, DoublePage.class),
@@ -72,6 +73,7 @@ public class Functions {
 			getFunction("substring_from_for", VarCharPage.class, new Class[] { VarCharPage.class, IntPage.class, IntPage.class }),
 			getFunction("tan", DoublePage.class, DoublePage.class),
 			getFunction("tan", DoublePage.class, IntPage.class),
+			getFunction("upper", VarCharPage.class, VarCharPage.class),
 			getFunction("xmlcomment", VarCharPage.class, VarCharPage.class),
 			getVarArgsFunction("xmlconcat", VarCharPage.class),
 			getFunction("xmlroot", VarCharPage.class, VarCharPage.class),
@@ -413,6 +415,16 @@ public class Functions {
 		IntPage to) {
 		for(int i = 0; i < tuples; ++i)
 			destination.page[i] = string.page[i].substring(from.page[i] - 1, to.page[i] + 1);
+	}
+
+	public static void upper(int tuples, VarCharPage destination, VarCharPage arg) {
+		for(int i = 0; i < tuples; ++i)
+			destination.page[i] = arg.page[i].toUpperCase();
+	}
+
+	public static void lower(int tuples, VarCharPage destination, VarCharPage arg) {
+		for(int i = 0; i < tuples; ++i)
+			destination.page[i] = arg.page[i].toLowerCase();
 	}
 
 }
