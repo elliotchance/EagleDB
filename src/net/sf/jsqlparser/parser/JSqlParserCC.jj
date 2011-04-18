@@ -78,6 +78,7 @@ import net.sf.jsqlparser.expression.operators.arithmetic.Addition;
 import net.sf.jsqlparser.expression.operators.arithmetic.Division;
 import net.sf.jsqlparser.expression.operators.arithmetic.Multiplication;
 import net.sf.jsqlparser.expression.operators.arithmetic.Subtraction;
+import net.sf.jsqlparser.expression.operators.arithmetic.Concatenation;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.Between;
@@ -1412,87 +1413,115 @@ Expression AnyComparisonExpression() :
 	SubSelect subselect = null; 
 }
 {
- (<K_ANY> | <K_SOME>) "(" subselect=SubSelect() ")" { retval = new AnyComparisonExpression(subselect); }
-   {
-      return retval;
-   }
+    (<K_ANY> | <K_SOME>) "(" subselect=SubSelect() ")" {
+	retval = new AnyComparisonExpression(subselect);
+    }
+    {
+	return retval;
+    }
 }
 
 Expression SimpleExpression():
 { 
-	Expression retval = null; 
+    Expression retval = null;
 }
 {
-  (
-		LOOKAHEAD(AdditiveExpression())
-		retval=AdditiveExpression() 
-		|
-		"(" retval=AdditiveExpression() ")" {retval = new Parenthesis(retval); }
-  
-  )
-
-   {
-      return retval;
-   }
+    (
+	LOOKAHEAD(AdditiveExpression())
+	retval=AdditiveExpression()
+	|
+	"(" retval=AdditiveExpression() ")" { retval = new Parenthesis(retval); }
+    )
+    {
+	return retval;
+    }
 }
 
 Expression AdditiveExpression():
 {
-	Expression result = null;
-	Expression leftExpression = null;
-	Expression rightExpression = null;
+    Expression result = null;
+    Expression leftExpression = null;
+    Expression rightExpression = null;
 }
 {
-    leftExpression=MultiplicativeExpression()  { result = leftExpression; }
+    leftExpression=MultiplicativeExpression() { result = leftExpression; }
     (
-    	LOOKAHEAD(2) ("+" { result = new Addition(); }
-    								| "-" { result = new Subtraction(); } ) 
-    								
-    						rightExpression=MultiplicativeExpression()
-    						
-		{
-			BinaryExpression binExp = (BinaryExpression) result;
-			binExp.setLeftExpression(leftExpression);
-			binExp.setRightExpression(rightExpression);
-			leftExpression = result; 
-		}								
+    	LOOKAHEAD(2) (
+	    "+" { result = new Addition(); }
+	    |
+	    "-" { result = new Subtraction(); }
+	)
+	rightExpression=MultiplicativeExpression()
+	{
+	    BinaryExpression binExp = (BinaryExpression) result;
+	    binExp.setLeftExpression(leftExpression);
+	    binExp.setRightExpression(rightExpression);
+	    leftExpression = result;
+	}
     )*
-    
     { return result; }
 }
 
 
 Expression MultiplicativeExpression():
 {
-	Expression result = null;
-	Expression leftExpression = null;
-	Expression rightExpression = null;
+    Expression result = null;
+    Expression leftExpression = null;
+    Expression rightExpression = null;
 }
 {
-	(
-	LOOKAHEAD(PrimaryExpression())
-	    leftExpression=PrimaryExpression()
-	    |
-	    "(" leftExpression=AdditiveExpression() ")" {leftExpression = new Parenthesis(leftExpression); }
-	)
-      { result = leftExpression; }
+    leftExpression=ConcatExpression()
+    { result = leftExpression; }
     (
-    	LOOKAHEAD(2) ("*" { result = new Multiplication(); }
-    								| "/" { result = new Division(); } ) 
-    								
-				(
-				LOOKAHEAD(PrimaryExpression())
-    						rightExpression=PrimaryExpression()
-						    |
-						    "(" rightExpression=AdditiveExpression() ")" {rightExpression = new Parenthesis(rightExpression); }
-				)
-    						
-		{
-			BinaryExpression binExp = (BinaryExpression) result;
-			binExp.setLeftExpression(leftExpression);
-			binExp.setRightExpression(rightExpression);
-			leftExpression = result; 
-		}								
+	LOOKAHEAD(2) (
+	    "*" { result = new Multiplication(); }
+	    |
+	    "/" { result = new Division(); }
+	)
+	rightExpression=ConcatExpression()
+	{
+	    BinaryExpression binExp = (BinaryExpression) result;
+	    binExp.setLeftExpression(leftExpression);
+	    binExp.setRightExpression(rightExpression);
+	    leftExpression = result;
+	}
+    )*
+    { return result; }
+}
+
+
+Expression ConcatExpression():
+{
+    Expression result = null;
+    Expression leftExpression = null;
+    Expression rightExpression = null;
+}
+{
+    (
+	LOOKAHEAD(PrimaryExpression())
+	leftExpression=PrimaryExpression()
+	|
+	"(" leftExpression=AdditiveExpression() ")" {
+	    leftExpression = new Parenthesis(leftExpression);
+	}
+    )
+    { result = leftExpression; }
+    (
+	"||" { result = new Concatenation(); }
+	(
+	    LOOKAHEAD(PrimaryExpression())
+	    rightExpression=PrimaryExpression()
+	    |
+	    "(" rightExpression=AdditiveExpression() ")" {
+		rightExpression = new Parenthesis(rightExpression);
+	    }
+	)
+	{
+	    BinaryExpression binExp = (BinaryExpression) result;
+	    binExp.setLeftExpression(leftExpression);
+	    binExp.setRightExpression(rightExpression);
+	    leftExpression = result;
+	}
     )*
     { return result; }
 }
@@ -1506,7 +1535,6 @@ Expression PrimaryExpression():
 	String tmp = "";
 }
 {
-
 (
 
 	<K_NULL> { retval = new NullValue(); }

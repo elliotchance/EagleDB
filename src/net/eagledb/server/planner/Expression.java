@@ -126,7 +126,7 @@ public class Expression {
 			return dest;
 		}
 
-		// + - * / < > <= >= = != <>
+		// + - * / < > <= >= = != <> ||
 		if(ex instanceof BinaryExpression) {
 			BinaryExpression current = (BinaryExpression) ex;
 

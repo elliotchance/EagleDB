@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import net.eagledb.server.storage.page.BooleanPage;
 import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
+import net.eagledb.server.storage.page.VarCharPage;
 
 public class Operator {
 
@@ -74,6 +75,8 @@ public class Operator {
 				getPageMethod("operatorDivide", IntPage.class, PageAction.DIVIDE, DoublePage.class, DoublePage.class),
 				getPageMethod("operatorDivide", DoublePage.class, PageAction.DIVIDE, IntPage.class, DoublePage.class),
 				getPageMethod("operatorDivide", DoublePage.class, PageAction.DIVIDE, DoublePage.class, DoublePage.class),
+
+				getPageMethod("operatorConcat", VarCharPage.class, PageAction.CONCAT, VarCharPage.class, VarCharPage.class),
 			};
 		}
 		catch(NoSuchMethodException e) {

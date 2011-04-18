@@ -197,5 +197,11 @@ public class TestOperators {
 		set = TestSuiteEmbeddedDatabase.executeQuery("select 3.0<=3.0", 1);
 		assertEquals("true", set[0][0]);
 	}
+
+	@Test
+	public void operatorConcat() throws Exception {
+		set = TestSuiteEmbeddedDatabase.executeQuery("select 'hello ' || 'world'", 1);
+		assertEquals("hello world", set[0][0]);
+	}
 	
 }

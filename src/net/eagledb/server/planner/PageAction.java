@@ -78,6 +78,13 @@ public enum PageAction {
 		public String toString() {
 			return "::";
 		}
+	},
+
+	CONCAT {
+		@Override
+		public String toString() {
+			return "||";
+		}
 	}
 
 }

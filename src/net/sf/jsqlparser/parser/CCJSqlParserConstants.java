@@ -343,6 +343,7 @@ public interface CCJSqlParserConstants {
     "\"+\"",
     "\"-\"",
     "\"/\"",
+    "\"||\"",
     "\"{d\"",
     "\"}\"",
     "\"{t\"",

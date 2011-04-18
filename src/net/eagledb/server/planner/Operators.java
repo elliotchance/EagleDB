@@ -4,6 +4,7 @@ import net.eagledb.server.storage.page.BooleanPage;
 import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
 import net.eagledb.server.storage.page.Page;
+import net.eagledb.server.storage.page.VarCharPage;
 
 public class Operators {
 
@@ -235,6 +236,13 @@ public class Operators {
 	public static void operatorCast(BooleanPage destination, DoublePage page) {
 		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
 			destination.page[i] = (page.page[i] != 0.0);
+	}
+
+	// ---
+
+	public static void operatorConcat(VarCharPage destination, VarCharPage page1, VarCharPage page2) {
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+			destination.page[i] = page1.page[i] + page2.page[i];
 	}
 
 }

@@ -46,6 +46,7 @@ import net.sf.jsqlparser.expression.operators.arithmetic.Addition;
 import net.sf.jsqlparser.expression.operators.arithmetic.Division;
 import net.sf.jsqlparser.expression.operators.arithmetic.Multiplication;
 import net.sf.jsqlparser.expression.operators.arithmetic.Subtraction;
+import net.sf.jsqlparser.expression.operators.arithmetic.Concatenation;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.Between;
@@ -345,9 +346,11 @@ private int jjMoveStringLiteralDfa0_0()
       case 121:
          return jjMoveStringLiteralDfa1_0(0x0L, 0x80000L);
       case 123:
-         return jjMoveStringLiteralDfa1_0(0x0L, 0xd0000000000000L);
+         return jjMoveStringLiteralDfa1_0(0x0L, 0x1a0000000000000L);
+      case 124:
+         return jjMoveStringLiteralDfa1_0(0x0L, 0x10000000000000L);
       case 125:
-         return jjStopAtPos(0, 117);
+         return jjStopAtPos(0, 118);
       default :
          return jjMoveNfa_0(7, 0);
    }
@@ -378,8 +381,8 @@ private int jjMoveStringLiteralDfa1_0(long active0, long active1)
          return jjMoveStringLiteralDfa2_0(active0, 0x2480004080000000L, active1, 0x50L);
       case 68:
       case 100:
-         if ((active1 & 0x10000000000000L) != 0L)
-            return jjStopAtPos(1, 116);
+         if ((active1 & 0x20000000000000L) != 0L)
+            return jjStopAtPos(1, 117);
          break;
       case 69:
       case 101:
@@ -444,12 +447,12 @@ private int jjMoveStringLiteralDfa1_0(long active0, long active1)
          return jjMoveStringLiteralDfa2_0(active0, 0x800010000080000L, active1, 0L);
       case 84:
       case 116:
-         if ((active1 & 0x40000000000000L) != 0L)
+         if ((active1 & 0x80000000000000L) != 0L)
          {
-            jjmatchedKind = 118;
+            jjmatchedKind = 119;
             jjmatchedPos = 1;
          }
-         return jjMoveStringLiteralDfa2_0(active0, 0L, active1, 0x80000000040000L);
+         return jjMoveStringLiteralDfa2_0(active0, 0L, active1, 0x100000000040000L);
       case 85:
       case 117:
          return jjMoveStringLiteralDfa2_0(active0, 0x801001000000L, active1, 0x400000L);
@@ -460,6 +463,10 @@ private int jjMoveStringLiteralDfa1_0(long active0, long active1)
       case 121:
          if ((active0 & 0x40L) != 0L)
             return jjStartNfaWithStates_0(1, 6, 37);
+         break;
+      case 124:
+         if ((active1 & 0x10000000000000L) != 0L)
+            return jjStopAtPos(1, 116);
          break;
       default :
          break;
@@ -538,8 +545,8 @@ private int jjMoveStringLiteralDfa2_0(long old0, long active0, long old1, long a
       case 115:
          if ((active1 & 0x80000L) != 0L)
             return jjStartNfaWithStates_0(2, 83, 37);
-         else if ((active1 & 0x80000000000000L) != 0L)
-            return jjStopAtPos(2, 119);
+         else if ((active1 & 0x100000000000000L) != 0L)
+            return jjStopAtPos(2, 120);
          return jjMoveStringLiteralDfa3_0(active0, 0x100000480400000L, active1, 0x200802L);
       case 84:
       case 116:
@@ -1445,14 +1452,15 @@ null, null, null, null, null, null, null, null, null, null, null, null, null, nu
 null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
 null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
 null, null, "\73", "\50", "\54", "\51", "\75", "\56", "\52", "\77", "\76", "\74", 
-"\76\75", "\74\75", "\74\76", "\41\75", "\53", "\55", "\57", null, "\175", null, null, };
+"\76\75", "\74\75", "\74\76", "\41\75", "\53", "\55", "\57", "\174\174", null, "\175", 
+null, null, };
 
 /** Lexer state names. */
 public static final String[] lexStateNames = {
    "DEFAULT",
 };
 static final long[] jjtoToken = {
-   0xffffffffffffffe1L, 0xffffff23ffffffL, 
+   0xffffffffffffffe1L, 0x1ffffff23ffffffL, 
 };
 static final long[] jjtoSkip = {
    0x1eL, 0x18000000L, 
