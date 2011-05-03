@@ -42,6 +42,7 @@ import org.junit.runners.Suite;
 
 	// transactions
 	TestTransaction.class,
+	TestBlock.class,
 
 	// INDEX
 	TestIndex.class,

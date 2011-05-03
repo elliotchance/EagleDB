@@ -24,7 +24,7 @@ package net.sf.jsqlparser.statement;
 
 
 /**
- * An operation on the db (SELECT, UPDATE ecc.) 
+ * An operation on the db (SELECT, UPDATE etc.)
  */
 public interface Statement {
 	public void accept(StatementVisitor statementVisitor);

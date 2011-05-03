@@ -134,6 +134,7 @@ import net.sf.jsqlparser.statement.disconnect.Disconnect;
 import net.sf.jsqlparser.statement.transaction.Transaction;
 import net.sf.jsqlparser.statement.transaction.TransactionCommand;
 import net.sf.jsqlparser.statement.create.index.CreateIndex;
+import net.sf.jsqlparser.statement.block.Block;
 import net.eagledb.server.sql.SQLParser;
 
 /**
@@ -280,10 +281,11 @@ TOKEN:
 
 Statement Statement() :
 { Statement stm; }
-
 {
     (
-    stm = Transaction()
+    LOOKAHEAD(2) stm = Block()
+    |
+    LOOKAHEAD(2) stm = Transaction()
     |
     stm = Select()
     |
@@ -312,8 +314,20 @@ Statement Statement() :
     stm = Disconnect()
     )
     [";"]
-    <EOF>
     { return stm; }
+}
+
+
+Block Block():
+{
+    Block block = new Block();
+    Statement stmt;
+}
+{
+    <K_BEGIN>
+    (stmt=Statement() { block.addStatement(stmt); })+
+    <K_END>
+    { return block; }
 }
 
 
@@ -1850,93 +1864,90 @@ CreateTable CreateTable():
 	[ ( <K_TEMP> | <K_TEMPORARY> ) { temporary = true; } ]
 	(CreateParameter())*
 
-	<K_TABLE> table=Table() 
-	[
-		"("
-		
-		columnName=<S_IDENTIFIER>
-		colDataType = ColDataType()
-		{
-			columnSpecs = new ArrayList();
-		}
-	
-		( parameter=CreateParameter() { columnSpecs.add(parameter); } )*
-	
-		{ 
-			coldef = new ColumnDefinition();
-			coldef.setColumnName(columnName.image);
-			coldef.setColDataType(colDataType);
-			if (columnSpecs.size() > 0)
-				coldef.setColumnSpecStrings(columnSpecs);
-			columnDefinitions.add(coldef);
-		}
-		
+	<K_TABLE> table=Table()
+	"("
+
+	columnName=<S_IDENTIFIER>
+	colDataType = ColDataType()
+	{
+		columnSpecs = new ArrayList();
+	}
+
+	( parameter=CreateParameter() { columnSpecs.add(parameter); } )*
+
+	{
+		coldef = new ColumnDefinition();
+		coldef.setColumnName(columnName.image);
+		coldef.setColDataType(colDataType);
+		if (columnSpecs.size() > 0)
+			coldef.setColumnSpecStrings(columnSpecs);
+		columnDefinitions.add(coldef);
+	}
+
+	(
+		","
+
 		(
-			","
-			
 			(
-				(
-					tk=<K_INDEX>
-						tk3=<S_IDENTIFIER>		
-						colNames=ColumnsNamesList()
-						{ 
-							index = new Index(); 
-							index.setType(tk.image);
-							index.setName(tk3.image);
-							index.setColumnsNames(colNames);
-							indexes.add(index);
-						}
-				)
-				|
-				(
-					tk=<K_PRIMARY> tk2=<K_KEY> 
-						colNames=ColumnsNamesList()
-						{ 
-							index = new Index(); 
-							index.setType(tk.image + " "+ tk2.image);
-							index.setColumnsNames(colNames);
-							indexes.add(index);
-						}
-				)
-				|
-				(
-					tk=<K_KEY>
-						tk3=<S_IDENTIFIER>		
-						colNames=ColumnsNamesList()
-						{ 
-							index = new Index(); 
-							index.setType(tk.image);
-							index.setName(tk3.image);
-							index.setColumnsNames(colNames);
-							indexes.add(index);
-						}
-				)
-				|
-				(
-					columnName=<S_IDENTIFIER> 
-					colDataType = ColDataType()
+				tk=<K_INDEX>
+					tk3=<S_IDENTIFIER>
+					colNames=ColumnsNamesList()
 					{
-						columnSpecs = new ArrayList();
+						index = new Index();
+						index.setType(tk.image);
+						index.setName(tk3.image);
+						index.setColumnsNames(colNames);
+						indexes.add(index);
 					}
-				
-					( 	parameter=CreateParameter() { columnSpecs.add(parameter); } 	)*
-		
-					{ 
-						coldef = new ColumnDefinition();
-						coldef.setColumnName(columnName.image);
-						coldef.setColDataType(colDataType);
-						if (columnSpecs.size() > 0)
-							coldef.setColumnSpecStrings(columnSpecs);
-						columnDefinitions.add(coldef);
-					}
-				)
 			)
-		)* 
-		
-		")"
-		( 	parameter=CreateParameter() { tableOptions.add(parameter); } )*
-	
-	]
+			|
+			(
+				tk=<K_PRIMARY> tk2=<K_KEY>
+					colNames=ColumnsNamesList()
+					{
+						index = new Index();
+						index.setType(tk.image + " "+ tk2.image);
+						index.setColumnsNames(colNames);
+						indexes.add(index);
+					}
+			)
+			|
+			(
+				tk=<K_KEY>
+					tk3=<S_IDENTIFIER>
+					colNames=ColumnsNamesList()
+					{
+						index = new Index();
+						index.setType(tk.image);
+						index.setName(tk3.image);
+						index.setColumnsNames(colNames);
+						indexes.add(index);
+					}
+			)
+			|
+			(
+				columnName=<S_IDENTIFIER>
+				colDataType = ColDataType()
+				{
+					columnSpecs = new ArrayList();
+				}
+
+				( 	parameter=CreateParameter() { columnSpecs.add(parameter); } 	)*
+
+				{
+					coldef = new ColumnDefinition();
+					coldef.setColumnName(columnName.image);
+					coldef.setColDataType(colDataType);
+					if (columnSpecs.size() > 0)
+						coldef.setColumnSpecStrings(columnSpecs);
+					columnDefinitions.add(coldef);
+				}
+			)
+		)
+	)*
+
+	")"
+	( LOOKAHEAD(2) parameter=CreateParameter() { tableOptions.add(parameter); } )*
 	
 	
 	{

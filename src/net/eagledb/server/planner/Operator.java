@@ -8,10 +8,16 @@ import net.eagledb.server.storage.page.VarCharPage;
 
 public class Operator {
 
+	/**
+	 * Left hand side.
+	 */
 	public Class lhs;
 
 	public PageAction op;
 
+	/**
+	 * Right hand side.
+	 */
 	public Class rhs;
 
 	public Method method;

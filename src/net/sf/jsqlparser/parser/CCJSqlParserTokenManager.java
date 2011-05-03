@@ -102,6 +102,7 @@ import net.sf.jsqlparser.statement.disconnect.Disconnect;
 import net.sf.jsqlparser.statement.transaction.Transaction;
 import net.sf.jsqlparser.statement.transaction.TransactionCommand;
 import net.sf.jsqlparser.statement.create.index.CreateIndex;
+import net.sf.jsqlparser.statement.block.Block;
 import net.eagledb.server.sql.SQLParser;
 
 /** Token Manager. */

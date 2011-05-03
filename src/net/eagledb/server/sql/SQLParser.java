@@ -11,6 +11,7 @@ import net.eagledb.server.ResultCode;
 import net.eagledb.server.Server;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.block.Block;
 import net.sf.jsqlparser.statement.show.Show;
 import net.sf.jsqlparser.statement.create.database.CreateDatabase;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
@@ -50,6 +51,8 @@ public class SQLParser {
 		if(stmt instanceof Transaction)
 			return true;
 		if(stmt instanceof Delete)
+			return true;
+		if(stmt instanceof Block)
 			return true;
 		return false;
 	}
@@ -99,6 +102,8 @@ public class SQLParser {
 				result = new SQLTransaction(server, conn, (Transaction) stmt).getResult();
 			else if(stmt instanceof Delete)
 				result = new SQLDelete(server, conn, (Delete) stmt).getResult();
+			else if(stmt instanceof Block)
+				result = new SQLBlock(server, conn, this, (Block) stmt).getResult();
 			else
 				throw new SQLException("Invalid SQL: " + sql);
 
