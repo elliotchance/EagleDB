@@ -29,6 +29,9 @@ import org.junit.runners.Suite;
 	
 	// INSERT
 	TestInsert.class,
+	
+	// UPDATE
+	TestUpdate.class,
 
 	// DELETE
 	TestDelete.class,

@@ -10,6 +10,8 @@ public interface PlanItem {
 
 	public void execute(int pageTuples, ArrayList<Tuple> tuples, long transactionID);
 
+	public void executeUpdate(int[] columnID, net.eagledb.server.planner.Expression[] ex, long transactionID);
+
 	public void executeDelete(long transactionID);
 
 	public PlanItemCost getPlanItemCost();

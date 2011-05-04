@@ -98,6 +98,10 @@ public class FetchAttributes implements PlanItem {
 		return cost;
 	}
 
+	public void executeUpdate(int[] columnID, net.eagledb.server.planner.Expression[] ex, long transactionID) {
+		// do nothing
+	}
+
 	public void executeDelete(long transactionID) {
 		// do nothing
 	}

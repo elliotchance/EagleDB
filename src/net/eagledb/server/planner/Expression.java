@@ -6,6 +6,7 @@ import java.util.List;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Index;
 import net.eagledb.server.storage.Table;
+import net.eagledb.server.storage.Tuple;
 import net.eagledb.server.storage.page.BooleanPage;
 import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;

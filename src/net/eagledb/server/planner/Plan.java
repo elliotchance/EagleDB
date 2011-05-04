@@ -79,6 +79,15 @@ public class Plan {
 		return ts;
 	}
 
+	public void executeUpdate(int[] columnID, net.eagledb.server.planner.Expression[] ex, long transactionID) {
+		long start = Calendar.getInstance().getTimeInMillis();
+		for(PlanItem p : plan)
+			p.executeUpdate(columnID, ex, transactionID);
+
+		statistics.executionTimeMillis = Calendar.getInstance().getTimeInMillis() - start;
+		hasExecuted = true;
+	}
+
 	public void executeDelete(long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
 		for(PlanItem p : plan)

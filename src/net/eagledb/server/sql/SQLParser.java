@@ -23,6 +23,7 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.disconnect.Disconnect;
 import net.sf.jsqlparser.statement.drop.Drop;
 import net.sf.jsqlparser.statement.transaction.Transaction;
+import net.sf.jsqlparser.statement.update.Update;
 
 public class SQLParser {
 
@@ -53,6 +54,8 @@ public class SQLParser {
 		if(stmt instanceof Delete)
 			return true;
 		if(stmt instanceof Block)
+			return true;
+		if(stmt instanceof Update)
 			return true;
 		return false;
 	}
@@ -104,6 +107,8 @@ public class SQLParser {
 				result = new SQLDelete(server, conn, (Delete) stmt).getResult();
 			else if(stmt instanceof Block)
 				result = new SQLBlock(server, conn, this, (Block) stmt).getResult();
+			else if(stmt instanceof Update)
+				result = new SQLUpdate(server, conn, (Update) stmt).getResult();
 			else
 				throw new SQLException("Invalid SQL: " + sql);
 
