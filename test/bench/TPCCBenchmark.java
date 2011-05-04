@@ -2,14 +2,40 @@ package bench;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
 import net.eagledb.server.EmbeddedServer;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class Benchmark {
-	
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+public class TPCCBenchmark {
+
+	public TPCCBenchmark() {
+	}
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+	}
+
+	@Before
+	public void setUp() {
+	}
+
+	@After
+	public void tearDown() {
+	}
+
+	@Test
+	public void run() throws SQLException, ClassNotFoundException {
 		// limits
 		int customers = 1000;
 		int transactions = 1000;
@@ -58,5 +84,4 @@ public class Benchmark {
 		st.executeUpdate("DROP DATABASE tpcc");
 		st.close();
 	}
-	
 }

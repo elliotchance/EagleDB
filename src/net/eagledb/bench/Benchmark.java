@@ -1,4 +1,4 @@
-package bench;
+package net.eagledb.bench;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -36,7 +36,7 @@ public class Benchmark {
 		
 		// run
 		long start = Calendar.getInstance().getTimeInMillis();
-		for(int i = 1; i <= 100000; ++i) {
+		for(int i = 1; i <= 10000; ++i) {
 			st = conn.createStatement();
 			double rand = Math.random();
 			
