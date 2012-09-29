@@ -21,11 +21,13 @@ public class OperatorException extends ExpressionException {
 	@Override
 	public String toString() {
 		String r = "No operator for expression (" + ex + ") using types (";
-		if(lhs != null)
+		if(lhs != null) {
 			r += lhs.getSimpleName();
+		}
 		r += " " + op + " ";
-		if(rhs != null)
+		if(rhs != null) {
 			r += rhs.getSimpleName();
+		}
 		return r + ")";
 	}
 

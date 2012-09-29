@@ -1,9 +1,9 @@
 package net.eagledb.server.sql;
 
-import net.sf.jsqlparser.statement.show.Show;
+import java.sql.*;
 import net.eagledb.server.*;
 import net.eagledb.server.storage.*;
-import java.sql.*;
+import net.sf.jsqlparser.statement.show.Show;
 
 public class SQLShowDatabases extends SQLAction {
 	
@@ -16,8 +16,9 @@ public class SQLShowDatabases extends SQLAction {
 
 	public Result getResult() throws SQLException {
 		// this action requires SHOW DATABASES permission
-		if(!conn.getUser().canShowDatabases)
+		if(!conn.getUser().canShowDatabases) {
 			throw new SQLException("Permission denied. You must have SHOW DATABASES privilege.");
+		}
 
 		// setup column definitions
 		Attribute[] fields = new Attribute[1];

@@ -1,8 +1,8 @@
 package net.eagledb.server;
 
 import java.io.*;
-import net.eagledb.server.storage.*;
 import java.util.*;
+import net.eagledb.server.storage.*;
 
 public class Result implements Serializable {
 
@@ -28,8 +28,9 @@ public class Result implements Serializable {
 		this.code = code;
 		this.fields = new Attribute[fields.size()];
 		int i = 0;
-		for(Attribute f : fields)
+		for(Attribute f : fields) {
 			this.fields[i++] = f;
+		}
 		this.tuples = tuples;
 	}
 

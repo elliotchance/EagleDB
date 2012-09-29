@@ -1,11 +1,25 @@
 package net.eagledb.jdbc;
 
-import java.sql.*;
-import java.io.*;
-import java.math.*;
-import java.util.*;
-import java.net.*;
-import net.eagledb.server.storage.*;
+import java.io.InputStream;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.NClob;
+import java.sql.Ref;
+import java.sql.RowId;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Map;
+import net.eagledb.server.storage.Attribute;
+import net.eagledb.server.storage.Tuple;
 
 public class ResultSet implements java.sql.ResultSet {
 	
@@ -54,8 +68,9 @@ public class ResultSet implements java.sql.ResultSet {
 	 */
 	public boolean absolute(int row) throws SQLException {
 		// try to move cursor
-		if(row < 0)
+		if(row < 0) {
 			cursorPosition = tuples.length - row;
+		}
 		cursorPosition = row;
 
 		// check validity
@@ -99,10 +114,12 @@ public class ResultSet implements java.sql.ResultSet {
 		int i = 0;
 		String s = "(";
 		for(Attribute f : fields) {
-			if(f.getName().equals(columnLabel))
+			if(f.getName().equals(columnLabel)) {
 				return i;
-			if(i > 0)
+			}
+			if(i > 0) {
 				s += ",";
+			}
 			s += f.getName();
 			++i;
 		}
@@ -458,8 +475,9 @@ public class ResultSet implements java.sql.ResultSet {
 	}
 
 	public boolean next() throws SQLException {
-		if(cursorPosition >= tuples.length)
+		if(cursorPosition >= tuples.length) {
 			return false;
+		}
 
 		++cursorPosition;
 		return true;
@@ -847,8 +865,9 @@ public class ResultSet implements java.sql.ResultSet {
 	 * @throws SQLException If the columnIndex is out of range.
 	 */
 	protected void validateColumnIndex(int columnIndex) throws SQLException {
-		if(columnIndex < 1 || columnIndex > tuples[cursorPosition - 1].size())
+		if(columnIndex < 1 || columnIndex > tuples[cursorPosition - 1].size()) {
 			throw new SQLException("columnIndex out of bounds: " + columnIndex);
+		}
 	}
 
 }

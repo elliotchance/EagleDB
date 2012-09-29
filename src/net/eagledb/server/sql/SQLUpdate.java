@@ -1,7 +1,6 @@
 package net.eagledb.server.sql;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import net.eagledb.server.ClientConnection;
 import net.eagledb.server.Result;
 import net.eagledb.server.ResultCode;
@@ -29,8 +28,9 @@ public class SQLUpdate extends SQLAction {
 	public Result getResult() throws SQLException {
 		// we must have a selected database
 		Database selectedDatabase = conn.getSelectedDatabase();
-		if(selectedDatabase == null)
+		if(selectedDatabase == null) {
 			throw new SQLException("No database selected.");
+		}
 
 		// check the users permission
 		//if(!conn.getUser().canCreateTable)
@@ -38,28 +38,32 @@ public class SQLUpdate extends SQLAction {
 
 		// get schema
 		Schema schema = selectedDatabase.getSchema("public");
-		if(schema == null)
+		if(schema == null) {
 			throw new SQLException("No such schema " + schema.getName());
+		}
 
 		// see if the table exists
 		Table table = schema.getTable(sql.getTable().toString());
 		if(table == null) {
 			// temporary table?
 			TemporaryTable tt = conn.getTemporaryTable(sql.getTable().toString());
-			if(tt != null)
+			if(tt != null) {
 				table = schema.getTable(tt.internalName);
+			}
 
-			if(table == null)
+			if(table == null) {
 				throw new SQLException("Table " + schema.getName() + "." + sql.getTable().toString() +
 					" does not exist");
+			}
 		}
 
 		// parse expression operations
 		try {
 			// extract WHERE clause, making sure it is not empty
 			net.sf.jsqlparser.expression.Expression whereClause = sql.getWhere();
-			if(whereClause == null)
+			if(whereClause == null) {
 				whereClause = new LongValue("1");
+			}
 
 			// parse the expression
 			net.eagledb.server.planner.Expression ex = new net.eagledb.server.planner.Expression(table,
@@ -72,8 +76,9 @@ public class SQLUpdate extends SQLAction {
 			int[] columnID = new int[sql.getColumns().size()];
 			int i = 0;
 			for(Object o : sql.getColumns()) {
-				if(!table.attributeExists(o.toString()))
+				if(!table.attributeExists(o.toString())) {
 					throw new SQLException("No such column '" + o + "'");
+				}
 				
 				columnID[i] = table.getAttributeLocation(o.toString());
 				cols[i] = new net.eagledb.server.planner.Expression(table, selectedDatabase,

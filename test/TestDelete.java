@@ -4,10 +4,10 @@ import java.sql.Statement;
 import java.util.Calendar;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class TestDelete {
 
@@ -42,9 +42,10 @@ public class TestDelete {
 		// insert a bunch of records
 		long start = Calendar.getInstance().getTimeInMillis();
 		int tuples = 5;
-		for (int i = 1; i <= tuples; ++i)
+		for (int i = 1; i <= tuples; ++i) {
 			TestSuiteEmbeddedDatabase.executeUpdate("insert into delete1 (id, number) values ("
 				+ i + ", " + Math.sqrt(i) + ")");
+		}
 
 		// delete a record (autocommit is on)
 		TestSuiteEmbeddedDatabase.executeUpdate("delete from delete1 where id=2");
@@ -64,9 +65,10 @@ public class TestDelete {
 		// insert a bunch of records
 		long start = Calendar.getInstance().getTimeInMillis();
 		int tuples = 5;
-		for (int i = 1; i <= tuples; ++i)
+		for (int i = 1; i <= tuples; ++i) {
 			TestSuiteEmbeddedDatabase.executeUpdate("insert into delete2 (id, number) values ("
 				+ i + ", " + Math.sqrt(i) + ")");
+		}
 
 		// delete a record (autocommit is on)
 		TestSuiteEmbeddedDatabase.executeUpdate("delete from delete2 where id>0 limit 2");

@@ -55,14 +55,16 @@ public class CharPage extends Page {
 
 	@Override
 	public synchronized void write(RandomAccessFile os) throws IOException {
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
 			os.writeByte(page[i]);
+		}
 	}
 
 	@Override
 	public synchronized void read(RandomAccessFile is) throws IOException {
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
 			page[i] = is.readByte();
+		}
 	}
 
 	public static int getPageSize() {

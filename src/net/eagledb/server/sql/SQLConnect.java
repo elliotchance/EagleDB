@@ -1,10 +1,10 @@
 package net.eagledb.server.sql;
 
-import net.sf.jsqlparser.statement.connect.Connect;
-import net.eagledb.server.*;
 import java.sql.*;
 import java.util.*;
+import net.eagledb.server.*;
 import net.eagledb.server.crypt.*;
+import net.sf.jsqlparser.statement.connect.Connect;
 
 public class SQLConnect extends SQLAction {
 	
@@ -27,8 +27,9 @@ public class SQLConnect extends SQLAction {
 			   user.getHashedPassword().equals(crypt.crypt(password))) {
 				// update the currently privilaged user
 				conn.setUser(user);
-				if(p.getProperty("database") != null && !p.getProperty("database").equals(""))
+				if(p.getProperty("database") != null && !p.getProperty("database").equals("")) {
 					conn.setSelectedDatabase(p.getProperty("database"));
+				}
 
 				// return success
 				return new Result(ResultCode.SUCCESS);

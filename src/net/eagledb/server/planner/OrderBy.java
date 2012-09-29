@@ -36,8 +36,9 @@ public class OrderBy implements PlanItem {
 	@Override
 	public String toString() {
 		String r = "Sort (";
-		for(OrderByAttribute ex : columns)
+		for(OrderByAttribute ex : columns) {
 			r += " " + ex.toString();
+		}
 		return r + " )";
 	}
 
@@ -47,22 +48,27 @@ public class OrderBy implements PlanItem {
 		// extract the attribute
 		OrderByDouble ob = new OrderByDouble(tuples.size());
 		int location = columns.get(0).position;
-		for(Tuple tuple : tuples)
+		for(Tuple tuple : tuples) {
 			ob.push(tuple.tupleID, Double.valueOf(tuple.get(location).toString()));
+		}
 
 		// perform the sort
-		if(columns.get(0).isAsc)
+		if(columns.get(0).isAsc) {
 			ob.sortAscending();
-		else
+		}
+		else {
 			ob.sortDescending();
+		}
 
 		// map the sorted tuples back to the table
 		ArrayList<Tuple> newtuples = new ArrayList<Tuple>();
-		for(int i = 0; i < ob.size(); ++i)
+		for(int i = 0; i < ob.size(); ++i) {
 			newtuples.add(tuples.get(ob.tupleIDs[i]));
+		}
 		tuples.clear();
-		for(int i = 0; i < ob.size(); ++i)
+		for(int i = 0; i < ob.size(); ++i) {
 			tuples.add(newtuples.get(i));
+		}
 
 		cost.realMillis = Calendar.getInstance().getTimeInMillis() - start;
 	}

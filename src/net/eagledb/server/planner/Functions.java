@@ -87,8 +87,9 @@ public class Functions {
 
 	public static Function findFunction(String name, Class[] argumentTypes) {
 		for(Function function : functions) {
-			if(function.name.equals(name) && java.util.Arrays.equals(function.argumentTypes, argumentTypes))
+			if(function.name.equals(name) && java.util.Arrays.equals(function.argumentTypes, argumentTypes)) {
 				return function;
+			}
 		}
 		return null;
 	}
@@ -96,8 +97,9 @@ public class Functions {
 	public static Function findVarArgsFunction(String name) {
 		for(Function function : functions) {
 			if(function.name.equals(name) &&
-				java.util.Arrays.equals(function.argumentTypes, new Class[] { Object[].class }))
+				java.util.Arrays.equals(function.argumentTypes, new Class[] { Object[].class })) {
 				return function;
+			}
 		}
 		return null;
 	}
@@ -127,8 +129,9 @@ public class Functions {
 			Class[] args = new Class[2 + argumentTypes.length];
 			args[0] = int.class;
 			args[1] = returnType;
-			for(int i = 0; i < argumentTypes.length; ++i)
+			for(int i = 0; i < argumentTypes.length; ++i) {
 				args[i + 2] = argumentTypes[i];
+			}
 			return Functions.class.getMethod(name, args);
 		}
 		catch(NoSuchMethodException e) {
@@ -138,199 +141,238 @@ public class Functions {
 	}
 
 	public static void abs(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.abs(arg.page[i]);
+		}
 	}
 
 	public static void abs(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.abs(arg.page[i]);
+		}
 	}
 
 	public static void cos(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.cos(arg.page[i]);
+		}
 	}
 
 	public static void cos(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.cos(arg.page[i]);
+		}
 	}
 
 	public static void sin(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.sin(arg.page[i]);
+		}
 	}
 
 	public static void sin(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.sin(arg.page[i]);
+		}
 	}
 
 	public static void tan(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.tan(arg.page[i]);
+		}
 	}
 
 	public static void tan(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.tan(arg.page[i]);
+		}
 	}
 
 	public static void acos(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.acos(arg.page[i]);
+		}
 	}
 
 	public static void acos(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.acos(arg.page[i]);
+		}
 	}
 
 	public static void asin(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.asin(arg.page[i]);
+		}
 	}
 
 	public static void asin(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.asin(arg.page[i]);
+		}
 	}
 
 	public static void atan(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.atan(arg.page[i]);
+		}
 	}
 
 	public static void atan(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.atan(arg.page[i]);
+		}
 	}
 
 	public static void atan2(int tuples, DoublePage destination, DoublePage arg1, DoublePage arg2) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.atan2(arg1.page[i], arg2.page[i]);
+		}
 	}
 
 	public static void atan2(int tuples, DoublePage destination, IntPage arg1, IntPage arg2) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.atan2(arg1.page[i], arg2.page[i]);
+		}
 	}
 
 	public static void length(int tuples, IntPage destination, VarCharPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = arg.page[i].length();
+		}
 	}
 
 	public static void cbrt(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.cbrt(arg.page[i]);
+		}
 	}
 
 	public static void cbrt(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.cbrt(arg.page[i]);
+		}
 	}
 
 	public static void ceil(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.ceil(arg.page[i]);
+		}
 	}
 
 	public static void ceil(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.ceil(arg.page[i]);
+		}
 	}
 
 	public static void ceiling(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.ceil(arg.page[i]);
+		}
 	}
 
 	public static void ceiling(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.ceil(arg.page[i]);
+		}
 	}
 
 	public static void radians(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.toRadians(arg.page[i]);
+		}
 	}
 
 	public static void degrees(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.toDegrees(arg.page[i]);
+		}
 	}
 
 	public static void div(int tuples, IntPage destination, DoublePage arg1, DoublePage arg2) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = (int) (arg1.page[i] / arg2.page[i]);
+		}
 	}
 
 	public static void div(int tuples, IntPage destination, IntPage arg1, IntPage arg2) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = (int) ((double) arg1.page[i] / (double) arg2.page[i]);
+		}
 	}
 
 	public static void ln(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.log(arg.page[i]);
+		}
 	}
 
 	public static void ln(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.log(arg.page[i]);
+		}
 	}
 
 	public static void log(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.log10(arg.page[i]);
+		}
 	}
 
 	public static void log(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.log10(arg.page[i]);
+		}
 	}
 
 	public static void exp(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.exp(arg.page[i]);
+		}
 	}
 
 	public static void exp(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.exp(arg.page[i]);
+		}
 	}
 
 	public static void floor(int tuples, DoublePage destination, DoublePage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.floor(arg.page[i]);
+		}
 	}
 
 	public static void floor(int tuples, DoublePage destination, IntPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = Math.floor(arg.page[i]);
+		}
 	}
 
 	public static void xmlroot(int tuples, VarCharPage destination, VarCharPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = "<?xml version=\"1.0\"?>\n" + arg.page[i];
+		}
 	}
 
 	public static void xmlroot(int tuples, VarCharPage destination, VarCharPage arg, VarCharPage version) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = "<?xml version=\"" + version.page[i] + "\"?>\n" + arg.page[i];
+		}
 	}
 
 	public static void xmlroot(int tuples, VarCharPage destination, VarCharPage arg, VarCharPage version, VarCharPage standalone) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = "<?xml version=\"" + version.page[i] + "\" standalone=\"" + standalone.page[i] +
 				"\"?>\n" + arg.page[i];
+		}
 	}
 
 	public static void xmlcomment(int tuples, VarCharPage destination, VarCharPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = "<!--" + arg.page[i] + "-->";
+		}
 	}
 
 	public static void xmlconcat(Object[] args) {
@@ -340,8 +382,9 @@ public class Functions {
 		for(int i = 0; i < tuples; ++i) {
 			try {
 				// prepare
-				if(docBuilder == null)
+				if(docBuilder == null) {
 					docBuilder = dbfac.newDocumentBuilder();
+				}
 				Document doc = docBuilder.newDocument();
 
 				// new virtual root
@@ -352,8 +395,9 @@ public class Functions {
 				for(int j = 2; j < args.length; ++j) {
 					// we use the XML declaration from the first argument (if one exists)
 					VarCharPage p = (VarCharPage) args[j];
-					if(xmlDec.equals("") && p.page[i].startsWith("<?xml"))
+					if(xmlDec.equals("") && p.page[i].startsWith("<?xml")) {
 						xmlDec = p.page[i].substring(0, p.page[i].indexOf("?>") + 2);
+					}
 					
 					Document merge = docBuilder.parse(new InputSource(new StringReader(p.page[i])));
 					root.appendChild(doc.importNode(merge.getDocumentElement(), true));
@@ -400,34 +444,40 @@ public class Functions {
 	}
 
 	public static void position(int tuples, IntPage destination, VarCharPage substring, VarCharPage string) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = string.page[i].indexOf(substring.page[i]) + 1;
+		}
 	}
 
 	public static void substring_from(int tuples, VarCharPage destination, VarCharPage string, IntPage from) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = string.page[i].substring(from.page[i] - 1);
+		}
 	}
 
 	public static void substring_for(int tuples, VarCharPage destination, VarCharPage string, IntPage to) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = string.page[i].substring(0, to.page[i]);
+		}
 	}
 
 	public static void substring_from_for(int tuples, VarCharPage destination, VarCharPage string, IntPage from,
 		IntPage to) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = string.page[i].substring(from.page[i] - 1, to.page[i] + 1);
+		}
 	}
 
 	public static void upper(int tuples, VarCharPage destination, VarCharPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = arg.page[i].toUpperCase();
+		}
 	}
 
 	public static void lower(int tuples, VarCharPage destination, VarCharPage arg) {
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			destination.page[i] = arg.page[i].toLowerCase();
+		}
 	}
 
 	public static void trim(int tuples, VarCharPage destination, VarCharPage string, VarCharPage characters) {
@@ -440,13 +490,15 @@ public class Functions {
 			destination.page[i] = string.page[i];
 
 			// front
-			while(destination.page[i].startsWith(characters.page[i]))
+			while(destination.page[i].startsWith(characters.page[i])) {
 				destination.page[i] = destination.page[i].substring(characters.page[i].length());
+			}
 
 			// end
-			while(destination.page[i].endsWith(characters.page[i]))
+			while(destination.page[i].endsWith(characters.page[i])) {
 				destination.page[i] = destination.page[i].substring(0,
 					destination.page[i].length() - characters.page[i].length());
+			}
 		}
 	}
 
@@ -458,8 +510,9 @@ public class Functions {
 			}
 
 			destination.page[i] = string.page[i];
-			while(destination.page[i].startsWith(characters.page[i]))
+			while(destination.page[i].startsWith(characters.page[i])) {
 				destination.page[i] = destination.page[i].substring(characters.page[i].length());
+			}
 		}
 	}
 
@@ -471,9 +524,10 @@ public class Functions {
 			}
 
 			destination.page[i] = string.page[i];
-			while(destination.page[i].endsWith(characters.page[i]))
+			while(destination.page[i].endsWith(characters.page[i])) {
 				destination.page[i] = destination.page[i].substring(0,
 					destination.page[i].length() - characters.page[i].length());
+			}
 		}
 	}
 

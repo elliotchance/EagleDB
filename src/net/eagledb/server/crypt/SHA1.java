@@ -5,8 +5,9 @@ import java.security.*;
 public class SHA1 extends Crypt {
 
 	public String crypt(String message) {
-		if(message == null)
+		if(message == null) {
 			message = "";
+		}
 		
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA1");

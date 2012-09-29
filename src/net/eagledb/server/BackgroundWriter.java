@@ -32,14 +32,14 @@ public class BackgroundWriter extends Thread {
 						
 						while(table.dirtyTransactionPages.size() > 0) {
 							TransactionPage page = table.dirtyTransactionPages.get(0);
-							table.transactionPageHandle.getChannel().position(page.getPageSize() * page.pageID);
+							table.transactionPageHandle.getChannel().position(TransactionPage.getPageSize() * page.pageID);
 							page.write(table.transactionPageHandle);
 							table.dirtyTransactionPages.remove(0);
 
 							// look for dirty field pages
 							for(Attribute attribute : table.getAttributes()) {
 								Page p = attribute.pages.get(page.pageID);
-								attribute.getDataHandle().getChannel().position(page.getPageSize() * p.pageID);
+								attribute.getDataHandle().getChannel().position(TransactionPage.getPageSize() * p.pageID);
 								p.write(attribute.getDataHandle());
 							}
 						}

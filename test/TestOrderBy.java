@@ -2,10 +2,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class TestOrderBy {
 
@@ -46,8 +46,9 @@ public class TestOrderBy {
 		String sql = "select number from test_order order by 10-number desc";
 		ResultSet rs = st.executeQuery("explain " + sql);
 		System.out.println("EXPLAIN " + sql);
-		while(rs.next())
+		while(rs.next()) {
 			System.out.println("  " + rs.getString(1));
+		}
 		System.out.println();
 		rs.close();
 

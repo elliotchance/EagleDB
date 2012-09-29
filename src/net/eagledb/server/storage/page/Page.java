@@ -55,8 +55,9 @@ public abstract class Page {
 	}
 
 	public static void registerClass(Page type) {
-		for(String name : type.getNames())
+		for(String name : type.getNames()) {
 			types.put(name, type.getClass());
+		}
 	}
 
 	public static Class<? extends Page> getClassForType(String name) {

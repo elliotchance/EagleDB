@@ -1,7 +1,7 @@
 package net.eagledb.server.planner;
 
-import net.eagledb.server.storage.*;
 import java.util.*;
+import net.eagledb.server.storage.*;
 import net.eagledb.server.storage.page.BooleanPage;
 import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
@@ -38,8 +38,9 @@ public class FetchAttributes implements PlanItem {
 	public String toString() {
 		String line = "Fetch Attributes ( ";
 		for(int i = 0; i < sources.size(); ++i) {
-			if(i > 0)
+			if(i > 0) {
 				line += ", ";
+			}
 			line += sources.get(i) + " -> " + destinations[i];
 		}
 		return line + " )";
@@ -55,32 +56,38 @@ public class FetchAttributes implements PlanItem {
 				FullTableScan fts = new FullTableScan(null, table, table.getAttributes().length, null, ops,
 					source.buffers, 0, tuples.size());
 
-				for(PageOperation operation : ops)
+				for(PageOperation operation : ops) {
 					operation.run(pageTuples, fts);
+				}
 
 				Page basePage = source.buffers.get(source.buffers.size() - 1);
 				if(basePage instanceof IntPage) {
 					IntPage page = (IntPage) basePage;
-					for(Tuple tuple : tuples)
+					for(Tuple tuple : tuples) {
 						tuple.set(destinations[i], page.page[tuple.tupleID]);
+					}
 				}
 				else if(basePage instanceof DoublePage) {
 					DoublePage page = (DoublePage) basePage;
-					for(Tuple tuple : tuples)
+					for(Tuple tuple : tuples) {
 						tuple.set(destinations[i], page.page[tuple.tupleID]);
+					}
 				}
 				else if(basePage instanceof BooleanPage) {
 					BooleanPage page = (BooleanPage) basePage;
-					for(Tuple tuple : tuples)
+					for(Tuple tuple : tuples) {
 						tuple.set(destinations[i], page.page[tuple.tupleID]);
+					}
 				}
 				else if(basePage instanceof VarCharPage) {
 					VarCharPage page = (VarCharPage) basePage;
-					for(Tuple tuple : tuples)
+					for(Tuple tuple : tuples) {
 						tuple.set(destinations[i], page.page[tuple.tupleID]);
+					}
 				}
-				else
+				else {
 					throw new Exception("Cannot cast " + basePage.getClass().getSimpleName());
+				}
 			}
 		}
 		catch(ExpressionException e) {

@@ -71,19 +71,22 @@ public class FullTableScan implements PlanItem {
 	public String toString() {
 		// resolve table name
 		String tableName = table.getName();
-		if(conn.getTemporaryTableByInternalName(tableName) != null)
+		if(conn.getTemporaryTableByInternalName(tableName) != null) {
 			tableName = conn.getTemporaryTableByInternalName(tableName).name;
+		}
 		
 		return "Full Table Scan \"" + tableName + "\" WHERE (" + clause + ")";
 	}
 
 	private boolean inTransactionIDs(long XID) {
-		if(transactionIDs == null)
+		if(transactionIDs == null) {
 			return false;
+		}
 		
 		for(int i = 0; i < transactionIDs.length; ++i) {
-			if(transactionIDs[i] == XID)
+			if(transactionIDs[i] == XID) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -111,8 +114,9 @@ public class FullTableScan implements PlanItem {
 
 		// run operations
 		for(pageID = 0; pageID < table.getTotalPages(); ++pageID) {
-			for(PageOperation operation : operations)
+			for(PageOperation operation : operations) {
 				operation.run(pageTuples, this);
+			}
 
 			TransactionPage tp = table.getTransactionPage(pageID, cost);
 			BooleanPage result = (BooleanPage) buffers.get(buffers.size() - 1);
@@ -123,8 +127,9 @@ public class FullTableScan implements PlanItem {
 						++skipped;
 						continue;
 					}
-					if(tuples.size() >= limit)
+					if(tuples.size() >= limit) {
 						break;
+					}
 					
 					tuples.add(new Tuple(pageID * Page.TUPLES_PER_PAGE + i, tupleSize));
 				}
@@ -144,14 +149,16 @@ public class FullTableScan implements PlanItem {
 
 		// run operations
 		for(pageID = 0; pageID < table.getTotalPages(); ++pageID) {
-			for(PageOperation operation : operations)
+			for(PageOperation operation : operations) {
 				operation.run(Page.TUPLES_PER_PAGE, this);
+			}
 
 			TransactionPage tp = table.getTransactionPage(pageID, cost);
 			BooleanPage result = (BooleanPage) buffers.get(buffers.size() - 1);
 			Page[] pages = new Page[table.getAttributes().length];
-			for(int i = 0; i < table.getAttributes().length; ++i)
+			for(int i = 0; i < table.getAttributes().length; ++i) {
 				pages[i] = table.getPage(i, pageID, cost);
+			}
 			
 			for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
 				if(result.page[i] && rowIsVisible(transactionID, tp, i)) {
@@ -160,8 +167,9 @@ public class FullTableScan implements PlanItem {
 						++skipped;
 						continue;
 					}
-					if(matched >= limit)
+					if(matched >= limit) {
 						break;
+					}
 
 					++matched;
 					
@@ -173,12 +181,15 @@ public class FullTableScan implements PlanItem {
 					int j = 0;
 					for(Attribute attr : table.getAttributes()) {
 						// put the data into the tuple
-						if(pages[j] instanceof DoublePage)
+						if(pages[j] instanceof DoublePage) {
 							tuple.set(j, ((DoublePage) pages[j]).page[i]);
-						else if(pages[j] instanceof IntPage)
+						}
+						else if(pages[j] instanceof IntPage) {
 							tuple.set(j, ((IntPage) pages[j]).page[i]);
-						else
+						}
+						else {
 							System.err.println("UPDATE cannot cast " + pages[j].getClass().getSimpleName());
+						}
 						++j;
 					}
 					
@@ -190,8 +201,9 @@ public class FullTableScan implements PlanItem {
 							FullTableScan fts = new FullTableScan(null, table, table.getAttributes().length, null, ops,
 								ex[j].buffers, 0, 1);
 
-							for(PageOperation operation : ops)
+							for(PageOperation operation : ops) {
 								operation.run(1, fts);
+							}
 
 							Page basePage = source.buffers.get(source.buffers.size() - 1);
 							if(basePage instanceof IntPage) {
@@ -210,8 +222,9 @@ public class FullTableScan implements PlanItem {
 								VarCharPage page = (VarCharPage) basePage;
 								tuple.set(columnID[j], page.page[0]);
 							}
-							else
+							else {
 								System.err.println("Cannot cast " + basePage.getClass().getSimpleName());
+							}
 
 							//System.out.println();
 							//tuple.set(columnID[j], 1.0);
@@ -235,8 +248,9 @@ public class FullTableScan implements PlanItem {
 
 		// run operations
 		for(pageID = 0; pageID < table.getTotalPages(); ++pageID) {
-			for(PageOperation operation : operations)
+			for(PageOperation operation : operations) {
 				operation.run(Page.TUPLES_PER_PAGE, this);
+			}
 
 			TransactionPage tp = table.getTransactionPage(pageID, cost);
 			BooleanPage result = (BooleanPage) buffers.get(buffers.size() - 1);
@@ -247,8 +261,9 @@ public class FullTableScan implements PlanItem {
 						++skipped;
 						continue;
 					}
-					if(matched >= limit)
+					if(matched >= limit) {
 						break;
+					}
 
 					++matched;
 					tp.expireTransactionID[i] = transactionID;

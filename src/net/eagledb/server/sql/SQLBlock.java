@@ -1,8 +1,8 @@
 package net.eagledb.server.sql;
 
-import net.sf.jsqlparser.statement.block.Block;
-import net.eagledb.server.*;
 import java.sql.*;
+import net.eagledb.server.*;
+import net.sf.jsqlparser.statement.block.Block;
 
 public class SQLBlock extends SQLAction {
 	
@@ -23,10 +23,12 @@ public class SQLBlock extends SQLAction {
 
 		// execute
 		for(net.sf.jsqlparser.statement.Statement s : sql.getStatements()) {
-			if(SQLParser.requiresUpdate(s))
+			if(SQLParser.requiresUpdate(s)) {
 				parser.parse(s.toString(), RequestAction.UPDATE);
-			else
+			}
+			else {
 				parser.parse(s.toString(), RequestAction.QUERY);
+			}
 		}
 
 		return new Result(ResultCode.SUCCESS);

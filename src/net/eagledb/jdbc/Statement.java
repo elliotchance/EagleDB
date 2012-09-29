@@ -1,7 +1,11 @@
 package net.eagledb.jdbc;
 
-import java.sql.*;
-import net.eagledb.server.*;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLWarning;
+import net.eagledb.server.Request;
+import net.eagledb.server.RequestAction;
+import net.eagledb.server.Result;
 
 public class Statement implements java.sql.Statement {
 

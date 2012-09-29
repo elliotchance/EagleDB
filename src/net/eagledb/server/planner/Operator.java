@@ -109,8 +109,9 @@ public class Operator {
 
 	public static Method getMethodForOperator(Class lhs, PageAction op, Class rhs) {
 		for(Operator operator : operators) {
-			if(operator.lhs == lhs && operator.op == op && operator.rhs == rhs)
+			if(operator.lhs == lhs && operator.op == op && operator.rhs == rhs) {
 				return operator.method;
+			}
 		}
 		return null;
 	}
@@ -118,11 +119,13 @@ public class Operator {
 	@Override
 	public String toString() {
 		String r = "";
-		if(lhs != null)
+		if(lhs != null) {
 			r += lhs.getSimpleName();
+		}
 		r += " " + op + " ";
-		if(rhs != null)
+		if(rhs != null) {
 			r += rhs.getSimpleName();
+		}
 		return r;
 	}
 

@@ -2,9 +2,14 @@ package net.eagledb.jdbc;
 
 import java.io.*;
 import java.net.*;
-import net.eagledb.server.*;
 import java.sql.*;
 import java.util.*;
+import net.eagledb.jdbc.Statement;
+import net.eagledb.server.Request;
+import net.eagledb.server.RequestAction;
+import net.eagledb.server.Result;
+import net.eagledb.server.ResultCode;
+import net.eagledb.server.Server;
 
 public class Connection<T> implements java.sql.Connection {
 
@@ -43,26 +48,31 @@ public class Connection<T> implements java.sql.Connection {
 		this.parameters = parameters;
 
 		// default options
-		if(parameters.get("host") == null)
+		if(parameters.get("host") == null) {
 			parameters.put("host", "localhost");
-		if(parameters.get("port") == null)
+		}
+		if(parameters.get("port") == null) {
 			parameters.put("port", String.valueOf(Server.PORT));
+		}
 
 		// try to get the name of the database from the URL
 		String dbname = "";
 		try {
 			dbname = new URI(url).getPath();
-			if(dbname == null)
+			if(dbname == null) {
 				dbname = "";
-			if(dbname.length() > 1)
+			}
+			if(dbname.length() > 1) {
 				dbname = dbname.substring(1);
+			}
 		}
 		catch(URISyntaxException e) {
 			// do nothing, we didn't get the database name
 		}
 
-		if(!dbname.equals(""))
+		if(!dbname.equals("")) {
 			parameters.put("database", dbname);
+		}
 
 		// setup socket and object streams
 		for(int i = 1; i <= 3; ++i) {
@@ -74,8 +84,9 @@ public class Connection<T> implements java.sql.Connection {
 					parameters.getProperty("port"));
 			}
 			catch(IOException e) {
-				if(i == 3)
+				if(i == 3) {
 					throw new SQLException("Socket failed after " + i + " tries: " + e.getMessage());
+				}
 
 				// wait for 1 second
 				try {
@@ -100,8 +111,9 @@ public class Connection<T> implements java.sql.Connection {
 		Set<String> pnames = parameters.stringPropertyNames();
 		int i = 0;
 		for(String pname : pnames) {
-			if(i > 0)
+			if(i > 0) {
 				paras += "','";
+			}
 			paras += pname + "'='" + parameters.getProperty(pname);
 			++i;
 		}
@@ -113,13 +125,16 @@ public class Connection<T> implements java.sql.Connection {
 		}
 		catch(SQLException e) {
 			String msg = "Permission denied for user " + parameters.get("user");
-			if(parameters.getProperty("database") != null && !parameters.getProperty("database").equals(""))
+			if(parameters.getProperty("database") != null && !parameters.getProperty("database").equals("")) {
 				msg += "@" + parameters.getProperty("database");
+			}
 			msg += ", using password ";
-			if(parameters.get("password") != null && !parameters.get("password").equals(""))
+			if(parameters.get("password") != null && !parameters.get("password").equals("")) {
 				msg += "yes";
-			else
+			}
+			else {
 				msg += "no";
+			}
 			throw new SQLException(msg);
 		}
 	}
@@ -134,22 +149,26 @@ public class Connection<T> implements java.sql.Connection {
 	}
 
 	public final Result sendSingularQuery(Request request) throws SQLException {
-		if(request == null)
+		if(request == null) {
 			throw new SQLException("Cannot send null request.");
+		}
 
 		try {
 			out.writeObject(request);
 			out.flush();
 			Result result = (Result) in.readObject();
 
-			if(result == null)
+			if(result == null) {
 				throw new SQLException("Invalid response from server.");
+			}
 
-			if(result.sqlException != null && !result.sqlException.equals(""))
+			if(result.sqlException != null && !result.sqlException.equals("")) {
 				throw new SQLException(result.sqlException);
+			}
 
-			if(result.code != ResultCode.SUCCESS)
+			if(result.code != ResultCode.SUCCESS) {
 				throw new SQLException("Failed with code: " + result.code);
+			}
 
 			return result;
 		}
@@ -163,14 +182,16 @@ public class Connection<T> implements java.sql.Connection {
 	
 	public final Result sendQuery(Request request) throws SQLException {
 		// auto commit?
-		if(isAutoCommit && hasSelectedDatabase())
+		if(isAutoCommit && hasSelectedDatabase()) {
 			sendSingularQuery(new Request("BEGIN TRANSACTION", RequestAction.UPDATE));
+		}
 
 		Result result = sendSingularQuery(request);
 
 		// auto commit?
-		if(isAutoCommit && hasSelectedDatabase())
+		if(isAutoCommit && hasSelectedDatabase()) {
 			commit();
+		}
 
 		return result;
 	}

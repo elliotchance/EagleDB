@@ -1,7 +1,5 @@
 
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.sql.SQLException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -41,8 +39,9 @@ public class TestCreateDatabase {
 			TestSuiteEmbeddedDatabase.executeUpdate("create database \"" + TestSuiteEmbeddedDatabase.databaseName + "\"");
 		}
 		catch(SQLException e) {
-			if(e.getMessage().indexOf("already exists") < 0)
+			if(e.getMessage().indexOf("already exists") < 0) {
 				throw e;
+			}
 			return;
 		}
 

@@ -26,8 +26,9 @@ public class Plan {
 	public String toString() {
 		String r = "Execution Plan\n";
 		String[] lines = getExplainLines();
-		for(String line : lines)
+		for(String line : lines) {
 			r += "  " + line + "\n";
+		}
 		return r;
 	}
 
@@ -42,11 +43,13 @@ public class Plan {
 			totalCost.estimateMaximumTimerons += cost.estimateMaximumTimerons;
 
 			String line = "";
-			if(cost.estimateMinimumTimerons != cost.estimateMaximumTimerons)
+			if(cost.estimateMinimumTimerons != cost.estimateMaximumTimerons) {
 				line = p.toString() + " => " + cost.estimateMinimumTimerons + ".." +
 					cost.estimateMaximumTimerons + " timerons";
-			else
+			}
+			else {
 				line = p.toString() + " => " + cost.estimateMinimumTimerons + " timerons";
+			}
 
 			if(hasExecuted) {
 				line += ", " + cost.realMillis + " ms";
@@ -60,9 +63,10 @@ public class Plan {
 		// total line
 		lines[i] = "Total: " + totalCost.estimateMinimumTimerons + ".." + totalCost.estimateMaximumTimerons +
 			" timerons";
-		if(hasExecuted)
+		if(hasExecuted) {
 			lines[i] += ", " + tuples.size() + " tuples, " + totalCost.realMillis + " ms, " +
 				totalCost.pagesReadFromCache + " RAM pages, " + totalCost.pagesReadFromDisk + " disk pages";
+		}
 
 		return lines;
 	}
@@ -81,8 +85,9 @@ public class Plan {
 
 	public void executeUpdate(int[] columnID, net.eagledb.server.planner.Expression[] ex, long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
-		for(PlanItem p : plan)
+		for(PlanItem p : plan) {
 			p.executeUpdate(columnID, ex, transactionID);
+		}
 
 		statistics.executionTimeMillis = Calendar.getInstance().getTimeInMillis() - start;
 		hasExecuted = true;
@@ -90,8 +95,9 @@ public class Plan {
 
 	public void executeDelete(long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
-		for(PlanItem p : plan)
+		for(PlanItem p : plan) {
 			p.executeDelete(transactionID);
+		}
 
 		statistics.executionTimeMillis = Calendar.getInstance().getTimeInMillis() - start;
 		hasExecuted = true;
@@ -100,8 +106,9 @@ public class Plan {
 	public void execute(long transactionID) {
 		long start = Calendar.getInstance().getTimeInMillis();
 		tuples = new ArrayList<Tuple>();
-		for(PlanItem p : plan)
+		for(PlanItem p : plan) {
 			p.execute(pageTuples, tuples, transactionID);
+		}
 
 		statistics.executionTimeMillis = Calendar.getInstance().getTimeInMillis() - start;
 		hasExecuted = true;
@@ -113,8 +120,9 @@ public class Plan {
 	public Tuple[] getTuples() {
 		Tuple[] ts = new Tuple[tuples.size()];
 		int i = 0;
-		for(Tuple t : tuples)
+		for(Tuple t : tuples) {
 			ts[i++] = t;
+		}
 		return ts;
 	}
 

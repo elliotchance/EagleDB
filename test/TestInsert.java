@@ -34,9 +34,10 @@ public class TestInsert {
 		// insert a bunch of records
 		long start = Calendar.getInstance().getTimeInMillis();
 		int tuples = 10;
-		for (int i = 0; i < tuples; ++i)
+		for (int i = 0; i < tuples; ++i) {
 			TestSuiteEmbeddedDatabase.executeUpdate("insert into mytable (id, number) values (" + i + ", "
 			+ Math.sqrt(i) + ")");
+		}
 		long time = Calendar.getInstance().getTimeInMillis() - start;
 		//System.out.println("INSERT: " + (int) (tuples / (time / 1000.0)) + " per second");
 

@@ -1,9 +1,9 @@
 package net.eagledb.server.sql;
 
-import net.sf.jsqlparser.statement.transaction.*;
-import net.eagledb.server.*;
 import java.sql.*;
+import net.eagledb.server.*;
 import net.eagledb.server.storage.*;
+import net.sf.jsqlparser.statement.transaction.*;
 
 public class SQLTransaction extends SQLAction {
 	
@@ -17,8 +17,9 @@ public class SQLTransaction extends SQLAction {
 	public Result getResult() throws SQLException {
 		// we must have a selected database
 		Database selectedDatabase = conn.getSelectedDatabase();
-		if(selectedDatabase == null)
+		if(selectedDatabase == null) {
 			throw new SQLException("No database selected.");
+		}
 
 		if(sql.getCommand() == TransactionCommand.BEGIN) {
 			conn.transactionID = selectedDatabase.beginTransaction();

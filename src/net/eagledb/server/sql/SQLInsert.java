@@ -11,8 +11,8 @@ import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
 import net.eagledb.server.storage.TemporaryTable;
 import net.eagledb.server.storage.Tuple;
-import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.statement.insert.Insert;
 
 public class SQLInsert extends SQLAction {
 	
@@ -26,8 +26,9 @@ public class SQLInsert extends SQLAction {
 	public Result getResult() throws SQLException {
 		// we must have a selected database
 		Database selectedDatabase = conn.getSelectedDatabase();
-		if(selectedDatabase == null)
+		if(selectedDatabase == null) {
 			throw new SQLException("No database selected.");
+		}
 
 		// check the users permission
 		//if(!conn.getUser().canCreateTable)
@@ -36,19 +37,22 @@ public class SQLInsert extends SQLAction {
 		// get schema
 		String schemaName = "public";
 		Schema schema = selectedDatabase.getSchema(schemaName);
-		if(schema == null)
+		if(schema == null) {
 			throw new SQLException("No such schema " + schemaName);
+		}
 
 		// see if the table exists
 		Table table = schema.getTable(sql.getTable().getName());
 		if(table == null) {
 			// temporary table?
 			TemporaryTable tt = conn.getTemporaryTable(sql.getTable().getName());
-			if(tt != null)
+			if(tt != null) {
 				table = schema.getTable(tt.internalName);
+			}
 
-			if(table == null)
+			if(table == null) {
 				throw new SQLException("Table " + schemaName + "." + sql.getTable().getName() + " does not exist");
+			}
 		}
 
 		// create the tuple
@@ -59,8 +63,9 @@ public class SQLInsert extends SQLAction {
 		int i = 0;
 		for(net.sf.jsqlparser.schema.Column column : columns) {
 			// make sure the column exists
-			if(!table.attributeExists(column.getColumnName()))
+			if(!table.attributeExists(column.getColumnName())) {
 				throw new SQLException("No such column " + table.getName() + "." + column.getColumnName());
+			}
 			
 			// put the data into the tuple
 			double value = Double.valueOf(((ExpressionList) sql.getItemsList()).getExpressions().get(i).toString());

@@ -56,14 +56,16 @@ public class BigIntPage extends Page {
 
 	@Override
 	public synchronized void write(RandomAccessFile os) throws IOException {
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
 			os.writeLong(page[i]);
+		}
 	}
 
 	@Override
 	public synchronized void read(RandomAccessFile is) throws IOException {
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
 			page[i] = is.readInt();
+		}
 	}
 
 	public static int getPageSize() {

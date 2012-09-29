@@ -19,8 +19,9 @@ public class FunctionException extends ExpressionException {
 		String argTypes = "";
 		try {
 			for(int i = 0; i < function.argumentTypes.length; ++i) {
-				if(i > 0)
+				if(i > 0) {
 					argTypes += ",";
+				}
 				argTypes += ((Page) function.argumentTypes[i].newInstance()).getNames()[0];
 			}
 		}

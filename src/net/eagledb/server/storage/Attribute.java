@@ -1,6 +1,5 @@
 package net.eagledb.server.storage;
 
-import java.io.DataOutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;

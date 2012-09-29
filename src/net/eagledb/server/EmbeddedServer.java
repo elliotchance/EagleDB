@@ -19,8 +19,9 @@ public class EmbeddedServer {
 	}
 
 	public void stop() {
-		if(serverThread != null && serverThread.isAlive())
+		if(serverThread != null && serverThread.isAlive()) {
 			serverThread.interrupt();
+		}
 	}
 
 }

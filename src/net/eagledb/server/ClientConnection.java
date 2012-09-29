@@ -115,16 +115,18 @@ public class ClientConnection extends Thread {
 
 	public TemporaryTable getTemporaryTable(String name) {
 		for(TemporaryTable tt : temporaryTables) {
-			if(tt.name.equals(name))
+			if(tt.name.equals(name)) {
 				return tt;
+			}
 		}
 		return null;
 	}
 
 	public TemporaryTable getTemporaryTableByInternalName(String name) {
 		for(TemporaryTable tt : temporaryTables) {
-			if(tt.internalName.equals(name))
+			if(tt.internalName.equals(name)) {
 				return tt;
+			}
 		}
 		return null;
 	}
@@ -140,9 +142,11 @@ public class ClientConnection extends Thread {
 	}
 
 	@Override
-	public void finalize() {
-		if(isOpen)
+	protected void finalize() throws Throwable {
+		super.finalize();
+		if(isOpen) {
 			close();
+		}
 	}
 
 }

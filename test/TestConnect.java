@@ -1,6 +1,5 @@
 
 
-import java.sql.DriverManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,8 +29,9 @@ public class TestConnect {
 
     @Test
 	public void connect() throws Exception {
-		if(TestSuiteEmbeddedDatabase.connection != null)
+		if(TestSuiteEmbeddedDatabase.connection != null) {
 			TestSuiteEmbeddedDatabase.connection.close();
+		}
 		
 		TestSuiteEmbeddedDatabase.connection =
 			TestSuiteEmbeddedDatabase.newConnection(TestSuiteEmbeddedDatabase.databaseName);

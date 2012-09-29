@@ -74,8 +74,9 @@ public class Database {
 	 */
 	public Schema getSchema(String schemaName) {
 		for(Schema schema : schemas) {
-			if(schema.getName().equals(schemaName))
+			if(schema.getName().equals(schemaName)) {
 				return schema;
+			}
 		}
 		return null;
 	}
@@ -117,8 +118,9 @@ public class Database {
 	 */
 	public synchronized long[] getTransactionIDs() {
 		long[] r = new long[transactionsInProgress.size()];
-		for(int i = 0; i < r.length; ++i)
+		for(int i = 0; i < r.length; ++i) {
 			r[i] = transactionsInProgress.get(i);
+		}
 		return r;
 	}
 

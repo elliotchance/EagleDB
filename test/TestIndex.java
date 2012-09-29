@@ -1,14 +1,14 @@
 
 
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class TestIndex {
 
@@ -29,9 +29,10 @@ public class TestIndex {
     public void setUp() throws SQLException {
 		TestSuiteEmbeddedDatabase.executeUpdate("create temporary table index1 (id int, number double)");
 
-		for(int i = 1; i <= 100; ++i)
+		for(int i = 1; i <= 100; ++i) {
 			TestSuiteEmbeddedDatabase.executeUpdate("insert into index1 (id, number) values (" + (i * i) + ", " +
 				Math.sqrt(i) + ")");
+		}
     }
 
     @After
@@ -46,8 +47,9 @@ public class TestIndex {
 		// explain without index
 		st = TestSuiteEmbeddedDatabase.connection.createStatement();
 		rs = st.executeQuery("explain select id, number from index1 where id=16");
-		while(rs.next())
+		while(rs.next()) {
 			System.out.println(rs.getString(1));
+		}
 		System.out.println();
 		rs.close();
 		st.close();
@@ -64,8 +66,9 @@ public class TestIndex {
 		// explain with index
 		st = TestSuiteEmbeddedDatabase.connection.createStatement();
 		rs = st.executeQuery("explain select id, number from index1 where id=16");
-		while(rs.next())
+		while(rs.next()) {
 			System.out.println(rs.getString(1));
+		}
 		System.out.println();
 		rs.close();
 		st.close();

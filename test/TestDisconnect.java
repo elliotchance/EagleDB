@@ -1,6 +1,5 @@
 
 
-import java.sql.DriverManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,8 +29,9 @@ public class TestDisconnect {
 
     @Test
 	public void disconnect() throws Exception {
-		if(TestSuiteEmbeddedDatabase.connection != null)
+		if(TestSuiteEmbeddedDatabase.connection != null) {
 			TestSuiteEmbeddedDatabase.connection.close();
+		}
 	}
 
 }

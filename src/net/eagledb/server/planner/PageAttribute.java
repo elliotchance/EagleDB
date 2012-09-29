@@ -17,26 +17,32 @@ public class PageAttribute extends PageOperation {
 
 	public void run(int tuples, FullTableScan fts) {
 		Page pageDest = null;
-		if(destination >= Expression.MAXIMUM_BUFFERS)
+		if(destination >= Expression.MAXIMUM_BUFFERS) {
 			pageDest = fts.table.getPage(destination - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
-		else
+		}
+		else {
 			pageDest = fts.buffers.get(destination);
+		}
 
 		Page pageSource = null;
-		if(source >= Expression.MAXIMUM_BUFFERS)
+		if(source >= Expression.MAXIMUM_BUFFERS) {
 			pageSource = fts.table.getPage(source - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
-		else
+		}
+		else {
 			pageSource = fts.buffers.get(source);
+		}
 
 		if(pageSource instanceof DoublePage) {
 			DoublePage page = (DoublePage) pageSource;
-			for(int i = 0; i < tuples; ++i)
+			for(int i = 0; i < tuples; ++i) {
 				pageDest.addTuple(page.page[i]);
+			}
 		}
 		else if(pageSource instanceof IntPage) {
 			IntPage page = (IntPage) pageSource;
-			for(int i = 0; i < tuples; ++i)
+			for(int i = 0; i < tuples; ++i) {
 				pageDest.addTuple(page.page[i]);
+			}
 		}
 	}
 

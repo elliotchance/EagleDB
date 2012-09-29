@@ -2,7 +2,6 @@ package bench;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
@@ -56,8 +55,9 @@ public class TPCCBenchmark {
 		// load data
 		st = conn.createStatement();
 		st.executeUpdate("CREATE TABLE customer (id int, balance double)");
-		for(int i = 1; i <= customers; ++i)
+		for(int i = 1; i <= customers; ++i) {
 			st.executeUpdate("insert into customer (id, balance) values (" + i + ", " + (Math.floor(Math.random() * 10000) / 100) + ")");
+		}
 		st.close();
 		
 		// run

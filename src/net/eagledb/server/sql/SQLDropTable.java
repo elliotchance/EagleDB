@@ -23,8 +23,9 @@ public class SQLDropTable extends SQLAction {
 	public Result getResult() throws SQLException {
 		// we must have a selected database
 		Database selectedDatabase = conn.getSelectedDatabase();
-		if(selectedDatabase == null)
+		if(selectedDatabase == null) {
 			throw new SQLException("No database selected.");
+		}
 
 		// check the users permission
 		//if(!conn.getUser().canCreateTable)
@@ -32,8 +33,9 @@ public class SQLDropTable extends SQLAction {
 
 		// get schema
 		Schema schema = selectedDatabase.getSchema("public");
-		if(schema == null)
+		if(schema == null) {
 			throw new SQLException("No such schema " + schema.getName());
+		}
 
 		// if this is a temporary table we need to translate its name
 		String tableName = sql.getName();
@@ -43,11 +45,13 @@ public class SQLDropTable extends SQLAction {
 		if(table == null) {
 			// temporary table?
 			TemporaryTable tt = conn.getTemporaryTable(tableName);
-			if(tt != null)
+			if(tt != null) {
 				table = schema.getTable(tt.internalName);
+			}
 
-			if(table == null)
+			if(table == null) {
 				throw new SQLException("Table " + schema.getName() + "." + tableName + " does not exist");
+			}
 		}
 
 		// drop the table

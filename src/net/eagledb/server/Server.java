@@ -94,23 +94,26 @@ public class Server {
 		for(String dbname : dbs) {
 			// only want directories
 			File fileDB = new File(databaseLocation + "/data/" + dbname);
-			if(!fileDB.isDirectory())
+			if(!fileDB.isDirectory()) {
 				continue;
+			}
 
 			Database db = new Database(dbname);
 			
 			String[] schemas = fileDB.list();
 			for(String schemaName : schemas) {
-				if(!new File(databaseLocation + "/data/" + dbname + "/" + schemaName).isDirectory())
+				if(!new File(databaseLocation + "/data/" + dbname + "/" + schemaName).isDirectory()) {
 					continue;
+				}
 				
 				Schema schema = new Schema(schemaName);
 
 				// load tables
 				String[] tables = new File(databaseLocation + "/data/" + dbname + "/" + schemaName).list();
 				for(String tableName : tables) {
-					if(!tableName.endsWith(".table"))
+					if(!tableName.endsWith(".table")) {
 						continue;
+					}
 
 					try {
 						String tablePath = databaseLocation + "/data/" + dbname + "/" + schemaName + "/" + tableName;
@@ -198,8 +201,9 @@ public class Server {
 
 	public Database getDatabase(String name) {
 		for(Database db : databases) {
-			if(db.getName().equals(name))
+			if(db.getName().equals(name)) {
 				return db;
+			}
 		}
 		return null;
 	}
@@ -207,8 +211,9 @@ public class Server {
 	public String[] getDatabaseNames() {
 		String[] names = new String[databases.size()];
 		int i = 0;
-		for(Database db : databases)
+		for(Database db : databases) {
 			names[i++] = db.getName();
+		}
 		return names;
 	}
 

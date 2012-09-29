@@ -34,8 +34,9 @@ public class Table implements java.io.Serializable {
 		initTransient();
 
 		if(attrs != null) {
-			for(Attribute attr : attrs)
+			for(Attribute attr : attrs) {
 				addAttribute(attr);
+			}
 		}
 	}
 
@@ -64,8 +65,9 @@ public class Table implements java.io.Serializable {
 	public final void initTransient() {
 		transactionPages = new ArrayList<TransactionPage>();
 		dirtyTransactionPages = new ArrayList<TransactionPage>();
-		for(Attribute attribute : attributes)
+		for(Attribute attribute : attributes) {
 			attribute.initTransient();
+		}
 	}
 
 	public final boolean addAttribute(Attribute f) {
@@ -76,8 +78,9 @@ public class Table implements java.io.Serializable {
 	public Attribute[] getAttributes() {
 		Attribute[] r = new Attribute[attributes.size()];
 		int i = 0;
-		for(Attribute a : attributes)
+		for(Attribute a : attributes) {
 			r[i++] = a;
+		}
 		return r;
 	}
 
@@ -96,14 +99,18 @@ public class Table implements java.io.Serializable {
 					Class<? extends Page> pageType = f.getPageType();
 					Page p = null;
 
-					if(pageType.equals(net.eagledb.server.storage.page.IntPage.class))
+					if(pageType.equals(net.eagledb.server.storage.page.IntPage.class)) {
 						p = new IntPage();
-					else if(pageType.equals(net.eagledb.server.storage.page.RealPage.class))
+					}
+					else if(pageType.equals(net.eagledb.server.storage.page.RealPage.class)) {
 						p = new RealPage();
-					else if(pageType.equals(net.eagledb.server.storage.page.DoublePage.class))
+					}
+					else if(pageType.equals(net.eagledb.server.storage.page.DoublePage.class)) {
 						p = new DoublePage();
-					else
+					}
+					else {
 						throw new Exception("Unknown attribute type " + pageType);
+					}
 
 					p.pageID = transactionPages.size() - 1;
 					attributes.get(i).pages.add(p);
@@ -122,12 +129,15 @@ public class Table implements java.io.Serializable {
 			Class<? extends Page> pageType = f.getPageType();
 
 			tail = attributes.get(i).pages.get(attributes.get(i).pages.size() - 1);
-			if(pageType.equals(net.eagledb.server.storage.page.IntPage.class))
+			if(pageType.equals(net.eagledb.server.storage.page.IntPage.class)) {
 				tail.addTuple((int) ((double) Double.valueOf(t.get(i).toString())));
-			else if(pageType.equals(net.eagledb.server.storage.page.RealPage.class))
+			}
+			else if(pageType.equals(net.eagledb.server.storage.page.RealPage.class)) {
 				tail.addTuple((float) ((double) Double.valueOf(t.get(i).toString())));
-			else if(pageType.equals(net.eagledb.server.storage.page.DoublePage.class))
+			}
+			else if(pageType.equals(net.eagledb.server.storage.page.DoublePage.class)) {
 				tail.addTuple(Double.valueOf(t.get(i).toString()));
+			}
 			++i;
 		}
 
@@ -147,8 +157,9 @@ public class Table implements java.io.Serializable {
 		String sql = "CREATE TABLE \"" + name + "\" (";
 		int i = 0;
 		for(Attribute field : attributes) {
-			if(i > 0)
+			if(i > 0) {
 				sql += ", ";
+			}
 			sql += field.toString();
 			++i;
 		}
@@ -158,8 +169,9 @@ public class Table implements java.io.Serializable {
 
 	public boolean attributeExists(String column) {
 		for(Attribute f : attributes) {
-			if(f.getName().equals(column))
+			if(f.getName().equals(column)) {
 				return true;
+			}
 		}
 
 		return false;
@@ -172,8 +184,9 @@ public class Table implements java.io.Serializable {
 	public int getAttributeLocation(String attr) {
 		int i = 0;
 		for(Attribute f : attributes) {
-			if(f.getName().equals(attr))
+			if(f.getName().equals(attr)) {
 				return i;
+			}
 			++i;
 		}
 		return -1;
@@ -196,8 +209,9 @@ public class Table implements java.io.Serializable {
 			tp.read(transactionPageHandle);
 
 			// can we cache this page?
-			if(location == transactionPages.size())
+			if(location == transactionPages.size()) {
 				transactionPages.add(tp);
+			}
 			
 			return tp;
 		}
@@ -226,8 +240,9 @@ public class Table implements java.io.Serializable {
 			page.read(attribute.getDataHandle());
 
 			// can we cache this page?
-			if(location == attribute.pages.size())
+			if(location == attribute.pages.size()) {
 				attribute.pages.add(page);
+			}
 
 			return page;
 		}
@@ -245,8 +260,9 @@ public class Table implements java.io.Serializable {
 	}
 
 	private void addDirtyTransactionPage(TransactionPage p) {
-		if(dirtyTransactionPages.contains(p))
+		if(dirtyTransactionPages.contains(p)) {
 			return;
+		}
 		dirtyTransactionPages.add(p);
 	}
 

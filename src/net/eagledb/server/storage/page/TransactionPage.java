@@ -13,12 +13,14 @@ public class TransactionPage extends Page {
 
 	public TransactionPage() {
 		createTransactionID = new long[Page.TUPLES_PER_PAGE];
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
 			createTransactionID[i] = Long.MAX_VALUE;
+		}
 		
 		expireTransactionID = new long[Page.TUPLES_PER_PAGE];
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
 			expireTransactionID[i] = EXPIRE_NEVER;
+		}
 	}
 
 	public int getTotalTuples() {

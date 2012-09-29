@@ -37,8 +37,9 @@ public class VarCharPage extends Page {
 
 	@Override
 	public synchronized void write(RandomAccessFile os) throws IOException {
-		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i)
+		for(int i = 0; i < Page.TUPLES_PER_PAGE; ++i) {
 			os.writeBytes(page[i]);
+		}
 	}
 
 	public static int getPageSize() {

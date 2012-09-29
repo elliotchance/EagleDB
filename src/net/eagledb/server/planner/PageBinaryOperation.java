@@ -29,15 +29,19 @@ public class PageBinaryOperation extends PageOperation {
 	public void run(int tuples, FullTableScan fts) {
 		Page lhs = null, rhs = null;
 
-		if(buffer1 >= Expression.MAXIMUM_BUFFERS)
+		if(buffer1 >= Expression.MAXIMUM_BUFFERS) {
 			lhs = fts.table.getPage(buffer1 - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
-		else
+		}
+		else {
 			lhs = fts.buffers.get(buffer1);
+		}
 
-		if(buffer2 >= Expression.MAXIMUM_BUFFERS)
+		if(buffer2 >= Expression.MAXIMUM_BUFFERS) {
 			rhs = fts.table.getPage(buffer2 - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
-		else
+		}
+		else {
 			rhs = fts.buffers.get(buffer2);
+		}
 
 		try {
 			operation.invoke(null, fts.buffers.get(bufferDestination), lhs, rhs);

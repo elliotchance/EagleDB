@@ -1,8 +1,6 @@
 
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -36,8 +34,9 @@ public class TestCreateTable {
 			TestSuiteEmbeddedDatabase.executeUpdate("create table mytable (id int, number real)");
 		}
 		catch(SQLException e) {
-			if(e.getMessage().indexOf("already exists") < 0)
+			if(e.getMessage().indexOf("already exists") < 0) {
 				throw e;
+			}
 		}
 	}
 

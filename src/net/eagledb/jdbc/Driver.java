@@ -1,7 +1,9 @@
 package net.eagledb.jdbc;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.DriverManager;
+import java.sql.DriverPropertyInfo;
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class Driver implements java.sql.Driver {
 
@@ -98,8 +100,9 @@ public class Driver implements java.sql.Driver {
 	 * @throws SQLException SQLException - if a database access error occurs
 	 */
 	public java.sql.Connection connect(String url, Properties info) throws SQLException {
-		if(!url.startsWith("eagledb://"))
+		if(!url.startsWith("eagledb://")) {
 			return null;
+		}
 		return new net.eagledb.jdbc.Connection(url, info);
 	}
 

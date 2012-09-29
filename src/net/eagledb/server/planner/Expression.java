@@ -6,7 +6,6 @@ import java.util.List;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Index;
 import net.eagledb.server.storage.Table;
-import net.eagledb.server.storage.Tuple;
 import net.eagledb.server.storage.page.BooleanPage;
 import net.eagledb.server.storage.page.DoublePage;
 import net.eagledb.server.storage.page.IntPage;
@@ -71,10 +70,12 @@ public class Expression {
 			int location = table.getAttributeLocation(ex.toString());
 			Class type = table.getAttributes()[location].getPageType();
 
-			if(type.equals(net.eagledb.server.storage.page.IntPage.class))
+			if(type.equals(net.eagledb.server.storage.page.IntPage.class)) {
 				buffers.add(new IntPage());
-			if(type.equals(net.eagledb.server.storage.page.DoublePage.class))
+			}
+			if(type.equals(net.eagledb.server.storage.page.DoublePage.class)) {
 				buffers.add(new DoublePage());
+			}
 
 			int dest = buffers.size() - 1;
 			operations.add(new PageAttribute(
@@ -85,16 +86,19 @@ public class Expression {
 		}
 
 		// table column
-		if(ex instanceof Column)
+		if(ex instanceof Column) {
 			return MAXIMUM_BUFFERS + table.getAttributeLocation(ex.toString());
+		}
 
 		// integer constant value
 		if(ex instanceof LongValue) {
 			// preferFloating is to stop division between integers also returning an integer
-			if(preferFloating)
+			if(preferFloating) {
 				buffers.add(new DoublePage());
-			else
+			}
+			else {
 				buffers.add(new IntPage());
+			}
 
 			int dest = buffers.size() - 1;
 			operations.add(new PageFillDouble(
@@ -144,24 +148,30 @@ public class Expression {
 					break;
 				}
 			}
-			if(action == null)
+			if(action == null) {
 				throw new ExpressionException(ex);
+			}
 
 			Class lhsClass = null, rhsClass = null;
 
-			if(lhs < Expression.MAXIMUM_BUFFERS)
+			if(lhs < Expression.MAXIMUM_BUFFERS) {
 				lhsClass = buffers.get(lhs).getClass();
-			else
+			}
+			else {
 				lhsClass = table.getAttributes()[lhs - Expression.MAXIMUM_BUFFERS].pages.get(0).getClass();
+			}
 
-			if(rhs < Expression.MAXIMUM_BUFFERS)
+			if(rhs < Expression.MAXIMUM_BUFFERS) {
 				rhsClass = buffers.get(rhs).getClass();
-			else
+			}
+			else {
 				rhsClass = table.getAttributes()[rhs - Expression.MAXIMUM_BUFFERS].pages.get(0).getClass();
+			}
 			
 			Method operator = Operator.getMethodForOperator(lhsClass, action, rhsClass);
-			if(operator == null)
+			if(operator == null) {
 				throw new OperatorException(lhsClass, action, rhsClass, ex);
+			}
 
 			// look for an index
 			// index lookups only work when the expression is in the form of "ATTRIBUTE OPERATOR VALUE"
@@ -203,8 +213,9 @@ public class Expression {
 				net.sf.jsqlparser.expression.Expression arg = (net.sf.jsqlparser.expression.Expression) exprs.get(i);
 
 				// fill in keys
-				if(arg.key == null)
+				if(arg.key == null) {
 					arg.key = String.valueOf(i);
+				}
 				
 				arguments[i] = subparse(arg, false, false);
 				argTypes[i] = buffers.get(arguments[i]).getClass();
@@ -215,12 +226,14 @@ public class Expression {
 			Function function = Functions.findFunction(functionName, argTypes);
 
 			// if we can't find the definition see if there is a VarArgs to fall back on
-			if(function == null)
+			if(function == null) {
 				function = Functions.findVarArgsFunction(functionName);
+			}
 
 			// cannot find the function
-			if(function == null)
+			if(function == null) {
 				throw new FunctionException(new Function(functionName, null, null, argTypes), ex);
+			}
 
 			int dest = -1;
 			try {
@@ -239,8 +252,9 @@ public class Expression {
 	}
 
 	public PageOperation[] parse(boolean castToBoolean) throws ExpressionException {
-		if(expression == null)
+		if(expression == null) {
 			expression = new LongValue("1");
+		}
 		subparse(expression, true, false);
 
 		// the last Page type must be a boolean if we are using the expression in a WHERE for example
@@ -249,17 +263,19 @@ public class Expression {
 				buffers.add(new BooleanPage());
 				Method operator = Operator.getMethodForOperator(buffers.get(buffers.size() - 2).getClass(),
 					PageAction.CAST, null);
-				if(operator == null)
+				if(operator == null) {
 					throw new OperatorException(buffers.get(buffers.size() - 2).getClass(), PageAction.CAST, null,
 						expression);
+				}
 				operations.add(new PageUnaryOperation(buffers.size() - 1, operator, buffers.size() - 2));
 			}
 		}
 
 		// convert to array
 		PageOperation[] op = new PageOperation[operations.size()];
-		for(int i = 0; i < op.length; ++i)
+		for(int i = 0; i < op.length; ++i) {
 			op[i] = operations.get(i);
+		}
 		
 		return op;
 	}

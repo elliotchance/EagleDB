@@ -27,8 +27,9 @@ public class BTreeEnumeration implements Enumeration {
 		Object element = null;
 		boolean viewNode = false;
 
-		if (!moreElements)
+		if (!moreElements) {
 			return null;
+		}
 
 		while (!currentNode.isLeaf || currentItem >= currentNode.nKey) {
 			boolean newChild = false;
@@ -45,8 +46,9 @@ public class BTreeEnumeration implements Enumeration {
 						}
 						currentNode = currentNode.getBTNode(i);
 						currentItem = 0;
-						if (i > 0)
+						if (i > 0) {
 							return element;
+						}
 						newChild = true;
 						break;
 					}
@@ -201,9 +203,9 @@ public class BTreeEnumeration implements Enumeration {
 
 		if (!btnode.isLeaf) {
 			btnodeLevel++;
-			for (i = 0; i <= btnode.nKey; i++)
-				//check next sub node
+			for (i = 0; i <= btnode.nKey; i++) {
 				showBTNode(btnode.getBTNode(i));
+			}
 			btnodeLevel--;
 		}
 	}

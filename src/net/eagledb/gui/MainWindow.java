@@ -127,14 +127,16 @@ public class MainWindow extends javax.swing.JFrame {
 	}//GEN-LAST:event_jMenuItem1ActionPerformed
 
 	private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-		if(serverWindow == null)
+		if(serverWindow == null) {
 			serverWindow = new ServerWindow();
+		}
 		serverWindow.setVisible(true);
 	}//GEN-LAST:event_jMenuItem2ActionPerformed
 
 	private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-		if(docWindow == null)
+		if(docWindow == null) {
 			docWindow = new DocumentationWindow();
+		}
 		docWindow.setVisible(true);
 	}//GEN-LAST:event_jMenuItem3ActionPerformed
 

@@ -148,8 +148,9 @@ public class BTNode {
 	void shift(int startPos) {
 		for (int i = nKey; i > startPos; i--) {
 			kArray[i] = kArray[i - 1];
-			if (!isLeaf)
+			if (!isLeaf) {
 				btnArray[i + 1] = btnArray[i];
+			}
 		}
 		nKey++;
 	}
@@ -180,8 +181,9 @@ public class BTNode {
 					left.isLeaf = false;
 					right.isLeaf = false;
 				}
-				else
+				else {
 					isLeaf = false;
+				}
 				kArray[0] = kArray[order - 1];
 				nKey = 1;
 				left.nKey = order - 1;
@@ -194,19 +196,22 @@ public class BTNode {
 				btnArray[1] = right;
 			}
 			else { // algo for non-root-nodes
-				if (parent.nKey == order * 2 - 1)
+				if (parent.nKey == order * 2 - 1) {
 					parent.split();
+				}
 				int pos = 0;
 				while (kArray[order - 1].getKey()> parent.kArray[pos].getKey()) {
 					pos++;
-					if (pos == parent.nKey)
+					if (pos == parent.nKey) {
 						break;
+					}
 				}
 				parent.shift(pos);
 				parent.kArray[pos] = kArray[order - 1];
 				right = new BTNode(order, parent);
-				for (int i = 0; i < order - 1; i++)
+				for (int i = 0; i < order - 1; i++) {
 					right.kArray[i] = kArray[order + i];
+				}
 				if (!isLeaf) {
 					for (int i = 0; i < order; i++) {
 						right.btnArray[i] = btnArray[order + i];
@@ -225,15 +230,17 @@ public class BTNode {
 			}
 			return right;
 		}
-		else
+		else {
 			return null;
+		}
 	}
 
 	@Override
 	public String toString() {
 		String r = "BTNode(\n";
-		for(KeyNode kn : kArray)
+		for(KeyNode kn : kArray) {
 			r += "  " + kn + "\n";
+		}
 		r += ")";
 		return r;
 	}

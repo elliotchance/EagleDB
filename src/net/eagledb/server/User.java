@@ -1,8 +1,8 @@
 package net.eagledb.server;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import net.eagledb.server.crypt.*;
-import java.io.Serializable;
 
 public class User implements Serializable {
 

@@ -43,8 +43,9 @@ public class SQLSelect extends SQLAction {
 	public Result getResult() throws SQLException {
 		// we must have a selected database
 		Database selectedDatabase = conn.getSelectedDatabase();
-		if(selectedDatabase == null)
+		if(selectedDatabase == null) {
 			throw new SQLException("No database selected.");
+		}
 
 		// check the users permission
 		//if(!conn.getUser().canCreateTable)
@@ -52,8 +53,9 @@ public class SQLSelect extends SQLAction {
 
 		// get schema
 		Schema schema = selectedDatabase.getSchema("public");
-		if(schema == null)
+		if(schema == null) {
 			throw new SQLException("No such schema " + schema.getName());
+		}
 
 		// create the executation plan
 		Plan p = new Plan();
@@ -66,12 +68,14 @@ public class SQLSelect extends SQLAction {
 			if(table == null) {
 				// temporary table?
 				TemporaryTable tt = conn.getTemporaryTable(select.getFromItem().toString());
-				if(tt != null)
+				if(tt != null) {
 					table = schema.getTable(tt.internalName);
+				}
 
-				if(table == null)
+				if(table == null) {
 					throw new SQLException("Table " + schema.getName() + "." + select.getFromItem().toString() +
 						" does not exist");
+				}
 			}
 		}
 		else {
@@ -84,8 +88,9 @@ public class SQLSelect extends SQLAction {
 		try {
 			// extract WHERE clause, making sure it is not empty
 			Expression whereClause = select.getWhere();
-			if(whereClause == null)
+			if(whereClause == null) {
 				whereClause = new LongValue("1");
+			}
 
 			// parse the expression
 			net.eagledb.server.planner.Expression ex = new net.eagledb.server.planner.Expression(table,
@@ -98,8 +103,9 @@ public class SQLSelect extends SQLAction {
 			// the attributes may also contain ORDER BY
 			List<SelectItem> selectItems = select.getSelectItems();
 			int totalAttributes = selectItems.size();
-			if(select.getOrderByElements() != null)
+			if(select.getOrderByElements() != null) {
 				totalAttributes += select.getOrderByElements().size();
+			}
 
 			// do we need to fetch attributes?
 			ArrayList<net.eagledb.server.planner.Expression> faSources =
@@ -110,14 +116,17 @@ public class SQLSelect extends SQLAction {
 			for(SelectItem theItem : selectItems) {
 				SelectExpressionItem item = (SelectExpressionItem) theItem;
 				String field = item.getExpression().toString();
-				if(field == null)
+				if(field == null) {
 					field = theItem.toString();
+				}
 
 				// alias
-				if(item.getAlias() != null)
+				if(item.getAlias() != null) {
 					aliases[i] = new Attribute(item.getAlias(), null);
-				else
+				}
+				else {
 					aliases[i] = new Attribute(field, null);
+				}
 
 				// try to locate the field
 				net.eagledb.server.planner.Expression fex =
@@ -155,8 +164,9 @@ public class SQLSelect extends SQLAction {
 			// add order by
 			if(select.getOrderByElements() != null && select.getOrderByElements().size() > 0) {
 				// we don't support nested ordering
-				if(select.getOrderByElements().size() > 1)
+				if(select.getOrderByElements().size() > 1) {
 					throw new SQLException("ORDER BY with multiple attributes is not supported.");
+				}
 
 				// compile the ORDER BY expression
 				OrderByElement expr = (OrderByElement) select.getOrderByElements().get(0);
@@ -173,16 +183,18 @@ public class SQLSelect extends SQLAction {
 			// execute plan
 			if(((net.sf.jsqlparser.statement.select.Select) sql).getExplain()) {
 				// if its ANALYZE we need to execute the query
-				if(((net.sf.jsqlparser.statement.select.Select) sql).getExplainAnalyse())
+				if(((net.sf.jsqlparser.statement.select.Select) sql).getExplainAnalyse()) {
 					p.execute(conn.transactionID);
+				}
 
 				// return the EXPLAIN set
 				return new Result(ResultCode.SUCCESS, new Attribute[] {
 					new Attribute("explain", net.eagledb.server.storage.page.VarCharPage.class)
 				}, p.getExplainTuples());
 			}
-			else
+			else {
 				p.execute(conn.transactionID);
+			}
 
 			return new Result(ResultCode.SUCCESS, aliases, p.getTuples());
 		}

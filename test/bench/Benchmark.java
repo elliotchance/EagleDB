@@ -30,8 +30,9 @@ public class Benchmark {
 		// load data
 		st = conn.createStatement();
 		st.executeUpdate("CREATE TABLE customer (id int, balance double)");
-		for(int i = 1; i <= customers; ++i)
+		for(int i = 1; i <= customers; ++i) {
 			st.executeUpdate("insert into customer (id, balance) values (" + i + ", " + (Math.floor(Math.random() * 10000) / 100) + ")");
+		}
 		st.close();
 		
 		// run

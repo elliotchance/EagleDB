@@ -92,8 +92,9 @@ public class SQLCreateIndex extends SQLAction {
 		for(int i = start; i < end; ++i) {
 			byte b1 = (byte) Math.floor(data[i] / Math.pow(size, depth));
 			if(b1 != lastValue) {
-				for(int k = 0; k < depth; ++k)
+				for(int k = 0; k < depth; ++k) {
 					s += " ";
+				}
 				s += data[i] + "\n";
 			}
 			lastValue = b1;
@@ -105,8 +106,9 @@ public class SQLCreateIndex extends SQLAction {
 	public Result getResult() throws SQLException {
 		// we must have a selected database
 		Database selectedDatabase = conn.getSelectedDatabase();
-		if(selectedDatabase == null)
+		if(selectedDatabase == null) {
 			throw new SQLException("No database selected.");
+		}
 
 		// check the users permission
 		//if(!conn.getUser().canCreateDatabase)
@@ -122,8 +124,9 @@ public class SQLCreateIndex extends SQLAction {
 		Schema schema = selectedDatabase.getSchema("public");
 		if(schema.getTable(sql.getTable()) == null) {
 			TemporaryTable tt = conn.getTemporaryTable(sql.getTable());
-			if(tt != null)
+			if(tt != null) {
 				index.table = schema.getTable(tt.internalName).getName();
+			}
 		}
 
 		// generate a SQL statement
@@ -133,8 +136,9 @@ public class SQLCreateIndex extends SQLAction {
 		IntIndexPage page = new IntIndexPage();
 		try {
 			Result result = conn.pingPong(new Request(sqlStmt));
-			for(Tuple tuple : result.tuples)
+			for(Tuple tuple : result.tuples) {
 				page.insertObj(Integer.valueOf(tuple.get(0).toString()), tuple.tupleID);
+			}
 			index.page = page;
 		}
 		catch(EOFException e) {

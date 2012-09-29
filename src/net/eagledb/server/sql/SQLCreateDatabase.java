@@ -1,9 +1,9 @@
 package net.eagledb.server.sql;
 
-import net.sf.jsqlparser.statement.create.database.CreateDatabase;
-import net.eagledb.server.*;
 import java.sql.*;
+import net.eagledb.server.*;
 import net.eagledb.server.storage.*;
+import net.sf.jsqlparser.statement.create.database.CreateDatabase;
 
 public class SQLCreateDatabase extends SQLAction {
 	
@@ -16,12 +16,14 @@ public class SQLCreateDatabase extends SQLAction {
 
 	public Result getResult() throws SQLException {
 		// does the database already exist
-		if(server.getDatabase(sql.getName()) != null)
+		if(server.getDatabase(sql.getName()) != null) {
 			throw new SQLException("Database " + sql.getName() + " already exists.");
+		}
 
 		// check the users permission
-		if(!conn.getUser().canCreateDatabase)
+		if(!conn.getUser().canCreateDatabase) {
 			throw new SQLException("Permission denied. You must have the CREATE DATABASE privilege.");
+		}
 
 		// create the database
 		Database newDB = server.createDatabase(sql.getName());

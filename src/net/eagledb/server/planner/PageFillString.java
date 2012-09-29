@@ -15,13 +15,16 @@ public class PageFillString extends PageOperation {
 
 	public void run(int tuples, FullTableScan fts) {
 		Page page = null;
-		if(destination >= Expression.MAXIMUM_BUFFERS)
+		if(destination >= Expression.MAXIMUM_BUFFERS) {
 			page = fts.table.getPage(destination - Expression.MAXIMUM_BUFFERS, fts.pageID, fts.cost);
-		else
+		}
+		else {
 			page = fts.buffers.get(destination);
+		}
 		
-		for(int i = 0; i < tuples; ++i)
+		for(int i = 0; i < tuples; ++i) {
 			page.addTuple(value);
+		}
 	}
 
 	@Override

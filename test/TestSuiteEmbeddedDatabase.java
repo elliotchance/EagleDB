@@ -107,8 +107,9 @@ public class TestSuiteEmbeddedDatabase {
 	}
 
 	public static void executeUpdate(String sql, Connection conn) throws SQLException {
-		if(conn == null)
+		if(conn == null) {
 			throw new SQLException("Not a valid connection");
+		}
 		
 		Statement st = conn.createStatement();
 		st.executeUpdate(sql);
@@ -122,8 +123,9 @@ public class TestSuiteEmbeddedDatabase {
 		ArrayList<String[]> tuples = new ArrayList<String[]>();
 		while(rs.next()) {
 			String[] tuple = new String[columns];
-			for(int i = 1; i <= columns; ++i)
+			for(int i = 1; i <= columns; ++i) {
 				tuple[i - 1] = rs.getString(i);
+			}
 			tuples.add(tuple);
 		}
 		rs.close();
@@ -131,8 +133,9 @@ public class TestSuiteEmbeddedDatabase {
 
 		String[][] r = new String[tuples.size()][columns];
 		for(int i = 0; i < tuples.size(); ++i) {
-			for(int j = 1; j <= columns; ++j)
+			for(int j = 1; j <= columns; ++j) {
 				r[i][j - 1] = tuples.get(i)[j - 1];
+			}
 		}
 		return r;
 	}
