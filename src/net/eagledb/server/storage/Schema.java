@@ -32,13 +32,14 @@ public class Schema {
 		tables.add(table);
 	}
 
-	public synchronized void dropTable(String tableName) {
+	public synchronized boolean dropTable(String tableName) {
 		for(int i = 0; i < tables.size(); ++i) {
 			if(tables.get(i).getName().equals(tableName)) {
 				tables.remove(i);
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	public ArrayList<Table> getTables() {

@@ -8,6 +8,7 @@ import net.eagledb.server.Server;
 import net.eagledb.server.storage.Database;
 import net.eagledb.server.storage.Schema;
 import net.eagledb.server.storage.Table;
+import net.eagledb.server.storage.TemporaryTable;
 import net.sf.jsqlparser.statement.drop.Drop;
 
 public class SQLDropTable extends SQLAction {
@@ -39,8 +40,15 @@ public class SQLDropTable extends SQLAction {
 
 		// see if the table exists
 		Table table = schema.getTable(tableName);
-		if(table == null)
-			throw new SQLException("Table " + schema.getName() + "." + tableName + " does not exist");
+		if(table == null) {
+			// temporary table?
+			TemporaryTable tt = conn.getTemporaryTable(tableName);
+			if(tt != null)
+				table = schema.getTable(tt.internalName);
+
+			if(table == null)
+				throw new SQLException("Table " + schema.getName() + "." + tableName + " does not exist");
+		}
 
 		// drop the table
 		schema.dropTable(tableName);
