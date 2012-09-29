@@ -3,4 +3,5 @@
 /dist
 /nbproject/private
 /jsqlparser
+/coverage
 .DS_Store
